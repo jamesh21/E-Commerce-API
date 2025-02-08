@@ -1,26 +1,30 @@
 {
-  "name": "e-commerce-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jamesh21/E-Commerce-API.git"
-  },
-  "author": "James Ho",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jamesh21/E-Commerce-API/issues"
-  },
-  "homepage": "https://github.com/jamesh21/E-Commerce-API#readme",
-  "dependencies": {
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
-  }
+    "name": "e-commerce-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jamesh21/E-Commerce-API.git"
+    },
+    "author": "James Ho",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/jamesh21/E-Commerce-API/issues"
+    },
+    "homepage": "https://github.com/jamesh21/E-Commerce-API#readme",
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "express-async-errors": "^3.1.1",
+        "http-status-codes": "^2.3.0",
+        "pg": "^8.13.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.9"
+    }
 }
