@@ -1,3 +1,5 @@
+CREATE DATABASE ecommerce;
+
 -- User Table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
@@ -12,7 +14,9 @@ CREATE TABLE products (
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
     quantity INT DEFAULT 0,
-    price NUMERIC(10,2) NOT NULL
+    price NUMERIC(10,2) NOT NULL,
+    product_sku VARCHAR(25) UNIQUE NOT NULL,
+    image_url VARCHAR(255)
 );
 
 -- Cart Table
