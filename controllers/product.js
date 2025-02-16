@@ -106,6 +106,7 @@ const mapProductFields = (apiData) => {
     }
     return mappedData
 }
+
 /**
  * Del Route for deleting a single product from products table given the sku from params.
  */
