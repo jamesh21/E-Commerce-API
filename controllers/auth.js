@@ -6,6 +6,11 @@ const { ConflictError, BadRequestError, NotFoundError, UnauthenticatedError } = 
 const { transformToAPIFields } = require('../utils/field-mapper')
 const { USER_FIELD_MAP } = require('../constants/field-mappings')
 
+/**
+ * Registers a new user into users table. Returns bearer token and user data
+ * @param {*} req 
+ * @param {*} res 
+ */
 const register = async (req, res) => {
     const { email, name, admin, password } = req.body
     if (!email || !name || !password || admin == null) {
@@ -22,7 +27,7 @@ const register = async (req, res) => {
         const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
         // create bearer token and return
         const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
-        res.status(StatusCodes.CREATED).json(
+        return res.status(StatusCodes.CREATED).json(
             {
                 user:
                 {
@@ -43,6 +48,12 @@ const register = async (req, res) => {
 
 }
 
+/**
+ * Logs in registered user by fetching bearer token and user data
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const login = async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) {
@@ -73,7 +84,14 @@ const login = async (req, res) => {
         })
 }
 
-
+/**
+ * Helper function for creating a new token given user information.
+ * @param {*} email 
+ * @param {*} name 
+ * @param {*} admin 
+ * @param {*} id 
+ * @returns 
+ */
 const createJWT = (email, name, admin, id) => {
     const token = jwt.sign(
         {
@@ -85,6 +103,12 @@ const createJWT = (email, name, admin, id) => {
     return token
 }
 
+/**
+ * Compares candidate password with hashed password and returns a boolean representing if it has matched. 
+ * @param {*} candidatePassword 
+ * @param {*} dbPass 
+ * @returns 
+ */
 const comparePassword = async (candidatePassword, dbPass) => {
     const isMatch = await bcrypt.compare(candidatePassword, dbPass);
     return isMatch;

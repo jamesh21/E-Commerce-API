@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken')
 const { UnauthenticatedError } = require('../errors')
 
+/**
+ * Middleware for checking if bearer token is valid for accessing resources.
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const auth = (req, res, next) => {
     const authHeader = req.headers.authorization
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

@@ -1,3 +1,9 @@
+/**
+ * Transforms api formatted fields to db formatted fields. 
+ * @param {*} apiData 
+ * @param {*} fieldMappings 
+ * @returns 
+ */
 const transformToDBFields = (apiData, fieldMappings) => {
     const dbData = {}
     for (const [apiField, value] of Object.entries(apiData)) {
@@ -10,6 +16,12 @@ const transformToDBFields = (apiData, fieldMappings) => {
     return dbData
 }
 
+/**
+ * Transforms db formatted fields to api formatted fields.
+ * @param {*} dbData 
+ * @param {*} fieldMappings 
+ * @returns 
+ */
 const transformToAPIFields = (dbData, fieldMappings) => {
     const apiData = {}
     fieldMappings = reverseMappings(fieldMappings)
@@ -23,6 +35,11 @@ const transformToAPIFields = (dbData, fieldMappings) => {
     return apiData
 }
 
+/**
+ * Reverses the mapping of an object passed in. Key - Value becomes Value - Key
+ * @param {*} origMapping 
+ * @returns 
+ */
 const reverseMappings = (origMapping) => {
     const reversedMapping = {}
     for (const [key, value] of Object.entries(origMapping)) {
