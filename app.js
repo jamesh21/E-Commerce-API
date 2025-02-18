@@ -6,14 +6,14 @@ const express = require('express')
 const app = express()
 const productRouter = require('./routes/product')
 const authRouter = require('./routes/auth')
-
+const authMiddleware = require('./middleware/authentication')
 // middleware
 const errorHandler = require('./middleware/error-handler')
 const notFoundHandler = require('./middleware/not-found')
 app.use(express.json());
 
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/product', productRouter)
+app.use('/api/v1/product', authMiddleware, productRouter)
 app.use(notFoundHandler)
 app.use(errorHandler)
 

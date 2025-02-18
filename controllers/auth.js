@@ -4,19 +4,43 @@ const jwt = require("jsonwebtoken");
 const { StatusCodes } = require('http-status-codes')
 const { ConflictError, BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
 const { transformToAPIFields } = require('../utils/field-mapper')
+const { USER_FIELD_MAP } = require('../constants/field-mappings')
 
 const register = async (req, res) => {
     const { email, name, admin, password } = req.body
+    if (!email || !name || !password || admin == null) {
+        throw new BadRequestError('Email, name, admin or password was not provided')
+    }
     const salt = await bcrypt.genSalt(10);
     // hash password
     const hashedPassword = await bcrypt.hash(password, salt)
-    // add fields to db
-    const user = await pool.query('INSERT INTO users (email_address, password_hash, full_name, is_admin) VALUES ($1, $2, $3, $4) RETURNING *',
-        [email, hashedPassword, name, admin]
-    )
-    // create bearer token and return
-    const token = createJWT(email, name, admin, user.rows[0]['user_id'])
-    res.status(StatusCodes.CREATED).json({ token })
+    try {
+        // add fields to db
+        const user = await pool.query('INSERT INTO users (email_address, password_hash, full_name, is_admin) VALUES ($1, $2, $3, $4) RETURNING *',
+            [email, hashedPassword, name, admin]
+        )
+        const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
+        // create bearer token and return
+        const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
+        res.status(StatusCodes.CREATED).json(
+            {
+                user:
+                {
+                    name: userData.name,
+                    email: userData.email,
+                    userId: userData.userId,
+                    admin: userData.admin
+                },
+                token
+            })
+    } catch (err) {
+        // duplicate entry
+        if (err.code === '23505') {
+            throw new ConflictError('email already exists')
+        }
+        throw err
+    }
+
 }
 
 const login = async (req, res) => {
@@ -29,15 +53,26 @@ const login = async (req, res) => {
         throw new NotFoundError('User was not found')
     }
     // convert returned user fields to api format
-    const userData = transformToAPIFields(user.rows[0], userFieldMapping)
+    const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
     // compare if password matches
     const passwordMatch = await comparePassword(password, userData.password)
     if (!passwordMatch) {
         throw new UnauthenticatedError('Incorrect Password')
     }
     const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
-    return res.status(StatusCodes.OK).json({ token })
+    return res.status(StatusCodes.OK).json(
+        {
+            user:
+            {
+                name: userData.name,
+                email: userData.email,
+                userId: userData.userId,
+                admin: userData.admin
+            },
+            token
+        })
 }
+
 
 const createJWT = (email, name, admin, id) => {
     const token = jwt.sign(
@@ -55,11 +90,5 @@ const comparePassword = async (candidatePassword, dbPass) => {
     return isMatch;
 }
 
-const userFieldMapping = {
-    userId: 'user_id',
-    email: 'email_address',
-    name: 'full_name',
-    admin: 'is_admin',
-    password: 'password_hash'
-}
+
 module.exports = { login, register }

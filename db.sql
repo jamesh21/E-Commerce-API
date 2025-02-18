@@ -6,7 +6,7 @@ CREATE TABLE users (
     email_address VARCHAR(320) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    is_admin BOOLEAN DEFAULT FALSE
+    is_admin BOOLEAN
 );
 
 -- -- Product Table

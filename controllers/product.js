@@ -2,6 +2,7 @@ const pool = require('../db'); // Import the database connection
 const { StatusCodes } = require('http-status-codes')
 const { ConflictError, BadRequestError, NotFoundError } = require('../errors')
 const { transformToDBFields } = require('../utils/field-mapper')
+const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
 /**
  * Get Route for retrieving a single product from the sku provided in param.
  * @param {*} req 
@@ -62,7 +63,7 @@ const addProduct = async (req, res) => {
  */
 const updateProduct = async (req, res) => {
     const { sku } = req.params
-    const updates = transformToDBFields(req.body, productFieldMapping)
+    const updates = transformToDBFields(req.body, PRODUCT_FIELD_MAP)
     if (Object.keys(updates).length === 0) {
         throw new BadRequestError('No update parameters were passed into request body')
     }
@@ -88,24 +89,6 @@ const updateProduct = async (req, res) => {
         throw err
     }
 }
-
-const productFieldMapping = {
-    productName: 'product_name',
-    imageURL: 'image_url',
-    productSku: 'product_sku'
-}
-
-// const mapProductFields = (apiData) => {
-//     const mappedData = {}
-//     for (const [apiField, value] of Object.entries(apiData)) {
-//         if (apiField in productFieldMapping) {
-//             mappedData[productFieldMapping[apiField]] = value
-//         } else {
-//             mappedData[apiField] = value
-//         }
-//     }
-//     return mappedData
-// }
 
 /**
  * Del Route for deleting a single product from products table given the sku from params.

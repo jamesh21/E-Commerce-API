@@ -1,18 +1,3 @@
-// const userFieldMapping = {
-//     email: 'email_address',
-//     name: 'full_name',
-//     admin: 'is_admin',
-//     password: 'password_hash'
-// }
-
-// const productFieldMapping = {
-//     productName: 'product_name',
-//     imageURL: 'image_url',
-//     productSku: 'product_sku'
-// }
-
-// Which file should I use mapping constants to?
-
 const transformToDBFields = (apiData, fieldMappings) => {
     const dbData = {}
     for (const [apiField, value] of Object.entries(apiData)) {
