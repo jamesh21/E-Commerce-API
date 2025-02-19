@@ -7,7 +7,6 @@ const app = express()
 // routers
 const productRouter = require('./routes/product')
 const authRouter = require('./routes/auth')
-const cartRouter = require('./routes/cart')
 const cartItemRouter = require('./routes/cart-item')
 // middleware
 const authMiddleware = require('./middleware/authentication')
@@ -17,8 +16,7 @@ app.use(express.json());
 
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/product', authMiddleware, productRouter)
-app.use('/api/v1/cart', authMiddleware, cartRouter)
-app.use('/api/v1/cart/item', cartItemRouter)
+app.use('/api/v1/cart/item', authMiddleware, cartItemRouter)
 app.use(notFoundHandler)
 app.use(errorHandler)
 

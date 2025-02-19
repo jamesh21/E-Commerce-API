@@ -29,7 +29,6 @@ const addCartItem = async (req, res) => {
         }
         throw err
     }
-
 }
 
 
