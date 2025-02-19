@@ -36,3 +36,33 @@ CREATE TABLE cart_items (
     added_at TIMESTAMP DEFAULT NOW(),
     UNIQUE(cart_id, product_id) -- Prevents duplicate items in a cart
 );
+
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_update_cart_timestamp
+BEFORE UPDATE ON carts
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+
+
+CREATE OR REPLACE FUNCTION update_cart_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE carts SET updated_at = NOW() WHERE id = NEW.cart_id;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_update_cart_on_item_change
+AFTER INSERT OR UPDATE OR DELETE ON cart_items
+FOR EACH ROW
+EXECUTE FUNCTION update_cart_timestamp();

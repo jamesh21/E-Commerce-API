@@ -25,8 +25,9 @@ const register = async (req, res) => {
             [email, hashedPassword, name, admin]
         )
         const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
+        const cartId = await getOrCreateCart(userData.userId)
         // create bearer token and return
-        const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
+        const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
         return res.status(StatusCodes.CREATED).json(
             {
                 user:
@@ -70,7 +71,8 @@ const login = async (req, res) => {
     if (!passwordMatch) {
         throw new UnauthenticatedError('Incorrect Password')
     }
-    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
+    const cartId = await getOrCreateCart(userData.userId)
+    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
     return res.status(StatusCodes.OK).json(
         {
             user:
@@ -92,10 +94,10 @@ const login = async (req, res) => {
  * @param {*} id 
  * @returns 
  */
-const createJWT = (email, name, admin, id) => {
+const createJWT = (email, name, admin, id, cartId) => {
     const token = jwt.sign(
         {
-            email, name, admin, id
+            email, name, admin, id, cartId
         }, process.env.JWT_SECRET,
         {
             expiresIn: process.env.JWT_LIFETIME
@@ -114,5 +116,13 @@ const comparePassword = async (candidatePassword, dbPass) => {
     return isMatch;
 }
 
+const getOrCreateCart = async (userId) => {
+    const cart = await pool.query('SELECT cart_id FROM carts WHERE user_id = ($1)', [userId])
+    if (cart.rowCount > 0) {
+        return cart.rows[0]['cart_id']
+    }
+    const newCart = await pool.query('INSERT INTO carts (user_id) VALUES ($1) RETURNING *', [userId])
+    return newCart.rows[0]['cart_id']
+}
 
 module.exports = { login, register }
