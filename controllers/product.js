@@ -25,7 +25,7 @@ const getProduct = async (req, res) => {
  * @param {*} res 
  */
 const getProducts = async (req, res) => {
-    const allProducts = await pool.query('SELECT product_sku, product_name, price, quantity FROM products')
+    const allProducts = await pool.query('SELECT * FROM products')
 
     res.status(StatusCodes.OK).json({ data: allProducts.rows, count: allProducts.rows.length })
 }

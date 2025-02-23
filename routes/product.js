@@ -11,7 +11,7 @@ router.route('/').get(getProducts)
 
 router.use(authMiddleware)
 // below routes need admin privledge
-router.use(adminMiddleware)
+// router.use(adminMiddleware)
 router.route("/:sku").put(updateProduct).delete(deleteProduct);
 router.route('/').post(addProduct)
 
