@@ -1,6 +1,6 @@
-const pool = require('../db'); // Import the database connection
+const { getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB } = require('../services/db')
 const { StatusCodes } = require('http-status-codes')
-const { ConflictError, BadRequestError, NotFoundError } = require('../errors')
+const { BadRequestError } = require('../errors')
 const { transformToDBFields } = require('../utils/field-mapper')
 const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
 /**
@@ -11,11 +11,7 @@ const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
 const getProduct = async (req, res) => {
     const { sku } = req.params
 
-    const product = await pool.query('SELECT product_sku, product_name, price, quantity FROM products WHERE product_sku = ($1)',
-        [sku])
-    if (product.rowCount === 0) {
-        throw new NotFoundError('Product sku was not found')
-    }
+    const product = await getProductFromDB(sku)
     res.status(StatusCodes.OK).json({ data: product.rows, count: product.rows.length })
 }
 
@@ -25,7 +21,7 @@ const getProduct = async (req, res) => {
  * @param {*} res 
  */
 const getProducts = async (req, res) => {
-    const allProducts = await pool.query('SELECT * FROM products')
+    const allProducts = await getProductsFromDB()
 
     res.status(StatusCodes.OK).json({ data: allProducts.rows, count: allProducts.rows.length })
 }
@@ -42,16 +38,8 @@ const addProduct = async (req, res) => {
     if (productName === '' || price === '' || productSku === '') {
         throw new BadRequestError('product name, price or product sku was left blank')
     }
-    try {
-        const newProduct = await pool.query('INSERT INTO products (product_name, quantity, price, product_sku) VALUES ($1, $2, $3, $4) RETURNING *',
-            [productName, quantity, price, productSku])
-        return res.status(StatusCodes.CREATED).json(newProduct.rows[0])
-    } catch (err) {
-        if (err.code === '23505') {
-            throw new ConflictError('Product Sku has to be unique')
-        }
-        throw err
-    }
+    const newProduct = await addProductToDB(productName, quantity, price, productSku)
+    return res.status(StatusCodes.CREATED).json(newProduct)
 }
 
 /**
@@ -67,27 +55,10 @@ const updateProduct = async (req, res) => {
     if (Object.keys(updates).length === 0) {
         throw new BadRequestError('No update parameters were passed into request body')
     }
-    const setStatements = [], values = []
-    let i = 1
-    // building array of fields to update, since it could be a partial update
-    for (const [field, value] of Object.entries(updates)) {
-        setStatements.push(`${field} = $${i}`)
-        values.push(value)
-        i++
-    }
-    values.push(sku)
-    const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_sku = $${i} RETURNING *`
-    try {
-        const updatedProduct = await pool.query(query, values)
+    const updatedProduct = await updateProductInDB(sku, updates)
 
-        return res.status(200).json(updatedProduct.rows[0])
-    } catch (err) {
-        // duplicate entry
-        if (err.code === '23505') {
-            throw new ConflictError('Product Sku has to be unique')
-        }
-        throw err
-    }
+    return res.status(200).json(updatedProduct)
+
 }
 
 /**
@@ -95,10 +66,7 @@ const updateProduct = async (req, res) => {
  */
 const deleteProduct = async (req, res) => {
     const { sku } = req.params
-    const product = await pool.query('DELETE FROM products WHERE product_sku = ($1)', [sku])
-    if (product.rowCount === 0) {
-        throw new NotFoundError('Product sku was not found')
-    }
+    await deleteProductInDB(sku)
 
     res.status(StatusCodes.NO_CONTENT).send()
 }
