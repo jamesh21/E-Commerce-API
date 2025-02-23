@@ -1,7 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 const makePaymentWithStripe = async (cartItems) => {
-    // console.log(cartItems)
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: cartItems.map(item => ({

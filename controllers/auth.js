@@ -1,4 +1,4 @@
-const pool = require('../db'); // Import the database connection
+const { addUserToDB, getUserFromDB, addCartToDB, getCartFromDB } = require('../services/db')
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 const { StatusCodes } = require('http-status-codes')
@@ -21,9 +21,7 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt)
     try {
         // add fields to db
-        const user = await pool.query('INSERT INTO users (email_address, password_hash, full_name, is_admin) VALUES ($1, $2, $3, $4) RETURNING *',
-            [email, hashedPassword, name, admin]
-        )
+        const user = await addUserToDB(email, hashedPassword, name, admin)
         const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
         const cartId = await getOrCreateCart(userData.userId)
         // create bearer token and return
@@ -60,7 +58,7 @@ const login = async (req, res) => {
     if (!email || !password) {
         throw new BadRequestError('Email and password must be provided')
     }
-    const user = await pool.query('SELECT * FROM users WHERE email_address = ($1)', [email])
+    const user = await getUserFromDB(email)
     if (user.rowCount === 0) {
         throw new NotFoundError('User was not found')
     }
@@ -117,11 +115,11 @@ const comparePassword = async (candidatePassword, dbPass) => {
 }
 
 const getOrCreateCart = async (userId) => {
-    const cart = await pool.query('SELECT cart_id FROM carts WHERE user_id = ($1)', [userId])
+    const cart = await getCartFromDB(userId)
     if (cart.rowCount > 0) {
         return cart.rows[0]['cart_id']
     }
-    const newCart = await pool.query('INSERT INTO carts (user_id) VALUES ($1) RETURNING *', [userId])
+    const newCart = await addCartToDB(userId)
     return newCart.rows[0]['cart_id']
 }
 
