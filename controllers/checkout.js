@@ -6,7 +6,7 @@ const { getCartItemsFromDB, createOrderInDB } = require('../services/db')
 const checkout = async (req, res) => {
     const { cartId, userId } = req.user
     // Retrieve all items from user's cart
-    const cartItems = await getCartItemsFromDB(cartId)
+    const { data: cartItems } = await getCartItemsFromDB(cartId)
 
     // Get total cost of items
     let total = 0
@@ -15,8 +15,8 @@ const checkout = async (req, res) => {
         total += cartItem['total']
     }
     // Create an order, in DB
-    const orderId = await createOrderInDB(userId, total)
-    console.log(`this is the order id ${orderId}`)
+    // const orderId = await createOrderInDB(userId, total)
+    // console.log(`this is the order id ${orderId}`)
     // create stripe payment
     const url = await makePaymentWithStripe(cartItems)
 
