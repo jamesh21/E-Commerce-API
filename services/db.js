@@ -86,7 +86,7 @@ const deleteProductInDB = async (sku) => {
 
 // Cart Item Table query start here
 const getCartItemsFromDB = async (cartId) => {
-    const cartItems = await pool.query('SELECT ci.cart_item_id, p.product_sku, p.product_name, p.price, ci.quantity FROM cart_items ci JOIN products p ON ci.product_id=p.product_id WHERE ci.cart_id=($1)', [cartId])
+    const cartItems = await pool.query('SELECT ci.cart_item_id, p.product_id, p.product_sku, p.product_name, p.price, ci.quantity FROM cart_items ci JOIN products p ON ci.product_id=p.product_id WHERE ci.cart_id=($1)', [cartId])
     return { data: cartItems.rows, count: cartItems.rowCount }
 }
 
@@ -96,6 +96,7 @@ const addCartItemToDB = async (cartId, productId, quantity) => {
         // attemps to add item to cart, if already present increment quantity instead.
         const cartItem = await pool.query('INSERT INTO cart_items (cart_id, product_id, quantity) VALUES ($1, $2, $3) ON CONFLICT (cart_id, product_id) DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity RETURNING *'
             , [cartId, productId, quantity])
+
         return cartItem.rows[0]
     } catch (err) {
         if (err.code === '23503') {
@@ -132,9 +133,13 @@ const createOrderInDB = async (userId, totalPrice) => {
     return order.rows[0].order_id
 }
 
+const addOrderLineItemToDB = async (item, orderId) => {
+    await pool.query('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)', [orderId, item.product_id, item.quantity, item.price])
+}
 
 module.exports = {
     getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
-    addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB
+    addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB,
+    addOrderLineItemToDB
 }

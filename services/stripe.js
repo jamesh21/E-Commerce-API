@@ -15,6 +15,7 @@ const makePaymentWithStripe = async (cartItems) => {
         success_url: "https://yourfrontend.com/success",
         cancel_url: "https://yourfrontend.com/cancel",
     });
+    // console.log(session)
     return session.url
 }
 

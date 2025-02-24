@@ -3,6 +3,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError } = require('../errors')
 const { transformToDBFields } = require('../utils/field-mapper')
 const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
+
 /**
  * Get Route for retrieving a single product from the sku provided in param.
  * @param {*} req 
