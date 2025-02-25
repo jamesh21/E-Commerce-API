@@ -1,8 +1,8 @@
-const pool = require('../db'); // Import the database connection
+const { addUserToDB, getUserFromDB, addCartToDB, getCartFromDB } = require('../services/db')
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 const { StatusCodes } = require('http-status-codes')
-const { ConflictError, BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
+const { BadRequestError, UnauthenticatedError } = require('../errors')
 const { transformToAPIFields } = require('../utils/field-mapper')
 const { USER_FIELD_MAP } = require('../constants/field-mappings')
 
@@ -19,33 +19,24 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     // hash password
     const hashedPassword = await bcrypt.hash(password, salt)
-    try {
-        // add fields to db
-        const user = await pool.query('INSERT INTO users (email_address, password_hash, full_name, is_admin) VALUES ($1, $2, $3, $4) RETURNING *',
-            [email, hashedPassword, name, admin]
-        )
-        const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
-        // create bearer token and return
-        const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
-        return res.status(StatusCodes.CREATED).json(
-            {
-                user:
-                {
-                    name: userData.name,
-                    email: userData.email,
-                    userId: userData.userId,
-                    admin: userData.admin
-                },
-                token
-            })
-    } catch (err) {
-        // duplicate entry
-        if (err.code === '23505') {
-            throw new ConflictError('email already exists')
-        }
-        throw err
-    }
 
+    // add fields to db
+    const user = await addUserToDB(email, hashedPassword, name, admin)
+    const userData = transformToAPIFields(user, USER_FIELD_MAP)
+    const cartId = await getOrCreateCart(userData.userId)
+    // create bearer token and return
+    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
+    return res.status(StatusCodes.CREATED).json(
+        {
+            user:
+            {
+                name: userData.name,
+                email: userData.email,
+                userId: userData.userId,
+                admin: userData.admin
+            },
+            token
+        })
 }
 
 /**
@@ -59,18 +50,17 @@ const login = async (req, res) => {
     if (!email || !password) {
         throw new BadRequestError('Email and password must be provided')
     }
-    const user = await pool.query('SELECT * FROM users WHERE email_address = ($1)', [email])
-    if (user.rowCount === 0) {
-        throw new NotFoundError('User was not found')
-    }
+    const user = await getUserFromDB(email)
+
     // convert returned user fields to api format
-    const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
+    const userData = transformToAPIFields(user, USER_FIELD_MAP)
     // compare if password matches
     const passwordMatch = await comparePassword(password, userData.password)
     if (!passwordMatch) {
         throw new UnauthenticatedError('Incorrect Password')
     }
-    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId)
+    const cartId = await getOrCreateCart(userData.userId)
+    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
     return res.status(StatusCodes.OK).json(
         {
             user:
@@ -92,10 +82,10 @@ const login = async (req, res) => {
  * @param {*} id 
  * @returns 
  */
-const createJWT = (email, name, admin, id) => {
+const createJWT = (email, name, admin, id, cartId) => {
     const token = jwt.sign(
         {
-            email, name, admin, id
+            email, name, admin, id, cartId
         }, process.env.JWT_SECRET,
         {
             expiresIn: process.env.JWT_LIFETIME
@@ -114,5 +104,13 @@ const comparePassword = async (candidatePassword, dbPass) => {
     return isMatch;
 }
 
+const getOrCreateCart = async (userId) => {
+    const cart = await getCartFromDB(userId)
+    if (cart) {
+        return cart.cart_id
+    }
+    const newCart = await addCartToDB(userId)
+    return newCart.cart_id
+}
 
 module.exports = { login, register }
