@@ -13,7 +13,7 @@ CREATE TABLE users (
 CREATE TABLE products (
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
-    quantity INT DEFAULT 0,
+    stock INT DEFAULT 0 CHECK (stock >= 0),
     price NUMERIC(10,2) NOT NULL,
     product_sku VARCHAR(25) UNIQUE NOT NULL,
     image_url VARCHAR(255)

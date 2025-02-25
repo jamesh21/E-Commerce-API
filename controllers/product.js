@@ -12,8 +12,8 @@ const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
 const getProduct = async (req, res) => {
     const { sku } = req.params
 
-    const product = await getProductFromDB(sku)
-    res.status(StatusCodes.OK).json({ data: product.rows, count: product.rows.length })
+    const result = await getProductFromDB(sku)
+    res.status(StatusCodes.OK).json(result)
 }
 
 /**
@@ -22,9 +22,9 @@ const getProduct = async (req, res) => {
  * @param {*} res 
  */
 const getProducts = async (req, res) => {
-    const allProducts = await getProductsFromDB()
+    const result = await getProductsFromDB()
 
-    res.status(StatusCodes.OK).json({ data: allProducts.rows, count: allProducts.rows.length })
+    res.status(StatusCodes.OK).json(result)
 }
 
 /**

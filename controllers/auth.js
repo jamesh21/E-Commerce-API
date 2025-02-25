@@ -2,7 +2,7 @@ const { addUserToDB, getUserFromDB, addCartToDB, getCartFromDB } = require('../s
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 const { StatusCodes } = require('http-status-codes')
-const { ConflictError, BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
+const { BadRequestError, UnauthenticatedError } = require('../errors')
 const { transformToAPIFields } = require('../utils/field-mapper')
 const { USER_FIELD_MAP } = require('../constants/field-mappings')
 
@@ -19,32 +19,24 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     // hash password
     const hashedPassword = await bcrypt.hash(password, salt)
-    try {
-        // add fields to db
-        const user = await addUserToDB(email, hashedPassword, name, admin)
-        const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
-        const cartId = await getOrCreateCart(userData.userId)
-        // create bearer token and return
-        const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
-        return res.status(StatusCodes.CREATED).json(
-            {
-                user:
-                {
-                    name: userData.name,
-                    email: userData.email,
-                    userId: userData.userId,
-                    admin: userData.admin
-                },
-                token
-            })
-    } catch (err) {
-        // duplicate entry
-        if (err.code === '23505') {
-            throw new ConflictError('email already exists')
-        }
-        throw err
-    }
 
+    // add fields to db
+    const user = await addUserToDB(email, hashedPassword, name, admin)
+    const userData = transformToAPIFields(user, USER_FIELD_MAP)
+    const cartId = await getOrCreateCart(userData.userId)
+    // create bearer token and return
+    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
+    return res.status(StatusCodes.CREATED).json(
+        {
+            user:
+            {
+                name: userData.name,
+                email: userData.email,
+                userId: userData.userId,
+                admin: userData.admin
+            },
+            token
+        })
 }
 
 /**
@@ -59,11 +51,9 @@ const login = async (req, res) => {
         throw new BadRequestError('Email and password must be provided')
     }
     const user = await getUserFromDB(email)
-    if (user.rowCount === 0) {
-        throw new NotFoundError('User was not found')
-    }
+
     // convert returned user fields to api format
-    const userData = transformToAPIFields(user.rows[0], USER_FIELD_MAP)
+    const userData = transformToAPIFields(user, USER_FIELD_MAP)
     // compare if password matches
     const passwordMatch = await comparePassword(password, userData.password)
     if (!passwordMatch) {
@@ -116,11 +106,11 @@ const comparePassword = async (candidatePassword, dbPass) => {
 
 const getOrCreateCart = async (userId) => {
     const cart = await getCartFromDB(userId)
-    if (cart.rowCount > 0) {
-        return cart.rows[0]['cart_id']
+    if (cart) {
+        return cart.cart_id
     }
     const newCart = await addCartToDB(userId)
-    return newCart.rows[0]['cart_id']
+    return newCart.cart_id
 }
 
 module.exports = { login, register }
