@@ -6,12 +6,12 @@ import Col from 'react-bootstrap/Col';
 
 export function ProductList() {
     const [products, setProducts] = useState([])
-
+    const apiUrl = process.env.REACT_APP_API_URL
     useEffect(() => {
         // getProductsFromAPI().then(setProducts)
         const fetchedProducts = async () => {
             try {
-                const response = await fetch("http://localhost:3000/api/v1/product", {
+                const response = await fetch(`${apiUrl}/product`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 })
