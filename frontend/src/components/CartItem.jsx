@@ -1,21 +1,9 @@
 import { Image, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
-import { useState } from "react";
-
+import displayCurrency from '../utils/helper'
 function CartItem({ cartItem, onQuantityChange }) {
     const qtyDropDown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const [qtySelected, setQtySelected] = useState(cartItem.quantity)
-
-    const displayCurrency = (amount) => {
-        const formatedCurrency = amount.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        })
-
-        return formatedCurrency
-    }
 
     const handleQuantityChange = (eventKey) => {
-        setQtySelected(eventKey)
         onQuantityChange(cartItem.cartItemId, eventKey)
     }
 
@@ -27,9 +15,9 @@ function CartItem({ cartItem, onQuantityChange }) {
 
             <Col>
                 <div className="my-3">{cartItem.productName}</div>
-                <DropdownButton onSelect={handleQuantityChange} variant="secondary" size="sm" id="dropdown-basic-button" title={`Qty ${qtySelected}`}>
+                <DropdownButton onSelect={handleQuantityChange} variant="secondary" size="sm" id="dropdown-basic-button" title={`Qty ${cartItem.quantity}`}>
                     {qtyDropDown.map((qtyVal) => (
-                        <Dropdown.Item key={qtyVal} eventKey={qtyVal} active={qtySelected == qtyVal}>
+                        <Dropdown.Item key={qtyVal} eventKey={qtyVal} active={cartItem.quantity == qtyVal}>
                             Qty {qtyVal}
                         </Dropdown.Item>))}
                 </DropdownButton>
