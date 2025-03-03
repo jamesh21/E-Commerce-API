@@ -2,7 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-export function NavBar() {
+function NavBar() {
     return (
         <>
             <Navbar bg="dark" data-bs-theme="dark">
@@ -13,6 +13,7 @@ export function NavBar() {
                         <Nav.Link href="/products">Products</Nav.Link>
                         <Nav.Link href="/new-product">Add Product</Nav.Link>
                         <Nav.Link href="/login">Login</Nav.Link>
+                        <Nav.Link href="/cart">Cart</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
@@ -20,3 +21,5 @@ export function NavBar() {
         </>
     )
 }
+
+export default NavBar
