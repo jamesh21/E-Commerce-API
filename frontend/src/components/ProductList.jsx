@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import formatApiFields from '../utils/db-mapping'
 function ProductList() {
     const [products, setProducts] = useState([])
     const apiUrl = process.env.REACT_APP_API_URL
@@ -20,7 +20,7 @@ function ProductList() {
                 }
                 const result = await response.json()
                 console.log(result.data)
-                setProducts(result.data)
+                setProducts(formatApiFields(result.data))
             } catch (err) {
                 console.error(err)
             }
@@ -33,7 +33,7 @@ function ProductList() {
         <Container>
             <Row>
                 {products.map((product) => (
-                    <Col key={product.product_id} lg={3} className="mb-4">
+                    <Col key={product.productId} lg={3} className="mb-4">
                         <ProductCard product={product}></ProductCard>
                     </Col>
                 ))}
