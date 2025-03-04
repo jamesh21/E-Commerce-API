@@ -1,10 +1,13 @@
-import { Image, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
+import { Image, Row, Col, Dropdown, DropdownButton, CloseButton } from 'react-bootstrap'
 import displayCurrency from '../utils/helper'
-function CartItem({ cartItem, onQuantityChange }) {
+function CartItem({ cartItem, onQuantityChange, onDelete }) {
     const qtyDropDown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     const handleQuantityChange = (eventKey) => {
         onQuantityChange(cartItem.cartItemId, Number(eventKey))
+    }
+    const handleClose = () => {
+        onDelete(cartItem.cartItemId)
     }
 
     return (
@@ -26,7 +29,9 @@ function CartItem({ cartItem, onQuantityChange }) {
                 <div className="my-3">{displayCurrency(cartItem.price * cartItem.quantity)}</div>
                 {cartItem.quantity > 1 && <div>each ${cartItem.price}</div>}
             </Col>
-
+            <Col className="d-flex justify-content-end">
+                <CloseButton className="" onClick={handleClose}></CloseButton>
+            </Col>
         </Row>)
 }
 

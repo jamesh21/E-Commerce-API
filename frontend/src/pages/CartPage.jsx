@@ -16,8 +16,7 @@ function CartPage() {
             // Update new quantity of cart item id passed in.
             console.log('before setting ', cartItems)
             setCartItems((prevItems) =>
-                prevItems.map((item) => item.cartItemId === cartItemId ? { ...item, quantity: newQuantity } : item
-                )
+                prevItems.map((item) => item.cartItemId === cartItemId ? { ...item, quantity: newQuantity } : item)
             )
             // Attempt to update DB with new quantity
             await axiosInstance.patch(`/cart/item/${cartItemId}`, { quantity: newQuantity })
@@ -27,7 +26,21 @@ function CartPage() {
             setCartItems(previousCartItems.current)
         }
     }
+    const onDelete = async (cartItemId) => {
+        try {
+            previousCartItems.current = cartItems
+            setCartItems((prevItems) =>
+                prevItems.filter((item) => item.cartItemId !== cartItemId)
+            )
+            // Delete cart item from DB
+            await axiosInstance.delete(`/cart/item/${cartItemId}`)
 
+        } catch (err) {
+            // revert delete, if fails
+            setCartItems(previousCartItems.current)
+            console.error("Error ", err)
+        }
+    }
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
@@ -49,7 +62,7 @@ function CartPage() {
             <Row className="g-5">
                 <Col lg={9}>
                     <h2 className="mb-4">Cart</h2>
-                    <CartItemList cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity}></CartItemList>
+                    <CartItemList cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity} onDelete={onDelete}></CartItemList>
                 </Col>
                 <Col>
                     <OrderSummary cartItems={cartItems} ></OrderSummary>

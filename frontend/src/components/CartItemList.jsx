@@ -2,7 +2,7 @@ import CartItem from './CartItem'
 import { Row, Col } from 'react-bootstrap';
 
 
-function CartItemList({ cartItems, updateCartItemQuantity }) {
+function CartItemList({ cartItems, updateCartItemQuantity, onDelete }) {
     return (
         <>
             <Row className="shadow rounded">
@@ -11,7 +11,8 @@ function CartItemList({ cartItems, updateCartItemQuantity }) {
                         <hr />
                         <CartItem
                             cartItem={cartItem}
-                            onQuantityChange={updateCartItemQuantity}>
+                            onQuantityChange={updateCartItemQuantity}
+                            onDelete={onDelete}>
                         </CartItem>
                     </Col>
                 ))}

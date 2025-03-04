@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import NewProductPage from "./pages/NewProductPage.jsx";
 import CartPage from "./pages/CartPage.jsx"
+import HomePage from "./pages/HomePage.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -14,6 +15,7 @@ function App() {
         <Router>
             <NavBar></NavBar>
             <Routes>
+                <Route path="/home" element={<HomePage />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
