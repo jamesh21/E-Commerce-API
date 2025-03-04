@@ -60,10 +60,10 @@ const getProductsFromDB = async () => {
     return { data: allProducts.rows, count: allProducts.rowCount }
 }
 
-const addProductToDB = async (productName, quantity, price, productSku) => {
+const addProductToDB = async (productName, quantity, price, productSku, imageUrl) => {
     try {
-        const newProduct = await pool.query('INSERT INTO products (product_name, stock, price, product_sku) VALUES ($1, $2, $3, $4) RETURNING *',
-            [productName, quantity, price, productSku])
+        const newProduct = await pool.query('INSERT INTO products (product_name, stock, price, product_sku, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [productName, quantity, price, productSku, imageUrl])
         if (newProduct.rowCount === 0) {
             throw new Error('Product could not be created, try again later')
         }
@@ -111,7 +111,7 @@ const deleteProductInDB = async (sku) => {
 
 // Cart Item Table query start here
 const getCartItemsFromDB = async (cartId) => {
-    const cartItems = await pool.query('SELECT ci.cart_item_id, p.product_id, p.product_sku, p.product_name, p.price, p.stock, ci.quantity FROM cart_items ci JOIN products p ON ci.product_id=p.product_id WHERE ci.cart_id=($1)', [cartId])
+    const cartItems = await pool.query('SELECT ci.cart_item_id, p.product_id, p.product_sku, p.product_name, p.price, p.stock, p.image_url, ci.quantity FROM cart_items ci JOIN products p ON ci.product_id=p.product_id WHERE ci.cart_id=($1)', [cartId])
 
     return { data: cartItems.rows, count: cartItems.rowCount }
 }

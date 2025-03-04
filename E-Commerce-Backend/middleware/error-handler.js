@@ -12,7 +12,7 @@ const errorHandler = (err, req, res, next) => {
     if (customError.statusCode === StatusCodes.INTERNAL_SERVER_ERROR) {
         console.error(err)
     }
-
+    console.error(err)
     res.status(customError.statusCode).json({ msg: customError.message });
 };
 
