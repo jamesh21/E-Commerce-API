@@ -3,6 +3,7 @@ require("dotenv").config();
 // library that wraps all async function in try catch block
 require("express-async-errors");
 const express = require('express')
+const cors = require('cors')
 const app = express()
 // routers
 const productRouter = require('./routes/product')
@@ -14,6 +15,7 @@ const authMiddleware = require('./middleware/authentication')
 
 const errorHandler = require('./middleware/error-handler')
 const notFoundHandler = require('./middleware/not-found')
+app.use(cors())
 app.use(express.json());
 
 app.use('/api/v1/auth', authRouter)

@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { useState } from "react";
+
 function NewProductForm() {
     const apiUrl = process.env.REACT_APP_API_URL
 
