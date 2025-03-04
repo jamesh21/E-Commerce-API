@@ -46,13 +46,12 @@ function CartPage() {
 
     return (
         <Container className="mt-5">
-            <Row>
+            <Row className="g-5">
                 <Col lg={9}>
                     <h2 className="mb-4">Cart</h2>
                     <CartItemList cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity}></CartItemList>
                 </Col>
                 <Col>
-                    <h2 className="mb-4" >Order Summary</h2>
                     <OrderSummary cartItems={cartItems} ></OrderSummary>
                 </Col>
             </Row>

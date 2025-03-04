@@ -5,7 +5,7 @@ import { Row, Col } from 'react-bootstrap';
 function CartItemList({ cartItems, updateCartItemQuantity }) {
     return (
         <>
-            <Row>
+            <Row className="shadow rounded">
                 {cartItems.map((cartItem) => (
                     <Col key={cartItem.cartItemId} sm={12} className="mb-4">
                         <hr />
