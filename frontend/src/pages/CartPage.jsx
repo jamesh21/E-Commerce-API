@@ -4,6 +4,7 @@ import OrderSummary from '../components/OrderSummary'
 import { useState, useEffect, useRef } from "react"
 import formatApiFields from '../utils/db-mapping'
 import axiosInstance from '../services/axios'
+import EmptyCart from '../components/EmptyCart'
 
 function CartPage() {
     const [cartItems, setCartItems] = useState([])
@@ -60,13 +61,17 @@ function CartPage() {
     return (
         <Container className="mt-5">
             <Row className="g-5">
-                <Col lg={9}>
-                    <h2 className="mb-4">Cart</h2>
-                    <CartItemList cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity} onDelete={onDelete}></CartItemList>
-                </Col>
-                <Col>
-                    <OrderSummary cartItems={cartItems} ></OrderSummary>
-                </Col>
+                {cartItems.length === 0 ? <EmptyCart></EmptyCart> :
+                    (<>
+                        <Col lg={9}>
+                            <h2 className="mb-4">Cart</h2>
+                            <CartItemList cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity} onDelete={onDelete}></CartItemList>
+                        </Col>
+                        <Col>
+                            <OrderSummary cartItems={cartItems} ></OrderSummary>
+                        </Col>
+                    </>)
+                }
             </Row>
         </Container>)
 }

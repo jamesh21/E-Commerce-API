@@ -7,21 +7,22 @@ import Container from 'react-bootstrap/Container';
 import axiosInstance from '../services/axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from '../context/AuthContext'
 function LoginPage() {
     const navigate = useNavigate()
     const [loginData, setLoginData] = useState({
         email: "",
         password: ""
     })
-    const login = async (e) => {
+    const { login } = useAuth() //import login function from context
+
+    const handleLogin = async (e) => {
         e.preventDefault()
         try {
             const response = await axiosInstance.post("/auth/login", loginData)
-
-            const responseData = await response.data
-            localStorage.setItem("token", responseData.token)
-            console.log(responseData)
+            // login using auth context
+            login(response.data.user.name, response.data.token)
+            // reroute to products
             navigate('/products')
 
         } catch (err) {
@@ -37,7 +38,7 @@ function LoginPage() {
     }
     return (<>
         <Container>
-            <Form onSubmit={login}>
+            <Form onSubmit={handleLogin}>
                 <Row>
                     <Col>
                         <Form.Group>
