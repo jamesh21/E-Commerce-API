@@ -12,28 +12,27 @@ const { USER_FIELD_MAP } = require('../constants/field-mappings')
  * @param {*} res 
  */
 const register = async (req, res) => {
-    const { email, name, admin, password } = req.body
-    if (!email || !name || !password || admin == null) {
-        throw new BadRequestError('Email, name, admin or password was not provided')
+    const { email, name, password } = req.body
+    if (!email || !name || !password == null) {
+        throw new BadRequestError('Email, name or password was not provided')
     }
     const salt = await bcrypt.genSalt(10);
     // hash password
     const hashedPassword = await bcrypt.hash(password, salt)
 
     // add fields to db
-    const user = await addUserToDB(email, hashedPassword, name, admin)
+    const user = await addUserToDB(email, hashedPassword, name)
     const userData = transformToAPIFields(user, USER_FIELD_MAP)
     const cartId = await getOrCreateCart(userData.userId)
     // create bearer token and return
-    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
+    const token = createJWT(userData.email, userData.name, false, userData.userId, cartId)
     return res.status(StatusCodes.CREATED).json(
         {
             user:
             {
                 name: userData.name,
                 email: userData.email,
-                userId: userData.userId,
-                admin: userData.admin
+                userId: userData.userId
             },
             token
         })

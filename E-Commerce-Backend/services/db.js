@@ -1,11 +1,21 @@
 const pool = require('../db'); // Import the database connection
 const { ConflictError, NotFoundError, BadRequestError } = require('../errors')
 
+const getUserInfoFromDb = async (userId) => {
+    // console.log('this is the email ', email)
+    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
+    if (user.rowCount === 0) {
+        throw new NotFoundError('User was not found')
+    }
+
+    return user.rows[0]
+}
+
 // User Table query start here
-const addUserToDB = async (email, hashedPassword, name, admin) => {
+const addUserToDB = async (email, hashedPassword, name) => {
     try {
         const user = await pool.query('INSERT INTO users (email_address, password_hash, full_name, is_admin) VALUES ($1, $2, $3, $4) RETURNING *',
-            [email, hashedPassword, name, admin]
+            [email, hashedPassword, name, false]
         )
         if (user.rows.length === 0) {
             throw new Error('User could not be created, try again later')
@@ -190,7 +200,7 @@ const createOrder = async (cartId, userId) => {
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
-            await updateProductInDB(cartItem.product_sku, { quantity: cartItem.stock - cartItem.quantity })
+            await updateProductInDB(cartItem.product_sku, { stock: cartItem.stock - cartItem.quantity })
         }
         await client.query('COMMIT')
 
@@ -204,7 +214,7 @@ const createOrder = async (cartId, userId) => {
 }
 
 module.exports = {
-    getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
+    getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
     addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB,
     addOrderLineItemToDB, createOrder

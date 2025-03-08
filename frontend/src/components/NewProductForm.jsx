@@ -2,7 +2,9 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
+
 
 function NewProductForm() {
     const apiUrl = process.env.REACT_APP_API_URL
@@ -29,7 +31,7 @@ function NewProductForm() {
             price: Number(formData.price),
             quantity: Number(formData.quantity)
         }
-        console.log(productData)
+
         try {
             const response = await fetch(`${apiUrl}/product"`, {
                 method: "POST",
@@ -63,74 +65,79 @@ function NewProductForm() {
 
     return (
         <>
-            <Form onSubmit={handleSubmit} >
+            <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Product Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Product Name"
-                                name="productName"
-                                value={formData.productName}
-                                onChange={handleChange}
-                                required
-                            />
+                            <FloatingLabel label="Product Name">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Product Name"
+                                    name="productName"
+                                    value={formData.productName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FloatingLabel>
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Product Sku</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Product Sku"
-                                name="productSku"
-                                value={formData.productSku}
-                                onChange={handleChange}
-                                required
-                            />
+                            <FloatingLabel label="Product Sku">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Product Sku"
+                                    name="productSku"
+                                    value={formData.productSku}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FloatingLabel>
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Price</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Price"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                required
-                            />
+                            <FloatingLabel label="Price">
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Price"
+                                    name="price"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FloatingLabel>
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Quantity</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Quantity"
-                                name="quantity"
-                                value={formData.quantity}
-                                onChange={handleChange}
-                                required
-                            />
+                            <FloatingLabel label="Quantity">
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Quantity"
+                                    name="quantity"
+                                    value={formData.quantity}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FloatingLabel>
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
                         <Form.Group className="mb-3">
-                            <Form.Label>Image URL</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Image URL"
-                                name="imageUrl"
-                                value={formData.imageUrl}
-                                onChange={handleChange}
-                            />
+                            <FloatingLabel label="Image URL">
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Image URL"
+                                    name="imageUrl"
+                                    value={formData.imageUrl}
+                                    onChange={handleChange}
+                                />
+                            </FloatingLabel>
                         </Form.Group>
                     </Col>
                 </Row>
