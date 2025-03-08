@@ -27,6 +27,7 @@ function CartPage() {
             setCartItems(previousCartItems.current)
         }
     }
+
     const onDelete = async (cartItemId) => {
         try {
             previousCartItems.current = cartItems
@@ -42,6 +43,18 @@ function CartPage() {
             console.error("Error ", err)
         }
     }
+
+    const onCheckout = async () => {
+        try {
+            const response = await axiosInstance.post('/checkout')
+            if (response.data.url) {
+                window.location.href = response.data.url
+            }
+        } catch (err) {
+            console.error('Error ', err)
+        }
+    }
+
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
@@ -68,7 +81,7 @@ function CartPage() {
                             <CartItemList cartItems={cartItems} updateCartItemQuantity={updateCartItemQuantity} onDelete={onDelete}></CartItemList>
                         </Col>
                         <Col>
-                            <OrderSummary cartItems={cartItems} ></OrderSummary>
+                            <OrderSummary cartItems={cartItems} onCheckout={onCheckout}></OrderSummary>
                         </Col>
                     </>)
                 }

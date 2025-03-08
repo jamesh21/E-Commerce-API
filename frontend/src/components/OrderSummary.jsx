@@ -2,7 +2,7 @@
 import Button from 'react-bootstrap/Button';
 import displayCurrency from '../utils/helper';
 
-function OrderSummary({ cartItems }) {
+function OrderSummary({ cartItems, onCheckout }) {
     const calculateCartItemTotal = () => {
         const total = cartItems.reduce((accu, currentItem) => accu + (currentItem.quantity * currentItem.price), 0)
         return displayCurrency(total)
@@ -21,7 +21,7 @@ function OrderSummary({ cartItems }) {
             </div>
 
             <div className="text-center">
-                <Button style={{ width: '90%' }} size="lg" variant="success">Check out</Button>
+                <Button style={{ width: '90%' }} onClick={onCheckout} size="lg" variant="success">Check out</Button>
             </div>
         </div>
     )

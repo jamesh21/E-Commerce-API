@@ -7,6 +7,7 @@ import NewProductPage from "./pages/NewProductPage.jsx";
 import CartPage from "./pages/CartPage.jsx"
 import HomePage from "./pages/HomePage.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -19,7 +20,13 @@ function App() {
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/new-product" element={<NewProductPage />} />
+                <Route path="/new-product" element=
+                    {
+                        // <ProtectedAdminRoute>
+                        <NewProductPage />
+
+                    }
+                />
                 <Route path="/cart" element=
                     {
                         <ProtectedRoute>
@@ -29,7 +36,6 @@ function App() {
                 />
             </Routes>
         </Router>
-
     );
 }
 

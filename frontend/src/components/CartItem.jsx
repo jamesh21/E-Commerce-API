@@ -30,7 +30,7 @@ function CartItem({ cartItem, onQuantityChange, onDelete }) {
                 {cartItem.quantity > 1 && <div>each ${cartItem.price}</div>}
             </Col>
             <Col className="d-flex justify-content-end">
-                <CloseButton className="" onClick={handleClose}></CloseButton>
+                <CloseButton onClick={handleClose}></CloseButton>
             </Col>
         </Row>)
 }

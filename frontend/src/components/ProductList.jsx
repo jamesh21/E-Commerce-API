@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Row, Col, Container } from 'react-bootstrap'
 import formatApiFields from '../utils/db-mapping'
 import axiosInstance from "../services/axios";
-
+import { Toast, ToastContainer, CloseButton } from 'react-bootstrap/';
 function ProductList() {
     const [products, setProducts] = useState([])
+    const [showToast, setShowToast] = useState(false)
+    const toggleShowToast = () => setShowToast(!showToast)
 
     useEffect(() => {
         const fetchedProducts = async () => {
@@ -24,6 +26,8 @@ function ProductList() {
         try {
             const response = await axiosInstance.post('/cart/item', { productId, quantity })
             const responseData = await response.data
+            setShowToast(true)
+            setTimeout(() => setShowToast(false), 3000);
         } catch (err) {
             console.error('error ', err)
         }
@@ -32,6 +36,19 @@ function ProductList() {
 
     return (
         <Container>
+            <ToastContainer position="top-center" className="p-3">
+                <Toast bg="success" show={showToast} onClose={toggleShowToast}>
+                    {/* <Toast.Header>Product added to cart</Toast.Header> */}
+                    <Toast.Body className="d-flex justify-content-between white-text">
+                        <span>
+                            <i className="bi bi-bag-check-fill mx-3"></i>
+                            Product added to cart
+                        </span>
+
+                        <CloseButton variant="white" onClick={toggleShowToast}></CloseButton>
+                    </Toast.Body>
+                </Toast>
+            </ToastContainer>
             <Row>
                 {products.map((product) => (
                     <Col key={product.productId} lg={3} className="mb-4">

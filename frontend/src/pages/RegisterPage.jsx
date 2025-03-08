@@ -1,4 +1,4 @@
-import { Button, Row, Col, Form, Container } from 'react-bootstrap'
+import { Button, Row, Col, Form, Container, FloatingLabel } from 'react-bootstrap'
 import { useState } from 'react'
 import axiosInstance from '../services/axios'
 import { useNavigate } from "react-router-dom";
@@ -29,56 +29,61 @@ function RegisterPage() {
     return (
         <>
             <Container>
-                <Form onSubmit={registerUser}>
+                <Form className="form-width shadow-lg rounded p-5" onSubmit={registerUser}>
                     <Row>
                         <Col>
-                            <Form.Group>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="name"
-                                    value={registerData.name}
-                                    onChange={handleChanges}
-                                    required
-                                >
-                                </Form.Control>
-
+                            <Form.Group className="mb-3">
+                                <FloatingLabel label="Full name">
+                                    <Form.Control
+                                        type="text"
+                                        name="name"
+                                        value={registerData.name}
+                                        onChange={handleChanges}
+                                        placeholder='full name'
+                                        required
+                                    >
+                                    </Form.Control>
+                                </FloatingLabel>
                             </Form.Group>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <Form.Group>
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="email"
-                                    value={registerData.email}
-                                    onChange={handleChanges}
-                                    required
-                                >
-                                </Form.Control>
+                            <Form.Group className="mb-3">
+                                <FloatingLabel label="Email address">
+                                    <Form.Control
+                                        type="text"
+                                        name="email"
+                                        value={registerData.email}
+                                        onChange={handleChanges}
+                                        placeholder='email address'
+                                        required
+                                    >
+                                    </Form.Control>
+                                </FloatingLabel>
                             </Form.Group>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <Form.Group>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    value={registerData.password}
-                                    onChange={handleChanges}
-                                    required
-                                >
-                                </Form.Control>
+                            <Form.Group className="mb-3">
+                                <FloatingLabel label="Password">
+                                    <Form.Control
+                                        type="password"
+                                        name="password"
+                                        value={registerData.password}
+                                        onChange={handleChanges}
+                                        required
+                                        placeholder='password'
+                                    >
+                                    </Form.Control>
+                                </FloatingLabel>
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="my-2 text-center">
                         <Col>
-                            <Button variant="primary" type="submit">Register</Button>
+                            <Button className="large-width-button" size='md' variant="primary" type="submit">Register</Button>
                         </Col>
                     </Row>
                 </Form>

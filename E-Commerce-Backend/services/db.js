@@ -7,6 +7,7 @@ const getUserInfoFromDb = async (userId) => {
     if (user.rowCount === 0) {
         throw new NotFoundError('User was not found')
     }
+
     return user.rows[0]
 }
 
@@ -199,7 +200,7 @@ const createOrder = async (cartId, userId) => {
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
-            await updateProductInDB(cartItem.product_sku, { quantity: cartItem.stock - cartItem.quantity })
+            await updateProductInDB(cartItem.product_sku, { stock: cartItem.stock - cartItem.quantity })
         }
         await client.query('COMMIT')
 
