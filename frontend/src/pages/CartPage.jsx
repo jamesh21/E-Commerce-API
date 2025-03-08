@@ -1,4 +1,6 @@
-import { Row, Col, Container } from 'react-bootstrap'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import CartItemList from '../components/CartItemList'
 import OrderSummary from '../components/OrderSummary'
 import { useState, useEffect, useRef } from "react"

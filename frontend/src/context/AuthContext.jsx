@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
         }
         getUserInfo()
     }, [token])
+
     // Function to log in user
     const login = (userData, authToken) => {
         setUser(userData);
@@ -31,10 +32,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Function to log out user
-    const logout = () => {
+    const logout = (navigate) => {
         setUser(null);
         setToken(null);
         localStorage.removeItem("token"); // Remove token
+        navigate('/login')
+
     };
 
     return (

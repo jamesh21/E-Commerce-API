@@ -1,8 +1,13 @@
-import { Image, Row, Col, Dropdown, DropdownButton, CloseButton } from 'react-bootstrap'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import CloseButton from 'react-bootstrap/CloseButton';
 import displayCurrency from '../utils/helper'
+
 function CartItem({ cartItem, onQuantityChange, onDelete }) {
     const qtyDropDown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
     const handleQuantityChange = (eventKey) => {
         onQuantityChange(cartItem.cartItemId, Number(eventKey))
     }

@@ -1,16 +1,21 @@
-import { Button, Container } from 'react-bootstrap/';
+import Container from 'react-bootstrap/container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'
 
+
 function NavBar() {
+    const navigate = useNavigate();
     const { user, logout } = useAuth()
+    const handleLogout = () => {
+        logout(navigate)
+    }
     return (
         <>
             <Navbar bg="dark" data-bs-theme="dark" className="">
                 <Container>
-                    <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+                    <Navbar.Brand as={NavLink} to="/"><i className="bi bi-box-seam"></i></Navbar.Brand>
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/">Home</Nav.Link>
                         <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
@@ -21,14 +26,14 @@ function NavBar() {
                             (
                                 <>
                                     {/* <span className="white-text">Welcome {user.full_name}</span> */}
-                                    <Nav.Link onClick={logout} style={{ cursor: "pointer" }}>
+                                    <Nav.Link onClick={handleLogout} style={{ cursor: "pointer" }}>
                                         Logout
                                     </Nav.Link>
                                 </>
                             ) : // Need to change variable format 
                             <Nav.Link as={NavLink} to="/login">Login</Nav.Link>}
 
-                        <Nav.Link as={NavLink} to="/cart">Cart</Nav.Link>
+                        <Nav.Link as={NavLink} to="/cart"><i className="bi bi-cart mx-3"></i></Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>

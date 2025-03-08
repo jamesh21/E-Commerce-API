@@ -2,8 +2,9 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
-import { FloatingLabel } from 'react-bootstrap';
+
 
 function NewProductForm() {
     const apiUrl = process.env.REACT_APP_API_URL

@@ -1,9 +1,14 @@
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import CloseButton from 'react-bootstrap/CloseButton';
 import ProductCard from "./ProductCard";
 import { useEffect, useState } from "react";
-import { Row, Col, Container } from 'react-bootstrap'
 import formatApiFields from '../utils/db-mapping'
 import axiosInstance from "../services/axios";
-import { Toast, ToastContainer, CloseButton } from 'react-bootstrap/';
+
 function ProductList() {
     const [products, setProducts] = useState([])
     const [showToast, setShowToast] = useState(false)
@@ -31,7 +36,6 @@ function ProductList() {
         } catch (err) {
             console.error('error ', err)
         }
-        console.log('adding product ', productId)
     }
 
     return (
