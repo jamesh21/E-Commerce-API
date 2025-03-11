@@ -7,7 +7,7 @@ function CartItemList({ cartItems, updateCartItemQuantity, onDelete }) {
         <>
             <Row className="shadow rounded">
                 {cartItems.map((cartItem) => (
-                    <Col key={cartItem.cartItemId} sm={12} className="mb-4">
+                    <Col key={cartItem.cartItemId} sm={12}>
                         <hr />
                         <CartItem
                             cartItem={cartItem}

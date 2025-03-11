@@ -33,7 +33,7 @@ function NewProductForm() {
         }
 
         try {
-            const response = await fetch(`${apiUrl}/product"`, {
+            const response = await fetch(`${apiUrl}/product`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
