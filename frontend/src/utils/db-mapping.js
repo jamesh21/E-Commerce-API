@@ -5,7 +5,10 @@ const apiToJSMapping = {
     product_id: "productId",
     product_name: "productName",
     product_sku: "productSku",
-    image_url: "imageUrl"
+    image_url: "imageUrl",
+    email_address: "emailAddress",
+    full_name: "fullName",
+    is_admin: "isAdmin"
 }
 
 const formatApiFields = (apiData) => {

@@ -2,7 +2,6 @@ const pool = require('../db'); // Import the database connection
 const { ConflictError, NotFoundError, BadRequestError } = require('../errors')
 
 const getUserInfoFromDb = async (userId) => {
-    // console.log('this is the email ', email)
     const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
     if (user.rowCount === 0) {
         throw new NotFoundError('User was not found')

@@ -34,7 +34,7 @@ const getProducts = async (req, res) => {
  */
 const addProduct = async (req, res) => {
     const { productName, quantity, price, productSku, imageUrl } = req.body
-    console.log(req.body)
+
     // Checks if required fields are filled in
     if (productName === '' || price === '' || productSku === '') {
         throw new BadRequestError('product name, price or product sku was left blank')

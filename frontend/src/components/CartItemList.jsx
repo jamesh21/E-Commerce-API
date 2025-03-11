@@ -16,6 +16,7 @@ function CartItemList({ cartItems, updateCartItemQuantity, onDelete }) {
                         </CartItem>
                     </Col>
                 ))}
+                <div className="mb-4"></div>
             </Row>
         </>
     )

@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
-
+import axiosInstance from "../services/axios";
 
 function NewProductForm() {
     const apiUrl = process.env.REACT_APP_API_URL
@@ -33,25 +33,11 @@ function NewProductForm() {
         }
 
         try {
-            const response = await fetch(`${apiUrl}/product`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(productData),
-            });
+            const response = await axiosInstance.post('/product', productData)
 
-            if (!response.ok) {
-                console.log(response)
-                throw new Error("Failed to create product");
-            }
-
-            const newProduct = await response.json();
-            console.log("Product Created:", newProduct);
+            const newProduct = response.data
 
             clearFields()
-
-
         } catch (error) {
             console.error("Error:", error);
         }

@@ -17,7 +17,6 @@ function CartPage() {
             // store previous cart items in case we need to revert due to errors
             previousCartItems.current = cartItems
             // Update new quantity of cart item id passed in.
-            console.log('before setting ', cartItems)
             setCartItems((prevItems) =>
                 prevItems.map((item) => item.cartItemId === cartItemId ? { ...item, quantity: newQuantity } : item)
             )

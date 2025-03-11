@@ -22,8 +22,9 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/new-product" element=
                     {
-                        // <ProtectedAdminRoute>
-                        <NewProductPage />
+                        <ProtectedAdminRoute>
+                            <NewProductPage />
+                        </ProtectedAdminRoute>
 
                     }
                 />

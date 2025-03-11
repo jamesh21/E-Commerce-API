@@ -25,7 +25,7 @@ const register = async (req, res) => {
     const userData = transformToAPIFields(user, USER_FIELD_MAP)
     const cartId = await getOrCreateCart(userData.userId)
     // create bearer token and return
-    const token = createJWT(userData.email, userData.name, false, userData.userId, cartId)
+    const token = createJWT(userData.email, userData.name, userData.userId, cartId)
     return res.status(StatusCodes.CREATED).json(
         {
             user:
@@ -59,7 +59,7 @@ const login = async (req, res) => {
         throw new UnauthenticatedError('Incorrect Password')
     }
     const cartId = await getOrCreateCart(userData.userId)
-    const token = createJWT(userData.email, userData.name, userData.admin, userData.userId, cartId)
+    const token = createJWT(userData.email, userData.name, userData.userId, cartId)
     return res.status(StatusCodes.OK).json(
         {
             user:
@@ -81,10 +81,10 @@ const login = async (req, res) => {
  * @param {*} id 
  * @returns 
  */
-const createJWT = (email, name, admin, id, cartId) => {
+const createJWT = (email, name, id, cartId) => {
     const token = jwt.sign(
         {
-            email, name, admin, id, cartId
+            email, name, id, cartId
         }, process.env.JWT_SECRET,
         {
             expiresIn: process.env.JWT_LIFETIME
