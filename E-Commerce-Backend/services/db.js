@@ -160,7 +160,10 @@ const removeCartItemFromDB = async (cartItemId, cartId) => {
 }
 
 const clearCartItemForUserInDB = async (cartId) => {
-    await pool.query('DELETE FROM cart_items WHERE cart_id = ($1)', [cartId])
+    const deletedCart = await pool.query('DELETE FROM cart_items WHERE cart_id = ($1)', [cartId])
+    if (deletedCart.rowCount === 0) {
+        throw new NotFoundError(`Could not find cart id ${cartId}`)
+    }
     return { msg: 'Cart has been cleared' }
 }
 

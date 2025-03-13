@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import NewProductPage from "./pages/NewProductPage.jsx";
 import CartPage from "./pages/CartPage.jsx"
 import HomePage from "./pages/HomePage.jsx"
+import SuccessPage from "./pages/SuccessPage.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -35,6 +36,7 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route path="/success" element={<SuccessPage />} />
             </Routes>
         </Router>
     );
