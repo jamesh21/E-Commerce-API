@@ -36,7 +36,6 @@ function ProductCard({ product, handleAddToCart }) {
                         }
                     </Button>
                 </div>
-
             </Card.Body>
         </Card>
     )

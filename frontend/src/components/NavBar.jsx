@@ -19,13 +19,13 @@ function NavBar() {
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/">Home</Nav.Link>
                         <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
-                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/new-product">Add Product</Nav.Link>}
+                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/new-product">Manage Products</Nav.Link>}
+                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/new-product">Manage Users</Nav.Link>}
                     </Nav>
                     <Nav>
                         {user ?
                             (
                                 <>
-                                    {/* <span className="white-text">Welcome {user.full_name}</span> */}
                                     <Nav.Link onClick={handleLogout} style={{ cursor: "pointer" }}>
                                         Logout
                                     </Nav.Link>

@@ -45,7 +45,8 @@ CREATE TABLE orders (
     user_id INT REFERENCES users(user_id),
     total_price NUMERIC(10,2) NOT NULL,
     order_status status_enum DEFAULT 'pending' NOT NULL,
-    stripe_payment_id VARCHAR(255) UNIQUE,
+    stripe_session_id VARCHAR(255) UNIQUE,
+    stripe_payment_intent_id VARCHAR(255) NULL UNIQUE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 

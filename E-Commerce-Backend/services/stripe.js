@@ -1,6 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
-const makePaymentWithStripe = async (cartItems) => {
+const makePaymentWithStripe = async (cartItems, orderId) => {
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: cartItems.map(item => ({
@@ -14,9 +14,10 @@ const makePaymentWithStripe = async (cartItems) => {
         mode: "payment",
         success_url: "https://yourfrontend.com/success",
         cancel_url: "https://yourfrontend.com/cancel",
+        metadata: { orderId }, // Store order ID in metadata
     });
 
-    return session.url
+    return { url: session.url, stripeSessionId: session.id }
 }
 
 module.exports = { makePaymentWithStripe }

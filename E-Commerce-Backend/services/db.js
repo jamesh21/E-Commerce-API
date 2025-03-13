@@ -203,7 +203,7 @@ const createOrder = async (cartId, userId) => {
         }
         await client.query('COMMIT')
 
-        return cartItems
+        return { orderId, cartItems }
     } catch (err) {
         await client.query('ROLLBACK')
         throw err
@@ -212,9 +212,34 @@ const createOrder = async (cartId, userId) => {
     }
 }
 
+const updateOrderInDB = async (orderId, fieldsToUpdate) => {
+    const setStatements = [], values = []
+    let i = 1
+    // building array of fields to update, since it could be a partial update
+    for (const [field, value] of Object.entries(fieldsToUpdate)) {
+        setStatements.push(`${field} = $${i}`)
+        values.push(value)
+        i++
+    }
+    values.push(orderId)
+    const query = `UPDATE orders SET ${setStatements.join(',')} WHERE order_id = $${i} RETURNING *`
+    try {
+        const updatedOrder = await pool.query(query, values)
+        if (updatedOrder.rowCount === 0) {
+            throw new Error('Could not updated order, try again later')
+        }
+        return updatedOrder.rows[0]
+    } catch (err) {
+        // duplicate entry
+        if (err.code === '23505') {
+            throw new ConflictError('Product Sku has to be unique')
+        }
+        throw err
+    }
+}
 module.exports = {
     getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
     addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB,
-    addOrderLineItemToDB, createOrder
+    addOrderLineItemToDB, createOrder, updateOrderInDB
 }
