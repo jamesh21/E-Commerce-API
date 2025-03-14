@@ -9,7 +9,7 @@ import axiosInstance from '../services/axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext'
-
+import formatApiFields from '../utils/db-mapping'
 
 function LoginPage() {
     const navigate = useNavigate()
@@ -24,7 +24,7 @@ function LoginPage() {
         try {
             const response = await axiosInstance.post("/auth/login", loginData)
             // login using auth context
-            login(response.data.user.name, response.data.token)
+            login(formatApiFields([response.data.user])[0], response.data.token)
             // reroute to products
             navigate('/products')
 

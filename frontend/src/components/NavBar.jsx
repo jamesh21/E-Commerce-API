@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext'
 function NavBar() {
     const navigate = useNavigate();
     const { user, logout } = useAuth()
+
     const handleLogout = () => {
         logout(navigate)
     }

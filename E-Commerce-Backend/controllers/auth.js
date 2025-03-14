@@ -64,10 +64,10 @@ const login = async (req, res) => {
         {
             user:
             {
-                name: userData.name,
-                email: userData.email,
+                full_name: userData.name,
+                email_address: userData.email,
                 userId: userData.userId,
-                admin: userData.admin
+                is_admin: userData.admin
             },
             token
         })
