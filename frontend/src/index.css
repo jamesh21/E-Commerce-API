@@ -33,8 +33,10 @@
 }
 
 .product-card {
-    min-height: 25rem;
+    /* min-height: 25rem; */
+    /* min-height: 350px; */
 
+    /* Makes all cards equal height */
     .product-card-body {
         padding: 0px
     }
@@ -59,4 +61,12 @@
         /* height: 300px; */
         object-fit: cover;
     }
+}
+
+.cart-badge {
+    font-size: 0.75rem;
+    padding: 0.3em 0.5em;
+    position: absolute;
+    top: -5px;
+    right: -2px;
 }

@@ -6,20 +6,21 @@ import ToastContainer from 'react-bootstrap/ToastContainer';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductCard from "./ProductCard";
 import { useEffect, useState } from "react";
-import formatApiFields from '../utils/db-mapping'
-import axiosInstance from "../services/axios";
 
+import axiosInstance from "../services/axios";
+import { useCart } from '../context/CartContext'
 function ProductList() {
     const [products, setProducts] = useState([])
     const [showToast, setShowToast] = useState(false)
     const toggleShowToast = () => setShowToast(!showToast)
+    const { addToCart } = useCart()
 
     useEffect(() => {
         const fetchedProducts = async () => {
             try {
                 const response = await axiosInstance.get('/product')
-                const responseData = await response.data
-                setProducts(formatApiFields(responseData.data))
+                const responseData = response.data
+                setProducts(responseData.data)
             } catch (err) {
                 console.error(err)
             }
@@ -27,22 +28,18 @@ function ProductList() {
         fetchedProducts()
     }, [])
 
-    const handleAddToCart = async (productId, quantity) => {
-        try {
-            const response = await axiosInstance.post('/cart/item', { productId, quantity })
-            const responseData = await response.data
-            setShowToast(true)
-            setTimeout(() => setShowToast(false), 3000);
-        } catch (err) {
-            console.error('error ', err)
-        }
+    const handleAddToCart = (product) => {
+        addToCart(product)
+        setShowToast(true)
+        setTimeout(() => setShowToast(false), 3000);
+
     }
 
     return (
         <Container>
             <ToastContainer position="top-center" className="p-3">
                 <Toast bg="success" show={showToast} onClose={toggleShowToast}>
-                    {/* <Toast.Header>Product added to cart</Toast.Header> */}
+
                     <Toast.Body className="d-flex justify-content-between white-text">
                         <span>
                             <i className="bi bi-bag-check-fill mx-3"></i>

@@ -1,15 +1,25 @@
-const PRODUCT_FIELD_MAP = {
-    productName: 'product_name',
-    imageURL: 'image_url',
-    productSku: 'product_sku'
+const DB_TO_API_MAPPING = {
+    cart_item_id: "cartItemId",
+    cart_id: "cartId",
+    product_id: "productId",
+    product_name: "productName",
+    product_sku: "productSku",
+    image_url: "imageUrl",
+    email_address: "email",
+    full_name: "name",
+    is_admin: "isAdmin",
+    user_id: "userId",
+    password_hash: "password"
 }
 
-const USER_FIELD_MAP = {
+const API_TO_DB_MAPPING = {
+    productName: 'product_name',
+    imageURL: 'image_url',
+    productSku: 'product_sku',
     userId: 'user_id',
     email: 'email_address',
     name: 'full_name',
-    admin: 'is_admin',
+    isAdmin: 'is_admin',
     password: 'password_hash'
 }
-
-module.exports = { PRODUCT_FIELD_MAP, USER_FIELD_MAP }
+module.exports = { DB_TO_API_MAPPING, API_TO_DB_MAPPING }

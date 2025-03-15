@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnauthenticatedError } = require('../errors')
-const { transformToAPIFields } = require('../utils/field-mapper')
-const { USER_FIELD_MAP } = require('../constants/field-mappings')
 
 /**
  * Registers a new user into users table. Returns bearer token and user data
@@ -22,8 +20,8 @@ const register = async (req, res) => {
 
     // add fields to db
     const user = await addUserToDB(email, hashedPassword, name)
-    const userData = transformToAPIFields(user, USER_FIELD_MAP)
-    const cartId = await getOrCreateCart(userData.userId)
+
+    const cartId = await getOrCreateCart(user.userId)
     // create bearer token and return
     const token = createJWT(userData.email, userData.name, userData.userId, cartId)
     return res.status(StatusCodes.CREATED).json(
@@ -51,23 +49,22 @@ const login = async (req, res) => {
     }
     const user = await getUserFromDB(email)
 
-    // convert returned user fields to api format
-    const userData = transformToAPIFields(user, USER_FIELD_MAP)
     // compare if password matches
-    const passwordMatch = await comparePassword(password, userData.password)
+    const passwordMatch = await comparePassword(password, user.password)
     if (!passwordMatch) {
         throw new UnauthenticatedError('Incorrect Password')
     }
-    const cartId = await getOrCreateCart(userData.userId)
-    const token = createJWT(userData.email, userData.name, userData.userId, cartId)
+    const cartId = await getOrCreateCart(user.userId)
+    const token = createJWT(user.email, user.name, user.userId, cartId)
+
     return res.status(StatusCodes.OK).json(
         {
             user:
             {
-                full_name: userData.name,
-                email_address: userData.email,
-                userId: userData.userId,
-                is_admin: userData.admin
+                name: user.name,
+                email_address: user.email,
+                userId: user.userId,
+                isAdmin: user.isAdmin
             },
             token
         })
@@ -77,7 +74,6 @@ const login = async (req, res) => {
  * Helper function for creating a new token given user information.
  * @param {*} email 
  * @param {*} name 
- * @param {*} admin 
  * @param {*} id 
  * @returns 
  */

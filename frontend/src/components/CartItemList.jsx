@@ -1,18 +1,18 @@
 import CartItem from './CartItem'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-function CartItemList({ cartItems, updateCartItemQuantity, onDelete }) {
+import { useCart } from '../context/CartContext'
+function CartItemList() {
+    const { cartItems } = useCart()
     return (
         <>
             <Row className="shadow rounded">
                 {cartItems.map((cartItem) => (
-                    <Col key={cartItem.cartItemId} sm={12}>
+                    <Col key={cartItem.productId} sm={12}>
                         <hr />
+                        <h3>{cartItem.productId}</h3>
                         <CartItem
-                            cartItem={cartItem}
-                            onQuantityChange={updateCartItemQuantity}
-                            onDelete={onDelete}>
+                            cartItem={cartItem}>
                         </CartItem>
                     </Col>
                 ))}

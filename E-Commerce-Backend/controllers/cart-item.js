@@ -10,7 +10,7 @@ const { getCartItemsFromDB, addCartItemToDB, updateCartItemQuantityInDB, removeC
 const getCartItems = async (req, res) => {
     const { cartId } = req.user
     const cartItems = await getCartItemsFromDB(cartId)
-    console.log('cart items ', cartItems)
+
     res.status(StatusCodes.OK).json(cartItems)
 }
 

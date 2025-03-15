@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import axiosInstance from '../services/axios'
-import formatApiFields from '../utils/db-mapping'
+// import formatApiFields from '../utils/db-mapping'
 // Create AuthContext
 const AuthContext = createContext();
 
@@ -15,7 +15,9 @@ export const AuthProvider = ({ children }) => {
             if (token && !user) {
                 try {
                     const response = await axiosInstance.get('/user')
-                    setUser(formatApiFields([response.data])[0])
+
+
+                    setUser(response.data)
                 } catch (err) {
                     console.error('Error: ', err)
                 }

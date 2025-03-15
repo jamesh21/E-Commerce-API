@@ -5,14 +5,15 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import CloseButton from 'react-bootstrap/CloseButton';
 import displayCurrency from '../utils/helper'
-
-function CartItem({ cartItem, onQuantityChange, onDelete }) {
+import { useCart } from '../context/CartContext'
+function CartItem({ cartItem }) {
+    const { updateCartItemQuantity, deleteFromCart } = useCart()
     const qtyDropDown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const handleQuantityChange = (eventKey) => {
-        onQuantityChange(cartItem.cartItemId, Number(eventKey))
+        updateCartItemQuantity(cartItem.cartItemId, Number(eventKey))
     }
     const handleClose = () => {
-        onDelete(cartItem.cartItemId)
+        deleteFromCart(cartItem.cartItemId)
     }
 
     return (

@@ -1,13 +1,16 @@
 const pool = require('../db'); // Import the database connection
 const { ConflictError, NotFoundError, BadRequestError } = require('../errors')
 
+const { transformFields } = require('../utils/field-mapper')
+const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
+
 const getUserInfoFromDb = async (userId) => {
     const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
     if (user.rowCount === 0) {
         throw new NotFoundError('User was not found')
     }
 
-    return user.rows[0]
+    return transformFields(user.rows[0], DB_TO_API_MAPPING)
 }
 
 // User Table query start here
@@ -19,7 +22,8 @@ const addUserToDB = async (email, hashedPassword, name) => {
         if (user.rows.length === 0) {
             throw new Error('User could not be created, try again later')
         }
-        return user.rows[0]
+
+        return transformFields(user.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
         // duplicate entry
         if (err.code === '23505') {
@@ -34,7 +38,7 @@ const getUserFromDB = async (email) => {
     if (user.rowCount === 0) {
         throw new NotFoundError('User was not found')
     }
-    return user.rows[0]
+    return transformFields(user.rows[0], DB_TO_API_MAPPING)
 }
 
 // Cart Table query start here
@@ -43,13 +47,13 @@ const addCartToDB = async (userId) => {
     if (newCart.rowCount === 0) {
         throw new Error('Cart could not be created, try again later')
     }
-    return newCart.rows[0]
+    return transformFields(newCart.rows[0], DB_TO_API_MAPPING)
 }
 
 const getCartFromDB = async (userId) => {
     const cart = await pool.query('SELECT cart_id FROM carts WHERE user_id = ($1)', [userId])
     if (cart.rowCount > 0) {
-        return cart.rows[0]
+        return transformFields(cart.rows[0], DB_TO_API_MAPPING)
     }
 }
 
@@ -60,13 +64,22 @@ const getProductFromDB = async (sku) => {
     if (product.rowCount === 0) {
         throw new NotFoundError('Product sku was not found')
     }
-    return { data: product.rows, count: product.rowCount }
+    const formattedProducts = []
+    for (let item of product.rows) {
+        formattedProducts.push(transformFields(item, DB_TO_API_MAPPING))
+    }
+
+    return { data: formattedProducts, count: product.length }
 }
 
 const getProductsFromDB = async () => {
     const allProducts = await pool.query('SELECT * FROM products')
+    const formattedProducts = []
+    for (let product of allProducts.rows) {
+        formattedProducts.push(transformFields(product, DB_TO_API_MAPPING))
+    }
 
-    return { data: allProducts.rows, count: allProducts.rowCount }
+    return { data: formattedProducts, count: formattedProducts.length }
 }
 
 const addProductToDB = async (productName, quantity, price, productSku, imageUrl) => {
@@ -76,7 +89,7 @@ const addProductToDB = async (productName, quantity, price, productSku, imageUrl
         if (newProduct.rowCount === 0) {
             throw new Error('Product could not be created, try again later')
         }
-        return newProduct.rows[0]
+        return transformFields(newProduct.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
         if (err.code === '23505') {
             throw new ConflictError('Product Sku has to be unique')
@@ -101,7 +114,7 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
         if (updatedProduct.rowCount === 0) {
             throw new Error('Could not updated product, try again later')
         }
-        return updatedProduct.rows[0]
+        return transformFields(updatedProduct.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
         // duplicate entry
         if (err.code === '23505') {
@@ -121,8 +134,15 @@ const deleteProductInDB = async (sku) => {
 // Cart Item Table query start here
 const getCartItemsFromDB = async (cartId) => {
     const cartItems = await pool.query('SELECT ci.cart_item_id, p.product_id, p.product_sku, p.product_name, p.price, p.stock, p.image_url, ci.quantity FROM cart_items ci JOIN products p ON ci.product_id=p.product_id WHERE ci.cart_id=($1)', [cartId])
-
-    return { data: cartItems.rows, count: cartItems.rowCount }
+    let totalItems = 0
+    for (let items of cartItems.rows) {
+        totalItems += items.quantity
+    }
+    const formattedCartItems = []
+    for (let cartItem of cartItems.rows) {
+        formattedCartItems.push(transformFields(cartItem, DB_TO_API_MAPPING))
+    }
+    return { data: formattedCartItems, count: totalItems }
 }
 
 
@@ -134,7 +154,7 @@ const addCartItemToDB = async (cartId, productId, quantity) => {
         if (cartItem.rowCount === 0) {
             throw new Error('Could not add cart item to db, try again later')
         }
-        return cartItem.rows[0]
+        return transformFields(cartItem.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
         if (err.code === '23503') {
             throw new NotFoundError('product does not exist')
@@ -148,7 +168,7 @@ const updateCartItemQuantityInDB = async (quantity, cartItemId, cartId) => {
     if (cartItem.rowCount === 0) {
         throw new NotFoundError('cart item passed in was not found')
     }
-    return cartItem.rows[0]
+    return transformFields(cartItem.rows[0], DB_TO_API_MAPPING)
 }
 
 const removeCartItemFromDB = async (cartItemId, cartId) => {
@@ -192,7 +212,7 @@ const createOrder = async (cartId, userId) => {
         for (let cartItem of cartItems) {
             // Need to check if product inventory is enough to fufill
             if (cartItem.quantity > cartItem.stock) {
-                throw new BadRequestError(`Not enough stock for product ${cartItem.product_sku}`)
+                throw new BadRequestError(`Not enough stock for product ${cartItem.productSku}`)
             }
             cartItem['total'] = cartItem.price * cartItem.quantity
             total += cartItem['total']
@@ -202,7 +222,7 @@ const createOrder = async (cartId, userId) => {
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
-            await updateProductInDB(cartItem.product_sku, { stock: cartItem.stock - cartItem.quantity })
+            await updateProductInDB(cartItem.productSku, { stock: cartItem.stock - cartItem.quantity })
         }
         await client.query('COMMIT')
 
@@ -231,7 +251,7 @@ const updateOrderInDB = async (orderId, fieldsToUpdate) => {
         if (updatedOrder.rowCount === 0) {
             throw new Error('Could not updated order, try again later')
         }
-        return updatedOrder.rows[0]
+        return transformFields(updatedOrder.rows[0], API_TO_DB_MAPPING)
     } catch (err) {
         // duplicate entry
         if (err.code === '23505') {
