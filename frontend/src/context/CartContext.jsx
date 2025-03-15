@@ -1,7 +1,7 @@
 
 import { createContext, useState, useContext, useEffect, useRef } from 'react';
 import axiosInstance from '../services/axios'
-// import formatApiFields from '../utils/db-mapping'
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -17,7 +17,6 @@ export const CartProvider = ({ children }) => {
                 const response = await axiosInstance.get('/cart/item')
                 const responseData = response.data
 
-                console.log(responseData.data)
                 setCartItems(responseData.data)
 
             } catch (err) {
@@ -62,10 +61,14 @@ export const CartProvider = ({ children }) => {
     }
 
     const addToCart = async (product) => {
+
         try {
             previousCartItems.current = cartItems
+            // insert new 
             const response = await axiosInstance.post('/cart/item', { productId: product.productId, quantity: 1 })
             const addedProduct = response.data
+
+            const cartItemProduct = { ...product, cartId: addedProduct.cartId, cartItemId: addedProduct.cartItemId, quantity: addedProduct.quantity }
 
             setCartItems((prevCart) => {
                 const existingItem = prevCart.find((item) => item.productId === product.productId)
@@ -73,11 +76,9 @@ export const CartProvider = ({ children }) => {
                     return prevCart.map((item) => item.productId === product.productId ? { ...item, quantity: item.quantity + 1 } : item
                     )
                 } else {
-                    return [...prevCart, { ...addedProduct }]
+                    return [...prevCart, { ...cartItemProduct }]
                 }
             })
-            // insert new 
-
 
         } catch (err) {
             // revert delete, if fails

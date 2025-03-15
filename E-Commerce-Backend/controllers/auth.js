@@ -54,6 +54,7 @@ const login = async (req, res) => {
     if (!passwordMatch) {
         throw new UnauthenticatedError('Incorrect Password')
     }
+
     const cartId = await getOrCreateCart(user.userId)
     const token = createJWT(user.email, user.name, user.userId, cartId)
 
@@ -101,11 +102,12 @@ const comparePassword = async (candidatePassword, dbPass) => {
 
 const getOrCreateCart = async (userId) => {
     const cart = await getCartFromDB(userId)
+
     if (cart) {
-        return cart.cart_id
+        return cart.cartId
     }
     const newCart = await addCartToDB(userId)
-    return newCart.cart_id
+    return newCart.cartId
 }
 
 module.exports = { login, register }

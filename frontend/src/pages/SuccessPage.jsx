@@ -1,4 +1,3 @@
-// import NewProductForm from "../components/NewProductForm"
 import Container from 'react-bootstrap/Container';
 import { useSearchParams } from "react-router-dom";
 function SuccessPage() {

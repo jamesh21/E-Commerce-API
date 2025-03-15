@@ -10,7 +10,6 @@ function CartItemList() {
                 {cartItems.map((cartItem) => (
                     <Col key={cartItem.productId} sm={12}>
                         <hr />
-                        <h3>{cartItem.productId}</h3>
                         <CartItem
                             cartItem={cartItem}>
                         </CartItem>

@@ -14,6 +14,7 @@ function NavBar() {
     const handleLogout = () => {
         logout(navigate)
     }
+
     const totalCartQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
     return (
         <>

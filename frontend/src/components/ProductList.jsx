@@ -6,27 +6,27 @@ import ToastContainer from 'react-bootstrap/ToastContainer';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductCard from "./ProductCard";
 import { useEffect, useState } from "react";
-
 import axiosInstance from "../services/axios";
 import { useCart } from '../context/CartContext'
+import { useProduct } from '../context/ProductContext'
 function ProductList() {
-    const [products, setProducts] = useState([])
+    // const [products, setProducts] = useState([])
     const [showToast, setShowToast] = useState(false)
     const toggleShowToast = () => setShowToast(!showToast)
     const { addToCart } = useCart()
-
-    useEffect(() => {
-        const fetchedProducts = async () => {
-            try {
-                const response = await axiosInstance.get('/product')
-                const responseData = response.data
-                setProducts(responseData.data)
-            } catch (err) {
-                console.error(err)
-            }
-        }
-        fetchedProducts()
-    }, [])
+    const { products } = useProduct()
+    // useEffect(() => {
+    //     const fetchedProducts = async () => {
+    //         try {
+    //             const response = await axiosInstance.get('/product')
+    //             const responseData = response.data
+    //             setProducts(responseData.data)
+    //         } catch (err) {
+    //             console.error(err)
+    //         }
+    //     }
+    //     fetchedProducts()
+    // }, [])
 
     const handleAddToCart = (product) => {
         addToCart(product)
