@@ -33,22 +33,12 @@
 }
 
 .product-card {
-    /* min-height: 25rem; */
-    /* min-height: 350px; */
-
-    /* Makes all cards equal height */
-    .product-card-body {
-        padding: 0px
-    }
 
     img {
         height: 250px;
         object-fit: cover;
     }
 
-    .product-card-text {
-        padding: 1rem;
-    }
 }
 
 .cart-item {
