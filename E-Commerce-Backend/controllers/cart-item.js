@@ -22,6 +22,7 @@ const getCartItems = async (req, res) => {
 const addCartItem = async (req, res) => {
     const { productId, quantity } = req.body
     const { cartId } = req.user
+
     if (!productId || !quantity) {
         throw new BadRequestError('product id or quantity is missing')
     }

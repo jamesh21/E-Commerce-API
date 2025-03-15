@@ -1,8 +1,8 @@
 const { getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB } = require('../services/db')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError } = require('../errors')
-const { transformToDBFields } = require('../utils/field-mapper')
-const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
+// const { transformToDBFields } = require('../utils/field-mapper')
+// const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
 
 /**
  * Get Route for retrieving a single product from the sku provided in param.
@@ -34,7 +34,7 @@ const getProducts = async (req, res) => {
  */
 const addProduct = async (req, res) => {
     const { productName, quantity, price, productSku, imageUrl } = req.body
-    console.log(req.body)
+
     // Checks if required fields are filled in
     if (productName === '' || price === '' || productSku === '') {
         throw new BadRequestError('product name, price or product sku was left blank')
@@ -52,7 +52,8 @@ const addProduct = async (req, res) => {
  */
 const updateProduct = async (req, res) => {
     const { sku } = req.params
-    const updates = transformToDBFields(req.body, PRODUCT_FIELD_MAP)
+
+    const updates = req.body
     if (Object.keys(updates).length === 0) {
         throw new BadRequestError('No update parameters were passed into request body')
     }
