@@ -41,6 +41,24 @@ const getUserFromDB = async (email) => {
     return transformFields(user.rows[0], DB_TO_API_MAPPING)
 }
 
+const getUsersFromDB = async () => {
+    const users = await pool.query('SELECT user_id, email_address, full_name, is_admin FROM users')
+    const formattedUsers = []
+    for (let user of users.rows) {
+        formattedUsers.push(transformFields(user, DB_TO_API_MAPPING))
+    }
+
+    return { data: formattedUsers, count: formattedUsers.length }
+}
+
+const updateUserRoleInDB = async (isNewRoleAdmin, userId) => {
+
+    const updatedUser = await pool.query('UPDATE users SET is_admin=($1) WHERE user_id = ($2) RETURNING *', [isNewRoleAdmin, userId])
+    if (updatedUser.rowCount === 0) {
+        throw new Error('Could not update user role, please try again later')
+    }
+    return transformFields(updatedUser.rows[0], DB_TO_API_MAPPING)
+}
 // Cart Table query start here
 const addCartToDB = async (userId) => {
     const newCart = await pool.query('INSERT INTO carts (user_id) VALUES ($1) RETURNING *', [userId])
@@ -264,5 +282,5 @@ module.exports = {
     getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
     addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB,
-    addOrderLineItemToDB, createOrder, updateOrderInDB
+    addOrderLineItemToDB, createOrder, updateOrderInDB, getUsersFromDB, updateUserRoleInDB
 }

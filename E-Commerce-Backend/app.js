@@ -12,6 +12,7 @@ const cartItemRouter = require('./routes/cart-item')
 const checkoutRouter = require('./routes/checkout')
 const userRouter = require('./routes/user')
 const paymentsRouter = require('./routes/payments')
+
 // middleware
 const authMiddleware = require('./middleware/authentication')
 

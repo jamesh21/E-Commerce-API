@@ -19,7 +19,7 @@ const auth = async (req, res, next) => {
 
         const result = await getUserInfoFromDb(payload.id)
 
-        req.user = { userId: payload.id, name: payload.name, cartId: payload.cartId, isAdmin: result.is_admin };
+        req.user = { userId: payload.id, name: payload.name, cartId: payload.cartId, isAdmin: result.isAdmin };
     } catch (err) {
         throw new UnauthenticatedError("Authentication invalid");
     }

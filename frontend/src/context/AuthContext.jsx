@@ -1,6 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import axiosInstance from '../services/axios'
-// import formatApiFields from '../utils/db-mapping'
 // Create AuthContext
 const AuthContext = createContext();
 
