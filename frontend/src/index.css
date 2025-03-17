@@ -60,3 +60,11 @@
     top: -5px;
     right: -2px;
 }
+
+.dropdown {
+    button {
+        width: 40%;
+        background-color: rgb(33, 37, 41);
+
+    }
+}

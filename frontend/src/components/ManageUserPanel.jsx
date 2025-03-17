@@ -9,7 +9,6 @@ function ManageUserPanel() {
         const getUsers = async () => {
             try {
                 const response = await axiosInstance.get('/user/all')
-                console.log(response.data)
                 setUsers(response.data.data)
             } catch (err) {
                 console.error('Error: ', err)
@@ -21,8 +20,6 @@ function ManageUserPanel() {
     const updateRole = async (isNewRoleAdmin, userId) => {
         try {
             const response = await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })
-            console.log(response.data)
-            console.log('updated role')
         } catch (err) {
             console.error('Error: ', err)
         }
