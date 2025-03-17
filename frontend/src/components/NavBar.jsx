@@ -39,7 +39,7 @@ function NavBar() {
                             <Nav.Link as={NavLink} to="/login">Login</Nav.Link>}
 
                         <Nav.Link as={NavLink} className="position-relative" to="/cart">
-                            <i className="bi bi-cart mx-3"><Badge pill bg="danger" className="cart-badge">{totalCartQuantity}</Badge></i>
+                            <i className="bi bi-cart mx-3"><Badge pill bg="danger" className="cart-badge">{totalCartQuantity > 0 && totalCartQuantity}</Badge></i>
 
                         </Nav.Link>
                     </Nav>
