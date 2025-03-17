@@ -23,14 +23,15 @@ const register = async (req, res) => {
 
     const cartId = await getOrCreateCart(user.userId)
     // create bearer token and return
-    const token = createJWT(userData.email, userData.name, userData.userId, cartId)
+    const token = createJWT(user.email, user.name, user.userId, cartId)
     return res.status(StatusCodes.CREATED).json(
         {
             user:
             {
-                name: userData.name,
-                email: userData.email,
-                userId: userData.userId
+                name: user.name,
+                email: user.email,
+                userId: user.userId,
+                isAdmin: user.isAdmin
             },
             token
         })
@@ -63,7 +64,7 @@ const login = async (req, res) => {
             user:
             {
                 name: user.name,
-                email_address: user.email,
+                email: user.email,
                 userId: user.userId,
                 isAdmin: user.isAdmin
             },

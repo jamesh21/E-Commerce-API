@@ -20,7 +20,6 @@ function ManageUserPanel() {
 
     const updateRole = async (isNewRoleAdmin, userId) => {
         try {
-            // const response = await axiosInstance
             const response = await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })
             console.log(response.data)
             console.log('updated role')
