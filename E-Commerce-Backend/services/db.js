@@ -126,11 +126,14 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
         i++
     }
     values.push(sku)
-    const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_sku = $${i} RETURNING *`
+    const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_id = $${i} RETURNING *`
+    console.log('query', query)
+    console.log('values ', values)
     try {
         const updatedProduct = await pool.query(query, values)
         if (updatedProduct.rowCount === 0) {
-            throw new Error('Could not updated product, try again later')
+            throw new Error(updatedProduct)
+            // throw new Error('Could not updated product, try again later')
         }
         return transformFields(updatedProduct.rows[0], DB_TO_API_MAPPING)
     } catch (err) {

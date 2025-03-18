@@ -1,19 +1,21 @@
-import Button from 'react-bootstrap/Button';
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
-import axiosInstance from "../services/axios";
+import { useProduct } from '../context/ProductContext'
 
-function NewProductForm() {
+function ProductForm({ product, closeModal }) {
+    const { products, updateProduct } = useProduct()
 
     const [formData, setFormData] = useState({
-        productName: "",
-        quantity: 0,
-        price: 0.00,
-        productSku: "",
-        imageUrl: ""
+        productName: product.productName,
+        stock: product.stock,
+        price: product.price,
+        productSku: product.productSku,
+        imageUrl: product.imageUrl
     })
 
     const handleChange = (e) => {
@@ -22,35 +24,16 @@ function NewProductForm() {
             [e.target.name]: e.target.value,
         });
     }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const productData = {
+    const handleUpdateProduct = () => {
+        updateProduct(product.productId, {
             ...formData,
             price: Number(formData.price),
-            quantity: Number(formData.quantity)
-        }
-
-        try {
-            const response = await axiosInstance.post('/product', productData)
-
-            const newProduct = response.data
-
-            clearFields()
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    const clearFields = () => {
-        // Reset form after submission
-        setFormData({ productName: "", price: 0.00, imageUrl: "", productSku: "", quantity: 0 });
+            stock: Number(formData.stock)
+        })
     }
-
-
     return (
         <>
-            <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
+            <Form className="p-5" onSubmit={handleUpdateProduct}>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
@@ -61,7 +44,6 @@ function NewProductForm() {
                                     name="productName"
                                     value={formData.productName}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -75,7 +57,6 @@ function NewProductForm() {
                                     name="productSku"
                                     value={formData.productSku}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -91,7 +72,6 @@ function NewProductForm() {
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -102,10 +82,9 @@ function NewProductForm() {
                                 <Form.Control
                                     type="number"
                                     placeholder="Quantity"
-                                    name="quantity"
-                                    value={formData.quantity}
+                                    name="stock"
+                                    value={formData.stock}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -126,13 +105,13 @@ function NewProductForm() {
                         </Form.Group>
                     </Col>
                 </Row>
-                <Row className="d-flex justify-content-center">
+                <Row className="mt-3 d-flex justify-content-center">
                     <Col xs="auto" >
-                        <Button variant="primary" type="submit">Add Product</Button>
+                        <Button variant="danger" type="submit">Save Changes</Button>
                     </Col>
 
                     <Col xs="auto">
-                        <Button variant="secondary" onClick={clearFields}>Clear Fields</Button>
+                        <Button variant="secondary" onClick={closeModal}>Cancel</Button>
                     </Col>
                 </Row>
             </Form>
@@ -140,4 +119,4 @@ function NewProductForm() {
 }
 
 
-export default NewProductForm;
+export default ProductForm

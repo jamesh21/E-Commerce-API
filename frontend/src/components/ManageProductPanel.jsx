@@ -3,10 +3,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProductCard from "./ProductCard";
 import UpdateProductButton from './UpdateProductButton';
+
 function ManageProductPanel() {
     const { products, updateProduct, deleteProduct } = useProduct()
-
-
 
     return (
         <>
@@ -17,12 +16,14 @@ function ManageProductPanel() {
                             product={product}
                             CustomButton={
                                 <UpdateProductButton
-                                    product={product}>
+                                    product={product}
+                                >
                                 </UpdateProductButton>}>
                         </ProductCard>
                     </Col>
                 ))}
             </Row>
+
         </>)
 }
 

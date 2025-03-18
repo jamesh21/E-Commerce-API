@@ -10,7 +10,6 @@ import AddToCartButton from './AddToCartButton'
 import { useCart } from '../context/CartContext'
 import { useProduct } from '../context/ProductContext'
 function ProductList() {
-
     const [showToast, setShowToast] = useState(false)
     const toggleShowToast = () => setShowToast(!showToast)
     const { addToCart } = useCart()
