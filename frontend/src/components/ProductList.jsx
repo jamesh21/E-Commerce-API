@@ -5,8 +5,8 @@ import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductCard from "./ProductCard";
-import { useEffect, useState } from "react";
-import axiosInstance from "../services/axios";
+import { useState } from "react";
+import AddToCartButton from './AddToCartButton'
 import { useCart } from '../context/CartContext'
 import { useProduct } from '../context/ProductContext'
 function ProductList() {
@@ -41,11 +41,18 @@ function ProductList() {
             <Row>
                 {products.map((product) => (
                     <Col key={product.productId} lg={3} className="mb-4">
-                        <ProductCard product={product} handleAddToCart={handleAddToCart}></ProductCard>
+                        <ProductCard
+                            product={product}
+                            CustomButton={
+                                <AddToCartButton
+                                    product={product}
+                                    handleAddToCart={handleAddToCart}>
+                                </AddToCartButton>}>
+                        </ProductCard>
                     </Col>
                 ))}
             </Row>
-        </Container>
+        </Container >
     )
 }
 

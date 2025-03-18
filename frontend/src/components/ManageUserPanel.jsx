@@ -5,6 +5,7 @@ import axiosInstance from '../services/axios'
 
 function ManageUserPanel() {
     const [users, setUsers] = useState([])
+
     useEffect(() => {
         const getUsers = async () => {
             try {
@@ -20,6 +21,7 @@ function ManageUserPanel() {
     const updateRole = async (isNewRoleAdmin, userId) => {
         try {
             const response = await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })
+            // Need to update users state?
         } catch (err) {
             console.error('Error: ', err)
         }
