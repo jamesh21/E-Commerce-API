@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard";
 import UpdateProductButton from './UpdateProductButton';
 
 function ManageProductPanel() {
-    const { products, updateProduct, deleteProduct } = useProduct()
+    const { products } = useProduct()
 
     return (
         <>

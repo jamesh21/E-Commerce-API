@@ -1,7 +1,6 @@
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import ConfirmModal from './ConfirmModal'
 import { useState } from 'react'
 
 function RoleDropdown({ user, updateRole }) {
@@ -29,21 +28,13 @@ function RoleDropdown({ user, updateRole }) {
                 <Dropdown.Item active={isAdmin} onClick={() => handleRoleChange(true)}>Admin</Dropdown.Item>
             </DropdownButton>
 
-
-            <Modal centered show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirm Role Change</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Are you sure you want to update role? </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={confirmRoleChange}>
-                        Confirm
-                    </Button>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Cancel
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <ConfirmModal
+                modalTitle="Confirm Role Change"
+                modalBody="Are you sure you want to update role?"
+                handleConfirm={confirmRoleChange}
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+            ></ConfirmModal>
         </>
     )
 }

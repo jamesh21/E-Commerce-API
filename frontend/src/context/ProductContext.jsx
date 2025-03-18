@@ -17,11 +17,15 @@ export const ProductProvider = ({ children }) => {
         }
         fetchedProducts()
     }, [])
+
     const updateProduct = async (productId, updates) => {
         try {
             const response = await axiosInstance.put(`/product/${productId}`, updates)
             const responseData = response.data
-            console.log(responseData)
+
+            setProducts((prevItems) =>
+                prevItems.map((item) => item.productId === productId ? { ...responseData } : item)
+            )
         } catch (err) {
             console.error(err)
         }
