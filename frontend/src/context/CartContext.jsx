@@ -60,6 +60,7 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    const removeDeletedProductFromCart = (productId) => setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId))
     const addToCart = async (product) => {
 
         try {
@@ -101,7 +102,7 @@ export const CartProvider = ({ children }) => {
 
 
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart }}>
             {children}
         </CartContext.Provider>
     )

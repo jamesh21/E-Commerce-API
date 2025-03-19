@@ -4,10 +4,9 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
-import axiosInstance from "../services/axios";
-
+import { useProduct } from '../context/ProductContext'
 function NewProductForm() {
-
+    const { addProduct } = useProduct()
     const [formData, setFormData] = useState({
         productName: "",
         quantity: 0,
@@ -30,16 +29,8 @@ function NewProductForm() {
             price: Number(formData.price),
             quantity: Number(formData.quantity)
         }
-
-        try {
-            const response = await axiosInstance.post('/product', productData)
-
-            const newProduct = response.data
-
-            clearFields()
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        await addProduct(productData)
+        clearFields()
     };
 
     const clearFields = () => {

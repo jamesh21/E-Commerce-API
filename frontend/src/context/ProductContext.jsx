@@ -18,6 +18,16 @@ export const ProductProvider = ({ children }) => {
         fetchedProducts()
     }, [])
 
+    const addProduct = async (productData) => {
+        try {
+            const response = await axiosInstance.post('/product', productData)
+            const responseData = response.data
+            console.log(responseData)
+            setProducts([...products, { ...responseData }])
+        } catch (error) {
+            console.error(error)
+        }
+    }
     const updateProduct = async (productId, updates) => {
         try {
             const response = await axiosInstance.put(`/product/${productId}`, updates)
@@ -42,7 +52,7 @@ export const ProductProvider = ({ children }) => {
     }
 
     return (
-        <ProductContext.Provider value={{ products, updateProduct, deleteProduct }}>
+        <ProductContext.Provider value={{ products, updateProduct, deleteProduct, addProduct }}>
             {children}
         </ProductContext.Provider>
     )

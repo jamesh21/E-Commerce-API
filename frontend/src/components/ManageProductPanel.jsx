@@ -15,12 +15,16 @@ function ManageProductPanel() {
                         <ProductCard
                             product={product}
                             CustomButton={
-                                <DeleteProductButton product={product}></DeleteProductButton>
-                                // <UpdateProductButton
-                                //     product={product}
-                                // >
-                                // </UpdateProductButton>
-                            }>
+                                <UpdateProductButton
+                                    product={product}
+                                >
+                                </UpdateProductButton>
+                            }
+                            CustomButton2={
+                                <DeleteProductButton
+                                    product={product}>
+                                </DeleteProductButton>}
+                        >
                         </ProductCard>
 
                     </Col>

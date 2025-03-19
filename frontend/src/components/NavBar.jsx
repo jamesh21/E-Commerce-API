@@ -24,7 +24,7 @@ function NavBar() {
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/">Home</Nav.Link>
                         <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
-                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/new-product">Manage</Nav.Link>}
+                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/manage">Manage</Nav.Link>}
                     </Nav>
                     <Nav>
                         {user ?

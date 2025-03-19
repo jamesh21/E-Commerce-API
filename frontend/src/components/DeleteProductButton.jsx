@@ -1,18 +1,21 @@
 import Button from 'react-bootstrap/Button';
 import { useState } from "react";
 import { useProduct } from '../context/ProductContext'
+import { useCart } from '../context/CartContext'
 import ConfirmModal from './ConfirmModal';
 function DeleteProductButton({ product }) {
 
     const { deleteProduct } = useProduct()
+    const { removeDeletedProductFromCart } = useCart()
     const [showConfirmModal, setShowConfirmModal] = useState(false)
 
     const handleClick = () => {
         setShowConfirmModal(true)
     }
 
-    const confirmDeleteProduct = () => {
-        deleteProduct(product.productId)
+    const confirmDeleteProduct = async () => {
+        await deleteProduct(product.productId)
+        removeDeletedProductFromCart(product.productId)
         setShowConfirmModal(false)
     }
 

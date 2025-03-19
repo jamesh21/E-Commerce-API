@@ -10,19 +10,6 @@ function CartPage() {
     const { cartItems } = useCart()
 
 
-    // const onCheckout = async () => {
-    //     try {
-    //         const response = await axiosInstance.post('/checkout')
-    //         if (response.data.url) {
-    //             window.location.href = response.data.url
-    //         }
-    //     } catch (err) {
-    //         console.error('Error ', err)
-    //     }
-    // }
-
-
-
     return (
         <Container className="mt-5">
             <Row className="g-5">

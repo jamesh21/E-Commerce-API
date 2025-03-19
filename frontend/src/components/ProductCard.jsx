@@ -1,7 +1,7 @@
 
 import Card from 'react-bootstrap/Card';
 
-function ProductCard({ product, CustomButton }) {
+function ProductCard({ product, CustomButton, CustomButton2 }) {
 
     return (
         <Card className="shadow product-card h-100">
@@ -15,7 +15,7 @@ function ProductCard({ product, CustomButton }) {
                     {product.stock <= 5 && product.stock > 0 && <>Low stock {product.stock} left</>}
                 </Card.Text>
                 {CustomButton}
-
+                {CustomButton2}
             </Card.Body>
         </Card>
     )

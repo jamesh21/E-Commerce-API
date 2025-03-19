@@ -7,7 +7,6 @@ function SuccessPage() {
         <Container className="mt-5">
             <h1>Thank you for your order</h1>
             <h3 className="mb-4">Order number is #{orderId}</h3>
-            {/* <h3>Order Summary</h3> */}
         </Container>
     )
 }
