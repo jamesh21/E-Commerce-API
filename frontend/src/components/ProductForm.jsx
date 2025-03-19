@@ -7,9 +7,10 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
 import { useProduct } from '../context/ProductContext'
 import ConfirmModal from './ConfirmModal';
-
+import { useCart } from '../context/CartContext'
 function ProductForm({ product, closeModal }) {
     const { updateProduct } = useProduct()
+    const { updateProductInCart } = useCart()
     const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [formData, setFormData] = useState({
         productName: product.productName,
@@ -30,15 +31,16 @@ function ProductForm({ product, closeModal }) {
         setShowConfirmModal(true)
     }
 
-    const confirmUpdateProduct = () => {
+    const confirmUpdateProduct = async () => {
         // check if there's anything new to update first
         if (isUpdateDifferent()) {
             // only after confirming should we call update product
-            updateProduct(product.productId, {
+            await updateProduct(product.productId, {
                 ...formData,
                 price: Number(formData.price),
                 stock: Number(formData.stock)
             })
+            updateProductInCart(product.productId, formData)
         }
         setShowConfirmModal(false)
         closeModal()

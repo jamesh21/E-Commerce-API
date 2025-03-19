@@ -42,6 +42,15 @@ export const CartProvider = ({ children }) => {
             setCartItems(previousCartItems.current)
         }
     }
+    const updateProductInCart = async (productId, productData) => {
+        setCartItems((prevItems) =>
+            prevItems.map((item) => item.productId === productId ?
+                {
+                    ...item, productName: productData.productName, imageUrl: productData.imageUrl,
+                    price: productData.price, productSku: productData.productSku, stock: productData.stock
+                }
+                : item))
+    }
 
     const deleteFromCart = async (cartItemId) => {
         try {
@@ -102,7 +111,7 @@ export const CartProvider = ({ children }) => {
 
 
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart }}>
             {children}
         </CartContext.Provider>
     )
