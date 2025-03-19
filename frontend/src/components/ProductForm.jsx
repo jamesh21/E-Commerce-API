@@ -7,8 +7,9 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
 import { useProduct } from '../context/ProductContext'
 import ConfirmModal from './ConfirmModal';
+
 function ProductForm({ product, closeModal }) {
-    const { products, updateProduct } = useProduct()
+    const { updateProduct } = useProduct()
     const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [formData, setFormData] = useState({
         productName: product.productName,

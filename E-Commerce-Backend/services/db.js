@@ -145,8 +145,8 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
     }
 }
 
-const deleteProductInDB = async (sku) => {
-    const product = await pool.query('DELETE FROM products WHERE product_sku = ($1)', [sku])
+const deleteProductInDB = async (productId) => {
+    const product = await pool.query('DELETE FROM products WHERE product_id = ($1)', [productId])
     if (product.rowCount === 0) {
         throw new NotFoundError('Product sku was not found')
     }

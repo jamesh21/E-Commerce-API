@@ -34,7 +34,8 @@ export const ProductProvider = ({ children }) => {
     const deleteProduct = async (productId) => {
         try {
             const response = await axiosInstance.delete(`/product/${productId}`)
-            const responseData = response.data
+            // const responseData = response.data
+            setProducts((prevItems) => prevItems.filter((item) => item.productId !== productId))
         } catch (err) {
             console.error(err)
         }

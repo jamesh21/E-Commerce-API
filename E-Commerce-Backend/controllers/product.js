@@ -71,8 +71,8 @@ const updateProduct = async (req, res) => {
  * Del Route for deleting a single product from products table given the sku from params.
  */
 const deleteProduct = async (req, res) => {
-    const { sku } = req.params
-    await deleteProductInDB(sku)
+    const { id } = req.params
+    await deleteProductInDB(id)
 
     res.status(StatusCodes.NO_CONTENT).send()
 }
