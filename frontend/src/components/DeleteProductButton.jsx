@@ -31,7 +31,6 @@ function DeleteProductButton({ product }) {
                 showModal={showConfirmModal}
                 onClose={() => setShowConfirmModal(false)}
             >
-
             </ConfirmModal>
         </>)
 

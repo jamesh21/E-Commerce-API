@@ -2,11 +2,13 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
 import { useProduct } from '../context/ProductContext'
 function NewProductForm() {
     const { addProduct } = useProduct()
+    const [showModal, setShowModal] = useState(false)
     const [formData, setFormData] = useState({
         productName: "",
         quantity: 0,
@@ -30,9 +32,11 @@ function NewProductForm() {
             quantity: Number(formData.quantity)
         }
         await addProduct(productData)
+        // confirm modal should activate here
+        setShowModal(true)
         clearFields()
     };
-
+    const closeModal = () => setShowModal(false)
     const clearFields = () => {
         // Reset form after submission
         setFormData({ productName: "", price: 0.00, imageUrl: "", productSku: "", quantity: 0 });
@@ -41,6 +45,16 @@ function NewProductForm() {
 
     return (
         <>
+            <Modal centered show={showModal} onHide={closeModal} >
+                <Modal.Body>
+                    <h3>New Product Added</h3>
+                </Modal.Body>
+                <Modal.Footer className="text-center">
+                    <Button onClick={closeModal} size="lg" style={{ width: '35%', margin: "0 auto" }} variant="dark">
+                        Got it
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
                 <Row>
                     <Col md={12} lg={6}>
@@ -119,7 +133,7 @@ function NewProductForm() {
                 </Row>
                 <Row className="d-flex justify-content-center">
                     <Col xs="auto" >
-                        <Button variant="primary" type="submit">Add Product</Button>
+                        <Button variant="dark" type="submit">Add Product</Button>
                     </Col>
 
                     <Col xs="auto">

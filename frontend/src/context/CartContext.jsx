@@ -42,6 +42,7 @@ export const CartProvider = ({ children }) => {
             setCartItems(previousCartItems.current)
         }
     }
+
     const updateProductInCart = async (productId, productData) => {
         setCartItems((prevItems) =>
             prevItems.map((item) => item.productId === productId ?
@@ -70,6 +71,7 @@ export const CartProvider = ({ children }) => {
     }
 
     const removeDeletedProductFromCart = (productId) => setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId))
+
     const addToCart = async (product) => {
 
         try {
