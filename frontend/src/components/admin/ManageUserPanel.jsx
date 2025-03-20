@@ -1,7 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import RoleDropdown from './RoleDropdown';
 import { useState, useEffect } from "react";
-import axiosInstance from '../services/axios'
+import axiosInstance from '../../services/axios'
 
 function ManageUserPanel() {
     const [users, setUsers] = useState([])

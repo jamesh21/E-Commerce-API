@@ -3,8 +3,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Badge from 'react-bootstrap/Badge'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-import { useCart } from '../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 
 function NavBar() {
     const navigate = useNavigate();

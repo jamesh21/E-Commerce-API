@@ -7,8 +7,9 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import ProductCard from "./ProductCard";
 import { useState } from "react";
 import AddToCartButton from './AddToCartButton'
-import { useCart } from '../context/CartContext'
-import { useProduct } from '../context/ProductContext'
+import { useCart } from '../../context/CartContext'
+import { useProduct } from '../../context/ProductContext'
+
 function ProductList() {
     const [showToast, setShowToast] = useState(false)
     const toggleShowToast = () => setShowToast(!showToast)

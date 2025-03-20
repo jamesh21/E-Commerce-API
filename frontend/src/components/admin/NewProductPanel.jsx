@@ -1,23 +1,20 @@
-
+import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
-import { useProduct } from '../context/ProductContext'
-import ConfirmModal from './ConfirmModal';
-import { useCart } from '../context/CartContext'
-function ProductForm({ product, closeModal }) {
-    const { updateProduct } = useProduct()
-    const { updateProductInCart } = useCart()
-    const [showConfirmModal, setShowConfirmModal] = useState(false)
+import { useProduct } from '../../context/ProductContext'
+function NewProductForm() {
+    const { addProduct } = useProduct()
+    const [showModal, setShowModal] = useState(false)
     const [formData, setFormData] = useState({
-        productName: product.productName,
-        stock: product.stock,
-        price: product.price,
-        productSku: product.productSku,
-        imageUrl: product.imageUrl
+        productName: "",
+        quantity: 0,
+        price: 0.00,
+        productSku: "",
+        imageUrl: ""
     })
 
     const handleChange = (e) => {
@@ -26,46 +23,39 @@ function ProductForm({ product, closeModal }) {
             [e.target.name]: e.target.value,
         });
     }
-    const handleUpdateProduct = () => {
-        // Need to check for confirmation
-        setShowConfirmModal(true)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const productData = {
+            ...formData,
+            price: Number(formData.price),
+            quantity: Number(formData.quantity)
+        }
+        await addProduct(productData)
+        // confirm modal should activate here
+        setShowModal(true)
+        clearFields()
+    };
+    const closeModal = () => setShowModal(false)
+    const clearFields = () => {
+        // Reset form after submission
+        setFormData({ productName: "", price: 0.00, imageUrl: "", productSku: "", quantity: 0 });
     }
 
-    const confirmUpdateProduct = async () => {
-        // check if there's anything new to update first
-        if (isUpdateDifferent()) {
-            // only after confirming should we call update product
-            await updateProduct(product.productId, {
-                ...formData,
-                price: Number(formData.price),
-                stock: Number(formData.stock)
-            })
-            updateProductInCart(product.productId, formData)
-        }
-        setShowConfirmModal(false)
-        closeModal()
-    }
 
-    const isUpdateDifferent = () => {
-        let isDifferent = false
-        for (let attr of Object.keys(formData)) {
-            if (product[attr] != formData[attr]) {
-                return true
-            }
-        }
-        return isDifferent
-    }
     return (
         <>
-            <ConfirmModal
-                modalTitle="Confirm Product Update"
-                modalBody="Are you sure you want to update this product?"
-                handleConfirm={confirmUpdateProduct}
-                showModal={showConfirmModal}
-                onClose={() => setShowConfirmModal(false)}
-            >
-            </ConfirmModal>
-            <Form className="p-5">
+            <Modal centered show={showModal} onHide={closeModal} >
+                <Modal.Body>
+                    <h3>New Product Added</h3>
+                </Modal.Body>
+                <Modal.Footer className="text-center">
+                    <Button onClick={closeModal} size="lg" style={{ width: '35%', margin: "0 auto" }} variant="dark">
+                        Got it
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
@@ -76,6 +66,7 @@ function ProductForm({ product, closeModal }) {
                                     name="productName"
                                     value={formData.productName}
                                     onChange={handleChange}
+                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -89,6 +80,7 @@ function ProductForm({ product, closeModal }) {
                                     name="productSku"
                                     value={formData.productSku}
                                     onChange={handleChange}
+                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -104,6 +96,7 @@ function ProductForm({ product, closeModal }) {
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
+                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -114,9 +107,10 @@ function ProductForm({ product, closeModal }) {
                                 <Form.Control
                                     type="number"
                                     placeholder="Quantity"
-                                    name="stock"
-                                    value={formData.stock}
+                                    name="quantity"
+                                    value={formData.quantity}
                                     onChange={handleChange}
+                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -137,20 +131,18 @@ function ProductForm({ product, closeModal }) {
                         </Form.Group>
                     </Col>
                 </Row>
-                <Row className="mt-3 d-flex justify-content-center">
+                <Row className="d-flex justify-content-center">
                     <Col xs="auto" >
-                        <Button variant="danger" onClick={handleUpdateProduct}>Save Changes</Button>
+                        <Button variant="dark" type="submit">Add Product</Button>
                     </Col>
 
                     <Col xs="auto">
-                        <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+                        <Button variant="secondary" onClick={clearFields}>Clear Fields</Button>
                     </Col>
                 </Row>
             </Form>
-
-        </>
-    );
+        </>);
 }
 
 
-export default ProductForm
+export default NewProductForm;

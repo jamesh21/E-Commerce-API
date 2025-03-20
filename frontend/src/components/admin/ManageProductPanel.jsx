@@ -1,7 +1,7 @@
-import { useProduct } from '../context/ProductContext'
+import { useProduct } from '../../context/ProductContext'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ProductCard from "./ProductCard";
+import ProductCard from "../product/ProductCard";
 import UpdateProductButton from './UpdateProductButton';
 import DeleteProductButton from './DeleteProductButton';
 function ManageProductPanel() {
@@ -31,7 +31,6 @@ function ManageProductPanel() {
 
                 ))}
             </Row>
-
         </>)
 }
 

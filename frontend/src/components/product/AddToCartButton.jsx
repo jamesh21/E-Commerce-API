@@ -1,11 +1,9 @@
 import Spinner from 'react-bootstrap/Spinner'
 import Button from 'react-bootstrap/Button';
 import { useState } from "react";
+
 function AddToCartButton({ product, handleAddToCart }) {
-
     const [loading, setLoading] = useState(false)
-
-
     const handleClick = () => {
         handleAddToCart(product)
         setLoading(true)
@@ -13,6 +11,7 @@ function AddToCartButton({ product, handleAddToCart }) {
             setLoading(false)
         }, 750)
     }
+
     return (
         <Button className="mt-auto mb-1 mx-2" variant={product.stock === 0 ? "secondary" : "dark"} onClick={handleClick} disabled={loading || product.stock === 0}>
             {loading ? (<>

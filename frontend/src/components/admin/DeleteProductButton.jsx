@@ -1,8 +1,8 @@
 import Button from 'react-bootstrap/Button';
 import { useState } from "react";
-import { useProduct } from '../context/ProductContext'
-import { useCart } from '../context/CartContext'
-import ConfirmModal from './ConfirmModal';
+import { useProduct } from '../../context/ProductContext'
+import { useCart } from '../../context/CartContext'
+import ConfirmModal from '../common/ConfirmModal';
 function DeleteProductButton({ product }) {
 
     const { deleteProduct } = useProduct()

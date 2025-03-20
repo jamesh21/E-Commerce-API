@@ -1,6 +1,6 @@
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import ConfirmModal from './ConfirmModal'
+import ConfirmModal from '../common/ConfirmModal'
 import { useState } from 'react'
 
 function RoleDropdown({ user, updateRole }) {

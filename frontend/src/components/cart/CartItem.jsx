@@ -4,8 +4,8 @@ import Image from 'react-bootstrap/Image';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import CloseButton from 'react-bootstrap/CloseButton';
-import displayCurrency from '../utils/helper'
-import { useCart } from '../context/CartContext'
+import displayCurrency from '../../utils/helper'
+import { useCart } from '../../context/CartContext'
 
 
 function CartItem({ cartItem }) {
