@@ -41,6 +41,24 @@ const getUserFromDB = async (email) => {
     return transformFields(user.rows[0], DB_TO_API_MAPPING)
 }
 
+const getUsersFromDB = async () => {
+    const users = await pool.query('SELECT user_id, email_address, full_name, is_admin FROM users')
+    const formattedUsers = []
+    for (let user of users.rows) {
+        formattedUsers.push(transformFields(user, DB_TO_API_MAPPING))
+    }
+
+    return { data: formattedUsers, count: formattedUsers.length }
+}
+
+const updateUserRoleInDB = async (isNewRoleAdmin, userId) => {
+
+    const updatedUser = await pool.query('UPDATE users SET is_admin=($1) WHERE user_id = ($2) RETURNING *', [isNewRoleAdmin, userId])
+    if (updatedUser.rowCount === 0) {
+        throw new Error('Could not update user role, please try again later')
+    }
+    return transformFields(updatedUser.rows[0], DB_TO_API_MAPPING)
+}
 // Cart Table query start here
 const addCartToDB = async (userId) => {
     const newCart = await pool.query('INSERT INTO carts (user_id) VALUES ($1) RETURNING *', [userId])
@@ -108,11 +126,14 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
         i++
     }
     values.push(sku)
-    const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_sku = $${i} RETURNING *`
+    const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_id = $${i} RETURNING *`
+    console.log('query', query)
+    console.log('values ', values)
     try {
         const updatedProduct = await pool.query(query, values)
         if (updatedProduct.rowCount === 0) {
-            throw new Error('Could not updated product, try again later')
+            throw new Error(updatedProduct)
+            // throw new Error('Could not updated product, try again later')
         }
         return transformFields(updatedProduct.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
@@ -124,8 +145,8 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
     }
 }
 
-const deleteProductInDB = async (sku) => {
-    const product = await pool.query('DELETE FROM products WHERE product_sku = ($1)', [sku])
+const deleteProductInDB = async (productId) => {
+    const product = await pool.query('DELETE FROM products WHERE product_id = ($1)', [productId])
     if (product.rowCount === 0) {
         throw new NotFoundError('Product sku was not found')
     }
@@ -264,5 +285,5 @@ module.exports = {
     getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
     addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB,
-    addOrderLineItemToDB, createOrder, updateOrderInDB
+    addOrderLineItemToDB, createOrder, updateOrderInDB, getUsersFromDB, updateUserRoleInDB
 }

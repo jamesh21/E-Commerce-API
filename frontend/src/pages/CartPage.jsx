@@ -1,27 +1,13 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import CartItemList from '../components/CartItemList'
-import OrderSummary from '../components/OrderSummary'
-import EmptyCart from '../components/EmptyCart'
+import CartItemList from '../components/cart/CartItemList'
+import OrderSummary from '../components/cart/OrderSummary'
+import EmptyCart from '../components/cart/EmptyCart'
 import { useCart } from '../context/CartContext'
 
 function CartPage() {
     const { cartItems } = useCart()
-
-
-    // const onCheckout = async () => {
-    //     try {
-    //         const response = await axiosInstance.post('/checkout')
-    //         if (response.data.url) {
-    //             window.location.href = response.data.url
-    //         }
-    //     } catch (err) {
-    //         console.error('Error ', err)
-    //     }
-    // }
-
-
 
     return (
         <Container className="mt-5">

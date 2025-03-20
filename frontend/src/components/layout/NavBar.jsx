@@ -3,8 +3,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Badge from 'react-bootstrap/Badge'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-import { useCart } from '../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 
 function NavBar() {
     const navigate = useNavigate();
@@ -24,8 +24,7 @@ function NavBar() {
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/">Home</Nav.Link>
                         <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
-                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/new-product">Manage Products</Nav.Link>}
-                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/new-product">Manage Users</Nav.Link>}
+                        {user && user.isAdmin && <Nav.Link as={NavLink} to="/manage">Manage</Nav.Link>}
                     </Nav>
                     <Nav>
                         {user ?
@@ -39,7 +38,7 @@ function NavBar() {
                             <Nav.Link as={NavLink} to="/login">Login</Nav.Link>}
 
                         <Nav.Link as={NavLink} className="position-relative" to="/cart">
-                            <i className="bi bi-cart mx-3"><Badge pill bg="danger" className="cart-badge">{totalCartQuantity}</Badge></i>
+                            <i className="bi bi-cart mx-3"><Badge pill bg="danger" className="cart-badge">{totalCartQuantity > 0 && totalCartQuantity}</Badge></i>
 
                         </Nav.Link>
                     </Nav>

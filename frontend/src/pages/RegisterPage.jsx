@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react'
 import axiosInstance from '../services/axios'
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext'
 
 function RegisterPage() {
     const navigate = useNavigate()
@@ -15,6 +16,9 @@ function RegisterPage() {
         password: "",
         name: ""
     })
+
+    const { login } = useAuth() //import login function from context
+
     const handleChanges = (e) => {
         setRegisterData({ ...registerData, [e.target.name]: e.target.value })
     }
@@ -23,14 +27,13 @@ function RegisterPage() {
         e.preventDefault()
         try {
             const response = await axiosInstance.post('/auth/register', registerData)
-            const responseData = await response.data
-            localStorage.setItem("token", responseData.token)
+            login(response.data.user, response.data.token)
             navigate('/products')
         } catch (error) {
             console.error('Error: ', error)
         }
-
     }
+
     return (
         <>
             <Container>

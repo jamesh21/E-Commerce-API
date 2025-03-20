@@ -14,7 +14,7 @@ const DB_TO_API_MAPPING = {
 
 const API_TO_DB_MAPPING = {
     productName: 'product_name',
-    imageURL: 'image_url',
+    imageUrl: 'image_url',
     productSku: 'product_sku',
     userId: 'user_id',
     email: 'email_address',

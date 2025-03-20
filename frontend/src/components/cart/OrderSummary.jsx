@@ -1,8 +1,7 @@
-
 import Button from 'react-bootstrap/Button';
-import displayCurrency from '../utils/helper';
+import displayCurrency from '../../utils/helper';
+import { useCart } from '../../context/CartContext'
 
-import { useCart } from '../context/CartContext'
 function OrderSummary() {
     const { cartItems, onCheckout } = useCart()
 

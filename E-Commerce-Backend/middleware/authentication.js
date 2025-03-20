@@ -17,9 +17,10 @@ const auth = async (req, res, next) => {
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET)
 
+        // We want to check with our backened to see what the user's role is
         const result = await getUserInfoFromDb(payload.id)
 
-        req.user = { userId: payload.id, name: payload.name, cartId: payload.cartId, isAdmin: result.is_admin };
+        req.user = { userId: payload.id, name: payload.name, cartId: payload.cartId, isAdmin: result.isAdmin };
     } catch (err) {
         throw new UnauthenticatedError("Authentication invalid");
     }

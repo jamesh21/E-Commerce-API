@@ -1,20 +1,24 @@
-import Button from 'react-bootstrap/Button';
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
-import axiosInstance from "../services/axios";
+import { useProduct } from '../../context/ProductContext'
+import ConfirmModal from '../common/ConfirmModal';
+import { useCart } from '../../context/CartContext'
 
-function NewProductForm() {
-    const apiUrl = process.env.REACT_APP_API_URL
-
+function ProductForm({ product, closeModal }) {
+    const { updateProduct } = useProduct()
+    const { updateProductInCart } = useCart()
+    const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [formData, setFormData] = useState({
-        productName: "",
-        quantity: 0,
-        price: 0.00,
-        productSku: "",
-        imageUrl: ""
+        productName: product.productName,
+        stock: product.stock,
+        price: product.price,
+        productSku: product.productSku,
+        imageUrl: product.imageUrl
     })
 
     const handleChange = (e) => {
@@ -23,35 +27,46 @@ function NewProductForm() {
             [e.target.name]: e.target.value,
         });
     }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const productData = {
-            ...formData,
-            price: Number(formData.price),
-            quantity: Number(formData.quantity)
-        }
-
-        try {
-            const response = await axiosInstance.post('/product', productData)
-
-            const newProduct = response.data
-
-            clearFields()
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    const clearFields = () => {
-        // Reset form after submission
-        setFormData({ productName: "", price: 0.00, imageUrl: "", productSku: "", quantity: 0 });
+    const handleUpdateProduct = () => {
+        // Need to check for confirmation
+        setShowConfirmModal(true)
     }
 
+    const confirmUpdateProduct = async () => {
+        // check if there's anything new to update first
+        if (isUpdateDifferent()) {
+            // only after confirming should we call update product
+            await updateProduct(product.productId, {
+                ...formData,
+                price: Number(formData.price),
+                stock: Number(formData.stock)
+            })
+            updateProductInCart(product.productId, formData)
+        }
+        setShowConfirmModal(false)
+        closeModal()
+    }
 
+    const isUpdateDifferent = () => {
+        let isDifferent = false
+        for (let attr of Object.keys(formData)) {
+            if (product[attr] != formData[attr]) {
+                return true
+            }
+        }
+        return isDifferent
+    }
     return (
         <>
-            <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
+            <ConfirmModal
+                modalTitle="Confirm Product Update"
+                modalBody="Are you sure you want to update this product?"
+                handleConfirm={confirmUpdateProduct}
+                showModal={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+            >
+            </ConfirmModal>
+            <Form className="p-5">
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
@@ -62,7 +77,6 @@ function NewProductForm() {
                                     name="productName"
                                     value={formData.productName}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -76,7 +90,6 @@ function NewProductForm() {
                                     name="productSku"
                                     value={formData.productSku}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -92,7 +105,6 @@ function NewProductForm() {
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -103,10 +115,9 @@ function NewProductForm() {
                                 <Form.Control
                                     type="number"
                                     placeholder="Quantity"
-                                    name="quantity"
-                                    value={formData.quantity}
+                                    name="stock"
+                                    value={formData.stock}
                                     onChange={handleChange}
-                                    required
                                 />
                             </FloatingLabel>
                         </Form.Group>
@@ -127,18 +138,20 @@ function NewProductForm() {
                         </Form.Group>
                     </Col>
                 </Row>
-                <Row className="d-flex justify-content-center">
+                <Row className="mt-3 d-flex justify-content-center">
                     <Col xs="auto" >
-                        <Button variant="primary" type="submit">Add Product</Button>
+                        <Button variant="danger" onClick={handleUpdateProduct}>Save Changes</Button>
                     </Col>
 
                     <Col xs="auto">
-                        <Button variant="secondary" onClick={clearFields}>Clear Fields</Button>
+                        <Button variant="secondary" onClick={closeModal}>Cancel</Button>
                     </Col>
                 </Row>
             </Form>
-        </>);
+
+        </>
+    );
 }
 
 
-export default NewProductForm;
+export default ProductForm

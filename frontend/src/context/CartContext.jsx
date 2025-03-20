@@ -43,6 +43,16 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    const updateProductInCart = async (productId, productData) => {
+        setCartItems((prevItems) =>
+            prevItems.map((item) => item.productId === productId ?
+                {
+                    ...item, productName: productData.productName, imageUrl: productData.imageUrl,
+                    price: productData.price, productSku: productData.productSku, stock: productData.stock
+                }
+                : item))
+    }
+
     const deleteFromCart = async (cartItemId) => {
         try {
             previousCartItems.current = cartItems
@@ -59,6 +69,8 @@ export const CartProvider = ({ children }) => {
             console.error("Error ", err)
         }
     }
+
+    const removeDeletedProductFromCart = (productId) => setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId))
 
     const addToCart = async (product) => {
 
@@ -101,7 +113,7 @@ export const CartProvider = ({ children }) => {
 
 
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart }}>
             {children}
         </CartContext.Provider>
     )

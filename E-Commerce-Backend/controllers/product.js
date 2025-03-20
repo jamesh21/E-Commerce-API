@@ -1,6 +1,8 @@
 const { getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB } = require('../services/db')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError } = require('../errors')
+const { API_TO_DB_MAPPING } = require('../constants/field-mappings')
+const { transformFields } = require('../utils/field-mapper')
 // const { transformToDBFields } = require('../utils/field-mapper')
 // const { PRODUCT_FIELD_MAP } = require('../constants/field-mappings')
 
@@ -51,13 +53,15 @@ const addProduct = async (req, res) => {
  * @returns 
  */
 const updateProduct = async (req, res) => {
-    const { sku } = req.params
+    console.log(req.params)
+    const { id } = req.params
 
     const updates = req.body
     if (Object.keys(updates).length === 0) {
         throw new BadRequestError('No update parameters were passed into request body')
     }
-    const updatedProduct = await updateProductInDB(sku, updates)
+    const formattedUpdates = transformFields(updates, API_TO_DB_MAPPING)
+    const updatedProduct = await updateProductInDB(id, formattedUpdates)
 
     return res.status(200).json(updatedProduct)
 
@@ -67,8 +71,8 @@ const updateProduct = async (req, res) => {
  * Del Route for deleting a single product from products table given the sku from params.
  */
 const deleteProduct = async (req, res) => {
-    const { sku } = req.params
-    await deleteProductInDB(sku)
+    const { id } = req.params
+    await deleteProductInDB(id)
 
     res.status(StatusCodes.NO_CONTENT).send()
 }
