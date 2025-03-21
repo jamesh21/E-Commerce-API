@@ -23,7 +23,6 @@ function ProductForm({ product, closeModal }) {
     })
     const [errors, setErrors] = useState(null)
 
-    /// NEED TO FINISH VALIDATION FOR UPDATE PRODUCT
     const isValid = () => {
         let errors = {}
         if (formData.productName.length === 0) {
@@ -32,7 +31,9 @@ function ProductForm({ product, closeModal }) {
         if (formData.productSku.length === 0) {
             errors.productSku = 'Please enter a product sku'
         }
-
+        if (formData.price <= 0) {
+            errors.price = 'Please enter a valid price'
+        }
         setErrors(errors)
         return Object.keys(errors).length === 0;
     }
@@ -43,6 +44,7 @@ function ProductForm({ product, closeModal }) {
             [e.target.name]: e.target.value,
         });
     }
+
     const handleUpdateProduct = () => {
         if (isValid()) {
             // Need to check for confirmation
@@ -100,12 +102,14 @@ function ProductForm({ product, closeModal }) {
                                 >
                                 </Form.Control>
                             </FloatingLabel>
+                            {errors?.productName && <p className="validation-error-msg ">{errors.productName}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Product Sku">
+                            <FloatingLabel className={errors?.productSku && "validation-error-label"} label="Product Sku">
                                 <Form.Control
+                                    className={errors?.productSku && 'validation-error-form'}
                                     type="text"
                                     placeholder="Product Sku"
                                     name="productSku"
@@ -114,14 +118,16 @@ function ProductForm({ product, closeModal }) {
                                 />
 
                             </FloatingLabel>
+                            {errors?.productSku && <p className="validation-error-msg ">{errors.productSku}</p>}
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Price">
+                            <FloatingLabel className={errors?.price && "validation-error-label"} label="Price">
                                 <Form.Control
+                                    className={errors?.price && 'validation-error-form'}
                                     type="number"
                                     placeholder="Price"
                                     name="price"
@@ -129,6 +135,7 @@ function ProductForm({ product, closeModal }) {
                                     onChange={handleChange}
                                 />
                             </FloatingLabel>
+                            {errors?.price && <p className="validation-error-msg ">{errors.price}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
