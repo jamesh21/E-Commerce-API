@@ -13,6 +13,7 @@ function ProductForm({ product, closeModal }) {
     const { updateProduct } = useProduct()
     const { updateProductInCart } = useCart()
     const [showConfirmModal, setShowConfirmModal] = useState(false)
+
     const [formData, setFormData] = useState({
         productName: product.productName,
         stock: product.stock,
@@ -20,6 +21,21 @@ function ProductForm({ product, closeModal }) {
         productSku: product.productSku,
         imageUrl: product.imageUrl
     })
+    const [errors, setErrors] = useState(null)
+
+    /// NEED TO FINISH VALIDATION FOR UPDATE PRODUCT
+    const isValid = () => {
+        let errors = {}
+        if (formData.productName.length === 0) {
+            errors.productName = 'Please enter a product name'
+        }
+        if (formData.productSku.length === 0) {
+            errors.productSku = 'Please enter a product sku'
+        }
+
+        setErrors(errors)
+        return Object.keys(errors).length === 0;
+    }
 
     const handleChange = (e) => {
         setFormData({
@@ -28,8 +44,11 @@ function ProductForm({ product, closeModal }) {
         });
     }
     const handleUpdateProduct = () => {
-        // Need to check for confirmation
-        setShowConfirmModal(true)
+        if (isValid()) {
+            // Need to check for confirmation
+            setShowConfirmModal(true)
+        }
+
     }
 
     const confirmUpdateProduct = async () => {
@@ -70,14 +89,16 @@ function ProductForm({ product, closeModal }) {
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Product Name">
+                            <FloatingLabel className={errors?.productName && "validation-error-label"} label="Product Name">
                                 <Form.Control
+                                    className={errors?.productName && 'validation-error-form'}
                                     type="text"
                                     placeholder="Product Name"
                                     name="productName"
                                     value={formData.productName}
                                     onChange={handleChange}
-                                />
+                                >
+                                </Form.Control>
                             </FloatingLabel>
                         </Form.Group>
                     </Col>
@@ -91,6 +112,7 @@ function ProductForm({ product, closeModal }) {
                                     value={formData.productSku}
                                     onChange={handleChange}
                                 />
+
                             </FloatingLabel>
                         </Form.Group>
                     </Col>
@@ -147,7 +169,7 @@ function ProductForm({ product, closeModal }) {
                         <Button variant="secondary" onClick={closeModal}>Cancel</Button>
                     </Col>
                 </Row>
-            </Form>
+            </Form >
 
         </>
     );

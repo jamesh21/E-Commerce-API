@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
 import { useProduct } from '../../context/ProductContext'
+
 function NewProductForm() {
     const { addProduct } = useProduct()
     const [showModal, setShowModal] = useState(false)
@@ -16,6 +17,22 @@ function NewProductForm() {
         productSku: "",
         imageUrl: ""
     })
+    const [errors, setErrors] = useState(null)
+
+    const isValid = () => {
+        let errors = {}
+        if (formData.productName.length === 0) {
+            errors.productName = 'Please enter a product name'
+        }
+        if (formData.productSku.length === 0) {
+            errors.productSku = 'Please enter a product sku'
+        }
+        if (formData.price <= 0) {
+            errors.price = 'Please enter a valid price'
+        }
+        setErrors(errors)
+        return Object.keys(errors).length === 0;
+    }
 
     const handleChange = (e) => {
         setFormData({
@@ -26,6 +43,9 @@ function NewProductForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isValid()) {
+            return
+        }
         const productData = {
             ...formData,
             price: Number(formData.price),
@@ -59,46 +79,52 @@ function NewProductForm() {
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Product Name">
+                            <FloatingLabel className={errors?.productName && "validation-error-label"} label="Product Name">
                                 <Form.Control
+                                    className={errors?.productName && 'validation-error-form'}
                                     type="text"
                                     placeholder="Product Name"
                                     name="productName"
                                     value={formData.productName}
                                     onChange={handleChange}
-                                    required
+
                                 />
                             </FloatingLabel>
+                            {errors?.productName && <p className="validation-error-msg ">{errors.productName}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Product Sku">
+                            <FloatingLabel className={errors?.productSku && "validation-error-label"} label="Product Sku">
                                 <Form.Control
+                                    className={errors?.productSku && 'validation-error-form'}
                                     type="text"
                                     placeholder="Product Sku"
                                     name="productSku"
                                     value={formData.productSku}
                                     onChange={handleChange}
-                                    required
+
                                 />
                             </FloatingLabel>
+                            {errors?.productSku && <p className="validation-error-msg ">{errors.productSku}</p>}
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Price">
+                            <FloatingLabel className={errors?.price && "validation-error-label"} label="Price">
                                 <Form.Control
+                                    className={errors?.price && 'validation-error-form'}
                                     type="number"
                                     placeholder="Price"
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
-                                    required
+
                                 />
                             </FloatingLabel>
+                            {errors?.price && <p className="validation-error-msg ">{errors.price}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>

@@ -22,7 +22,7 @@ export const ProductProvider = ({ children }) => {
         try {
             const response = await axiosInstance.post('/product', productData)
             const responseData = response.data
-            console.log(responseData)
+
             setProducts([...products, { ...responseData }])
         } catch (error) {
             console.error(error)
