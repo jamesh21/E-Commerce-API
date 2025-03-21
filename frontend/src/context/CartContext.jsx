@@ -1,18 +1,20 @@
 
 import { createContext, useState, useContext, useEffect, useRef } from 'react';
 import axiosInstance from '../services/axios'
-
+import { useAuth } from './AuthContext'
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([])
-
+    const { user } = useAuth()
     const previousCartItems = useRef(cartItems)
 
 
     useEffect(() => {
         const getCartItems = async () => {
-
+            if (!user) {
+                return
+            }
             try {
                 const response = await axiosInstance.get('/cart/item')
                 const responseData = response.data
@@ -24,7 +26,7 @@ export const CartProvider = ({ children }) => {
             }
         }
         getCartItems()
-    }, [])
+    }, [user])
 
     const updateCartItemQuantity = async (cartItemId, newQuantity) => {
         try {
@@ -111,9 +113,12 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    const resetCart = () => {
+        setCartItems([])
+    }
 
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart, resetCart }}>
             {children}
         </CartContext.Provider>
     )
