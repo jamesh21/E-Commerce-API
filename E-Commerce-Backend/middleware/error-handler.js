@@ -13,7 +13,7 @@ const errorHandler = (err, req, res, next) => {
         console.error(err)
     }
     console.error(err)
-    res.status(customError.statusCode).json({ msg: customError.message });
+    res.status(customError.statusCode).json({ error: customError.message });
 };
 
 module.exports = errorHandler;

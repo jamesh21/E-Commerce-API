@@ -1,17 +1,8 @@
 const pool = require('../db'); // Import the database connection
 const { ConflictError, NotFoundError, BadRequestError } = require('../errors')
-
 const { transformFields } = require('../utils/field-mapper')
 const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
 
-const getUserInfoFromDb = async (userId) => {
-    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
-    if (user.rowCount === 0) {
-        throw new NotFoundError('User was not found')
-    }
-
-    return transformFields(user.rows[0], DB_TO_API_MAPPING)
-}
 
 // User Table query start here
 const addUserToDB = async (email, hashedPassword, name) => {
@@ -32,6 +23,16 @@ const addUserToDB = async (email, hashedPassword, name) => {
         throw err
     }
 }
+
+const getUserInfoFromDb = async (userId) => {
+    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
+    if (user.rowCount === 0) {
+        throw new NotFoundError('User was not found')
+    }
+
+    return transformFields(user.rows[0], DB_TO_API_MAPPING)
+}
+
 
 const getUserFromDB = async (email) => {
     const user = await pool.query('SELECT * FROM users WHERE email_address = ($1)', [email])

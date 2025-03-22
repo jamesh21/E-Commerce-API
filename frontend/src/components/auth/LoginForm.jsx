@@ -8,6 +8,7 @@ import axiosInstance from '../../services/axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext'
+import AttentionModal from '../common/AttentionModal';
 
 function LoginForm() {
     const navigate = useNavigate()
@@ -17,6 +18,7 @@ function LoginForm() {
         password: ""
     })
     const [errors, setErrors] = useState(null)
+    const [showModal, setShowModal] = useState(false)
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -31,9 +33,17 @@ function LoginForm() {
             navigate('/products')
 
         } catch (err) {
-            console.error("Error:", err)
+            if (err.status === 401) {
+                setErrors({ modal: 'The password you entered is incorrect. Please try again' })
+            } else if (err.status === 404) {
+                setErrors({ modal: 'The email you entered does not exist' })
+            } else {
+                setErrors({ modal: 'Something went wrong, please try again' })
+            }
+            setShowModal(true)
         }
     }
+
     const isValid = () => {
         let errors = {}
         if (loginData.email.length === 0) {
@@ -47,6 +57,7 @@ function LoginForm() {
         setErrors(errors)
         return Object.keys(errors).length === 0;
     }
+
     const handleChange = (e) => {
         setLoginData({
             ...loginData,
@@ -60,7 +71,15 @@ function LoginForm() {
 
     return (
         <>
-            <Container >
+            <Container>
+                <AttentionModal
+                    showModal={showModal}
+                    closeModal={() => setShowModal(false)}
+                    modalBodyText={errors?.modal}
+                    modalButtonText="Got it"
+                >
+
+                </AttentionModal>
                 <Form className="form-width shadow-lg rounded p-5" onSubmit={handleLogin}>
                     <Row>
                         <Col>

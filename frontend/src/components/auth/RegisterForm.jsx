@@ -9,6 +9,7 @@ import { useState } from 'react'
 import axiosInstance from '../../services/axios'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext'
+import AttentionModal from '../common/AttentionModal'
 
 function RegisterForm() {
     const navigate = useNavigate()
@@ -19,7 +20,7 @@ function RegisterForm() {
         name: ""
     })
     const [errors, setErrors] = useState(null)
-
+    const [showModal, setShowModal] = useState(false)
 
     const handleChanges = (e) => {
         setRegisterData({ ...registerData, [e.target.name]: e.target.value })
@@ -35,7 +36,13 @@ function RegisterForm() {
             login(response.data.user, response.data.token)
             navigate('/products')
         } catch (error) {
-            console.error('Error: ', error)
+            if (error.status === 409) {
+                setErrors({ email: 'Email already in use' })
+            } else {
+                // open modal
+                setErrors({ modal: 'Something went wrong, please try again' })
+                setShowModal(true)
+            }
         }
     }
     const isValid = () => {
@@ -47,6 +54,8 @@ function RegisterForm() {
         }
         if (registerData.password.length === 0) {
             errors.password = 'Please enter your password'
+        } else if (registerData.password.length < 8) {
+            errors.password = "Password must be at least 8 characters long"
         }
         if (registerData.name.length === 0) {
             errors.name = 'Please enter your name'
@@ -54,9 +63,17 @@ function RegisterForm() {
         setErrors(errors)
         return Object.keys(errors).length === 0;
     }
+
     return (
         <>
             <Container>
+                <AttentionModal
+                    modalButtonText="Got it"
+                    modalBodyText={errors?.modal}
+                    showModal={showModal}
+                    closeModal={() => setShowModal(false)}
+                >
+                </AttentionModal>
                 <Form className="form-width shadow-lg rounded p-5" onSubmit={registerUser}>
                     <Row>
                         <Col>

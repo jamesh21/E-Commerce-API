@@ -14,6 +14,9 @@ const register = async (req, res) => {
     if (!email || !name || !password == null) {
         throw new BadRequestError('Email, name or password was not provided')
     }
+    if (password.length < 8) {
+        throw new BadRequestError('Password must be atleast 8 characters long')
+    }
     const salt = await bcrypt.genSalt(10);
     // hash password
     const hashedPassword = await bcrypt.hash(password, salt)

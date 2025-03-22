@@ -20,7 +20,7 @@ function OrderSummary() {
                 <div className="mb-3">{totalCartQuantity} items</div>
             </div>
             <div className="text-center h100 mt-auto mb-5">
-                <Button style={{ width: '90%' }} onClick={onCheckout} size="lg" variant="success">Check out</Button>
+                <Button style={{ width: '90%' }} onClick={onCheckout} size="lg" variant="dark">Check out</Button>
             </div>
 
         </div>

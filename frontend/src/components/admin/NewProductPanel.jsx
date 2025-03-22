@@ -2,10 +2,11 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal'
+// import Modal from 'react-bootstrap/Modal'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useState } from "react";
 import { useProduct } from '../../context/ProductContext'
+import AttentionModal from '../common/AttentionModal';
 
 function NewProductForm() {
     const { addProduct } = useProduct()
@@ -56,25 +57,22 @@ function NewProductForm() {
         setShowModal(true)
         clearFields()
     };
-    const closeModal = () => setShowModal(false)
+
     const clearFields = () => {
         // Reset form after submission
         setFormData({ productName: "", price: 0.00, imageUrl: "", productSku: "", quantity: 0 });
     }
 
-
     return (
         <>
-            <Modal centered show={showModal} onHide={closeModal} >
-                <Modal.Body>
-                    <h3>New Product Added</h3>
-                </Modal.Body>
-                <Modal.Footer className="text-center">
-                    <Button onClick={closeModal} size="lg" style={{ width: '35%', margin: "0 auto" }} variant="dark">
-                        Got it
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <AttentionModal
+                showModal={showModal}
+                closeModal={() => setShowModal(false)}
+                modalBodyText="New Product Added"
+                modalButtonText="Got it"
+            >
+            </AttentionModal>
+
             <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
                 <Row>
                     <Col md={12} lg={6}>
