@@ -43,7 +43,7 @@ function ProductList() {
                     <Col key={product.productId} lg={3} className="mb-4">
                         <ProductCard
                             product={product}
-                            textContent={(product) => product.stock <= 5 && product.stock > 0 && <div>Low stock {product.stock} left</div>}
+                            textContent={(product) => product.stock <= 5 && product.stock > 0 && <span>Low stock {product.stock} left</span>}
                             CustomButton={
                                 <AddToCartButton
                                     product={product}
