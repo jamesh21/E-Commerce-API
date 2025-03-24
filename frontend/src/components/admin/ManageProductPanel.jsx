@@ -14,6 +14,7 @@ function ManageProductPanel() {
                     <Col key={product.productId} lg={3} className="mb-4">
                         <ProductCard
                             product={product}
+                            textContent={(product) => <div> Stock: {product.stock} left </div>}
                             CustomButton={
                                 <UpdateProductButton
                                     product={product}

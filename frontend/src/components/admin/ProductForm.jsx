@@ -34,6 +34,9 @@ function ProductForm({ product, closeModal }) {
         if (formData.price <= 0) {
             errors.price = 'Please enter a valid price'
         }
+        if (formData.stock < 0) {
+            errors.stock = 'Please enter a valid quantity'
+        }
         setErrors(errors)
         return Object.keys(errors).length === 0;
     }
@@ -140,8 +143,9 @@ function ProductForm({ product, closeModal }) {
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Quantity">
+                            <FloatingLabel className={errors?.stock && "validation-error-label"} label="Quantity">
                                 <Form.Control
+                                    className={errors?.stock && 'validation-error-form'}
                                     type="number"
                                     placeholder="Quantity"
                                     name="stock"
@@ -149,6 +153,7 @@ function ProductForm({ product, closeModal }) {
                                     onChange={handleChange}
                                 />
                             </FloatingLabel>
+                            {errors?.stock && <p className="validation-error-msg ">{errors.stock}</p>}
                         </Form.Group>
                     </Col>
                 </Row>

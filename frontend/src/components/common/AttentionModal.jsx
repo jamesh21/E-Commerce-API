@@ -1,9 +1,11 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-function AttentionModal({ modalButtonText, modalBodyText, showModal, closeModal }) {
+function AttentionModal({ modalButtonText, modalBodyText, showModal, closeModal, titleIcon }) {
     return (
         <Modal centered show={showModal} onHide={closeModal} >
+            <Modal.Header closeButton className={titleIcon}>
+            </Modal.Header>
             <Modal.Body>
                 <h3>{modalBodyText}</h3>
             </Modal.Body>

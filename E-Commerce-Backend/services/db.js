@@ -101,10 +101,10 @@ const getProductsFromDB = async () => {
     return { data: formattedProducts, count: formattedProducts.length }
 }
 
-const addProductToDB = async (productName, quantity, price, productSku, imageUrl) => {
+const addProductToDB = async (productName, stock, price, productSku, imageUrl) => {
     try {
         const newProduct = await pool.query('INSERT INTO products (product_name, stock, price, product_sku, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [productName, quantity, price, productSku, imageUrl])
+            [productName, stock, price, productSku, imageUrl])
         if (newProduct.rowCount === 0) {
             throw new Error('Product could not be created, try again later')
         }
@@ -128,8 +128,7 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
     }
     values.push(sku)
     const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_id = $${i} RETURNING *`
-    console.log('query', query)
-    console.log('values ', values)
+
     try {
         const updatedProduct = await pool.query(query, values)
         if (updatedProduct.rowCount === 0) {

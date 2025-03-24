@@ -21,7 +21,7 @@ function DeleteProductButton({ product }) {
 
     return (
         <>
-            <Button className="mt-auto mb-1 mx-2" variant="danger" onClick={handleClick}>
+            <Button className="mb-1 mx-2" variant="danger" onClick={handleClick}>
                 Delete Product
             </Button>
             <ConfirmModal

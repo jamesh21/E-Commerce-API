@@ -26,6 +26,7 @@ export const ProductProvider = ({ children }) => {
             setProducts([...products, { ...responseData }])
         } catch (error) {
             console.error(error)
+            throw error
         }
     }
     const updateProduct = async (productId, updates) => {
