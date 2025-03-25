@@ -27,9 +27,7 @@ function ManageProductPanel() {
                                 </DeleteProductButton>}
                         >
                         </ProductCard>
-
                     </Col>
-
                 ))}
             </Row>
         </>)

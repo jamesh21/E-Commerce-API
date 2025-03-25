@@ -8,12 +8,14 @@ import { useState } from "react";
 import { useProduct } from '../../context/ProductContext'
 import ConfirmModal from '../common/ConfirmModal';
 import { useCart } from '../../context/CartContext'
+import AttentionModal from '../common/AttentionModal';
 
 function ProductForm({ product, closeModal }) {
     const { updateProduct } = useProduct()
     const { updateProductInCart } = useCart()
     const [showConfirmModal, setShowConfirmModal] = useState(false)
-
+    const [showErrorModal, setShowErrorModal] = useState(false)
+    const [errors, setErrors] = useState(null)
     const [formData, setFormData] = useState({
         productName: product.productName,
         stock: product.stock,
@@ -21,7 +23,7 @@ function ProductForm({ product, closeModal }) {
         productSku: product.productSku,
         imageUrl: product.imageUrl
     })
-    const [errors, setErrors] = useState(null)
+
 
     const isValid = () => {
         let errors = {}
@@ -59,16 +61,29 @@ function ProductForm({ product, closeModal }) {
     const confirmUpdateProduct = async () => {
         // check if there's anything new to update first
         if (isUpdateDifferent()) {
-            // only after confirming should we call update product
-            await updateProduct(product.productId, {
-                ...formData,
-                price: Number(formData.price),
-                stock: Number(formData.stock)
-            })
-            updateProductInCart(product.productId, formData)
+            try {
+                // only after confirming should we call update product
+                await updateProduct(product.productId, {
+                    ...formData,
+                    price: Number(formData.price),
+                    stock: Number(formData.stock)
+                })
+                // Update details for product in cart if applicable
+                updateProductInCart(product.productId, formData)
+                closeModal()
+            } catch (err) {
+                if (err.status === 409) {
+                    setErrors({ modal: 'Product sku is already in use' })
+                } else {
+                    setErrors({ modal: 'Updating product failed, please try again' })
+                }
+                setShowErrorModal(true)
+            }
+        } else { // Nothing to update, close update modal
+            closeModal()
         }
         setShowConfirmModal(false)
-        closeModal()
+
     }
 
     const isUpdateDifferent = () => {
@@ -80,6 +95,7 @@ function ProductForm({ product, closeModal }) {
         }
         return isDifferent
     }
+
     return (
         <>
             <ConfirmModal
@@ -90,6 +106,14 @@ function ProductForm({ product, closeModal }) {
                 onClose={() => setShowConfirmModal(false)}
             >
             </ConfirmModal>
+            <AttentionModal
+                showModal={showErrorModal}
+                closeModal={() => setShowErrorModal(false)}
+                titleIcon="bi bi-exclamation-circle"
+                modalBodyText={errors?.modal}
+                modalButtonText="Got it"
+            ></AttentionModal>
+
             <Form className="p-5">
                 <Row>
                     <Col md={12} lg={6}>

@@ -39,6 +39,7 @@ export const ProductProvider = ({ children }) => {
             )
         } catch (err) {
             console.error(err)
+            throw err
         }
     }
 
