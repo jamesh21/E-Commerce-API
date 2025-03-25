@@ -4,6 +4,7 @@ import { useState } from "react";
 
 function AddToCartButton({ product, handleAddToCart }) {
     const [loading, setLoading] = useState(false)
+
     const handleClick = () => {
         handleAddToCart(product)
         setLoading(true)

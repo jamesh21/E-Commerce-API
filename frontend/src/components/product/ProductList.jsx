@@ -9,31 +9,53 @@ import { useState } from "react";
 import AddToCartButton from './AddToCartButton'
 import { useCart } from '../../context/CartContext'
 import { useProduct } from '../../context/ProductContext'
+import AttentionModal from '../common/AttentionModal';
+import { TIMED_OUT_ERORR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function ProductList() {
     const [showToast, setShowToast] = useState(false)
+    const [showErrorModal, setShowErrorModal] = useState(false)
+    const [errors, setErrors] = useState(null)
     const toggleShowToast = () => setShowToast(!showToast)
     const { addToCart } = useCart()
     const { products } = useProduct()
 
-    const handleAddToCart = (product) => {
-        addToCart(product)
-        setShowToast(true)
-        setTimeout(() => setShowToast(false), 3000);
-
+    const handleAddToCart = async (product) => {
+        try {
+            await addToCart(product)
+            setShowToast(true)
+            setTimeout(() => setShowToast(false), 3000);
+        } catch (error) {
+            if (error.code === TIMED_OUT_CASE) { // timed out request
+                setErrors({ modal: TIMED_OUT_ERORR_MSG })
+            }
+            else if (!error.response) { // network error
+                setErrors({ modal: NETWORK_ERR_MSG })
+            }
+            else {
+                setErrors({ modal: 'Adding product failed, please try again' })
+            }
+            setShowErrorModal(true)
+        }
     }
 
     return (
         <Container>
+            <AttentionModal
+                modalButtonText="Got it"
+                titleIcon="bi bi-exclamation-circle"
+                modalBodyText={errors?.modal}
+                showModal={showErrorModal}
+                closeModal={() => setShowErrorModal(false)}
+            >
+            </AttentionModal>
             <ToastContainer position="top-center" className="p-3">
                 <Toast bg="success" show={showToast} onClose={toggleShowToast}>
-
                     <Toast.Body className="d-flex justify-content-between white-text">
                         <span>
                             <i className="bi bi-bag-check-fill mx-3"></i>
                             Product added to cart
-                        </span>
-
+                        </span>``
                         <CloseButton variant="white" onClick={toggleShowToast}></CloseButton>
                     </Toast.Body>
                 </Toast>

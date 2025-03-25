@@ -98,6 +98,7 @@ export const CartProvider = ({ children }) => {
             // revert delete, if fails
             setCartItems(previousCartItems.current)
             console.error('error ', err)
+            throw err
         }
     }
 
