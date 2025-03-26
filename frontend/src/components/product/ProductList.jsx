@@ -9,18 +9,25 @@ import { useState } from "react";
 import AddToCartButton from './AddToCartButton'
 import { useCart } from '../../context/CartContext'
 import { useProduct } from '../../context/ProductContext'
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import AttentionModal from '../common/AttentionModal';
 import { TIMED_OUT_ERORR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function ProductList() {
     const [showToast, setShowToast] = useState(false)
+    const toggleShowToast = () => setShowToast(!showToast)
     const [showErrorModal, setShowErrorModal] = useState(false)
     const [errors, setErrors] = useState(null)
-    const toggleShowToast = () => setShowToast(!showToast)
     const { addToCart } = useCart()
     const { products } = useProduct()
+    const { user } = useAuth()
+    const navigate = useNavigate()
 
     const handleAddToCart = async (product) => {
+        if (!user) {
+            navigate('/login')
+        }
         try {
             await addToCart(product)
             setShowToast(true)
@@ -55,7 +62,7 @@ function ProductList() {
                         <span>
                             <i className="bi bi-bag-check-fill mx-3"></i>
                             Product added to cart
-                        </span>``
+                        </span>
                         <CloseButton variant="white" onClick={toggleShowToast}></CloseButton>
                     </Toast.Body>
                 </Toast>

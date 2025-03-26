@@ -5,9 +5,10 @@ import { useState } from "react";
 function AddToCartButton({ product, handleAddToCart }) {
     const [loading, setLoading] = useState(false)
 
-    const handleClick = () => {
-        handleAddToCart(product)
+    const handleClick = async () => {
         setLoading(true)
+        await handleAddToCart(product)
+
         setTimeout(() => {
             setLoading(false)
         }, 750)

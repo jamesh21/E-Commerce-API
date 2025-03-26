@@ -5,4 +5,5 @@ const TIMED_OUT_ERORR_MSG = 'Request timed out, please try again'
 const NETWORK_ERR_MSG = 'Network error, please check internet connection'
 
 const TIMED_OUT_CASE = 'ECONNABORTED'
+
 module.exports = { COMING_SOON_IMAGE_URL, TIMED_OUT_ERORR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE }

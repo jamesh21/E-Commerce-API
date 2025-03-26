@@ -22,4 +22,5 @@ const API_TO_DB_MAPPING = {
     isAdmin: 'is_admin',
     password: 'password_hash'
 }
+
 module.exports = { DB_TO_API_MAPPING, API_TO_DB_MAPPING }
