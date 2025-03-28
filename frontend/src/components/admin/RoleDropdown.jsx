@@ -18,7 +18,6 @@ function RoleDropdown({ user, updateRole }) {
     const confirmRoleChange = async () => {
         setIsAdmin(possiblAdminRole)
         const isUpdated = await updateRole(possiblAdminRole, user.userId)
-        console.log(isUpdated)
         if (!isUpdated) { // Failed, revert to old role
             setIsAdmin(!possiblAdminRole)
         }

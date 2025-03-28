@@ -42,6 +42,7 @@ export const CartProvider = ({ children }) => {
         } catch (err) {
             console.error("Error ", err)
             setCartItems(previousCartItems.current)
+            throw err
         }
     }
 
@@ -69,6 +70,7 @@ export const CartProvider = ({ children }) => {
             // revert delete, if fails
             setCartItems(previousCartItems.current)
             console.error("Error ", err)
+            throw err
         }
     }
 
@@ -111,6 +113,7 @@ export const CartProvider = ({ children }) => {
             }
         } catch (err) {
             console.error('Error ', err)
+            throw err
         }
     }
 

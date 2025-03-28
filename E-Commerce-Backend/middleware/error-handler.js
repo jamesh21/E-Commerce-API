@@ -15,6 +15,8 @@ const errorHandler = (err, req, res, next) => {
     } else if (err.code && err.code === DB_TIME_OUT) { // db timed out
         customError.statusCode = StatusCodes.GATEWAY_TIMEOUT
         customError.message = 'Database query timed out'
+    } else if (err.code && err.code === 'INSUFFICIENT_STOCK') {
+        return res.status(err.statusCode).json({ message: err.message, code: err.code, items: err.items })
     }
     console.error(err)
     res.status(customError.statusCode).json({ error: customError.message });

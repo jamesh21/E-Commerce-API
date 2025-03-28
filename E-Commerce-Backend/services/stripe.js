@@ -6,7 +6,7 @@ const makePaymentWithStripe = async (cartItems, orderId, cartId) => {
         line_items: cartItems.map(item => ({
             price_data: {
                 currency: "usd",
-                product_data: { name: item.product_name },
+                product_data: { name: item.productName },
                 unit_amount: item.price * 100, // Convert to cents
             },
             quantity: item.quantity,

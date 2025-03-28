@@ -1,5 +1,5 @@
 const pool = require('../db'); // Import the database connection
-const { ConflictError, NotFoundError, BadRequestError } = require('../errors')
+const { ConflictError, NotFoundError, InsufficientStockError } = require('../errors')
 const { transformFields } = require('../utils/field-mapper')
 const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
 
@@ -227,23 +227,29 @@ const createOrder = async (cartId, userId) => {
         await client.query('BEGIN')
         // Retrieve all items from user's cart
         const { data: cartItems } = await getCartItemsFromDB(cartId)
-
+        const insufficientStockItems = []
         // Get total cost of items
         let total = 0
         for (let cartItem of cartItems) {
             // Need to check if product inventory is enough to fufill
             if (cartItem.quantity > cartItem.stock) {
-                throw new BadRequestError(`Not enough stock for product ${cartItem.productSku}`)
+                insufficientStockItems.push(cartItem.productName)
+
+                // throw new BadRequestError(`Not enough stock for product id ${cartItem.productId}`)
+            }
+            if (insufficientStockItems.length > 0) {
+                throw new InsufficientStockError(insufficientStockItems)
             }
             cartItem['total'] = cartItem.price * cartItem.quantity
             total += cartItem['total']
         }
+
         // Create an order, in DB
         const orderId = await createOrderInDB(userId, total)
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
-            await updateProductInDB(cartItem.productSku, { stock: cartItem.stock - cartItem.quantity })
+            await updateProductInDB(cartItem.productId, { stock: cartItem.stock - cartItem.quantity })
         }
         await client.query('COMMIT')
 
@@ -281,6 +287,7 @@ const updateOrderInDB = async (orderId, fieldsToUpdate) => {
         throw err
     }
 }
+
 module.exports = {
     getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
