@@ -24,7 +24,7 @@ function ManageUserPanel() {
     const updateRole = async (isNewRoleAdmin, userId) => {
         try {
             await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })
-            // Need to update users state?
+            return true
         } catch (err) {
             if (err.code === TIMED_OUT_CASE) {
                 showError(TIMED_OUT_ERR_MSG)
@@ -33,6 +33,7 @@ function ManageUserPanel() {
             } else {
                 showError('Failed updating user, please try again')
             }
+            return false
         }
     }
 
