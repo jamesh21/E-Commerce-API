@@ -1,18 +1,20 @@
 
 import { createContext, useState, useContext, useEffect, useRef } from 'react';
 import axiosInstance from '../services/axios'
-
+import { useAuth } from './AuthContext'
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([])
-
+    const { user } = useAuth()
     const previousCartItems = useRef(cartItems)
 
 
     useEffect(() => {
         const getCartItems = async () => {
-
+            if (!user) {
+                return
+            }
             try {
                 const response = await axiosInstance.get('/cart/item')
                 const responseData = response.data
@@ -24,7 +26,7 @@ export const CartProvider = ({ children }) => {
             }
         }
         getCartItems()
-    }, [])
+    }, [user])
 
     const updateCartItemQuantity = async (cartItemId, newQuantity) => {
         try {
@@ -40,6 +42,7 @@ export const CartProvider = ({ children }) => {
         } catch (err) {
             console.error("Error ", err)
             setCartItems(previousCartItems.current)
+            throw err
         }
     }
 
@@ -67,6 +70,7 @@ export const CartProvider = ({ children }) => {
             // revert delete, if fails
             setCartItems(previousCartItems.current)
             console.error("Error ", err)
+            throw err
         }
     }
 
@@ -96,6 +100,7 @@ export const CartProvider = ({ children }) => {
             // revert delete, if fails
             setCartItems(previousCartItems.current)
             console.error('error ', err)
+            throw err
         }
     }
 
@@ -108,12 +113,16 @@ export const CartProvider = ({ children }) => {
             }
         } catch (err) {
             console.error('Error ', err)
+            throw err
         }
     }
 
+    const resetCart = () => {
+        setCartItems([])
+    }
 
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart, resetCart }}>
             {children}
         </CartContext.Provider>
     )

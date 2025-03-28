@@ -1,10 +1,13 @@
+import { useState, useEffect } from "react";
+import { useError } from '../../context/ErrorContext';
+import axiosInstance from '../../services/axios'
 import Table from 'react-bootstrap/Table';
 import RoleDropdown from './RoleDropdown';
-import { useState, useEffect } from "react";
-import axiosInstance from '../../services/axios'
+import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function ManageUserPanel() {
     const [users, setUsers] = useState([])
+    const { showError } = useError()
 
     useEffect(() => {
         const getUsers = async () => {
@@ -20,10 +23,17 @@ function ManageUserPanel() {
 
     const updateRole = async (isNewRoleAdmin, userId) => {
         try {
-            const response = await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })
-            // Need to update users state?
+            await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })
+            return true
         } catch (err) {
-            console.error('Error: ', err)
+            if (err.code === TIMED_OUT_CASE) {
+                showError(TIMED_OUT_ERR_MSG)
+            } else if (!err.response) {
+                showError(NETWORK_ERR_MSG)
+            } else {
+                showError('Failed updating user, please try again')
+            }
+            return false
         }
     }
 

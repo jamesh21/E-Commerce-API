@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const { DB_CONN_REFUSED, DB_TIME_OUT } = require('../constants/error-messages')
 
 // having next in params is necessary for this run as an error handler, or else this middleware is skipped by pipeline.
 const errorHandler = (err, req, res, next) => {
@@ -8,12 +9,17 @@ const errorHandler = (err, req, res, next) => {
     };
     if (err.code && err.code === '42703') {
         customError.statusCode = StatusCodes.BAD_REQUEST
-    }
-    if (customError.statusCode === StatusCodes.INTERNAL_SERVER_ERROR) {
-        console.error(err)
+    } else if (err.code && err.code === DB_CONN_REFUSED) { // db connect failed
+        customError.statusCode = StatusCodes.SERVICE_UNAVAILABLE
+        customError.message = 'Database connection failed'
+    } else if (err.code && err.code === DB_TIME_OUT) { // db timed out
+        customError.statusCode = StatusCodes.GATEWAY_TIMEOUT
+        customError.message = 'Database query timed out'
+    } else if (err.code && err.code === 'INSUFFICIENT_STOCK') {
+        return res.status(err.statusCode).json({ message: err.message, code: err.code, items: err.items })
     }
     console.error(err)
-    res.status(customError.statusCode).json({ msg: customError.message });
+    res.status(customError.statusCode).json({ error: customError.message });
 };
 
 module.exports = errorHandler;

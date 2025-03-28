@@ -22,12 +22,14 @@ export const ProductProvider = ({ children }) => {
         try {
             const response = await axiosInstance.post('/product', productData)
             const responseData = response.data
-            console.log(responseData)
+
             setProducts([...products, { ...responseData }])
         } catch (error) {
             console.error(error)
+            throw error
         }
     }
+
     const updateProduct = async (productId, updates) => {
         try {
             const response = await axiosInstance.put(`/product/${productId}`, updates)
@@ -38,16 +40,18 @@ export const ProductProvider = ({ children }) => {
             )
         } catch (err) {
             console.error(err)
+            throw err
         }
     }
 
     const deleteProduct = async (productId) => {
         try {
-            const response = await axiosInstance.delete(`/product/${productId}`)
-            // const responseData = response.data
+            await axiosInstance.delete(`/product/${productId}`)
+
             setProducts((prevItems) => prevItems.filter((item) => item.productId !== productId))
         } catch (err) {
             console.error(err)
+            throw err
         }
     }
 

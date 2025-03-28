@@ -1,3 +1,5 @@
+import { useCart } from '../../context/CartContext'
+import { useError } from '../../context/ErrorContext'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
@@ -5,25 +7,45 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import CloseButton from 'react-bootstrap/CloseButton';
 import displayCurrency from '../../utils/helper'
-import { useCart } from '../../context/CartContext'
-
+import { PLACE_HOLDER_IMG, TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function CartItem({ cartItem }) {
     const { updateCartItemQuantity, deleteFromCart } = useCart()
+    const { showError } = useError()
     const qtyDropDown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-    const handleQuantityChange = (eventKey) => {
-        updateCartItemQuantity(cartItem.cartItemId, Number(eventKey))
+    const handleQuantityChange = async (eventKey) => {
+        try {
+            await updateCartItemQuantity(cartItem.cartItemId, Number(eventKey))
+        } catch (err) {
+            if (err.code === TIMED_OUT_CASE) {
+                showError(TIMED_OUT_ERR_MSG)
+            } else if (!err.response) {
+                showError(NETWORK_ERR_MSG)
+            } else {
+                showError('Something went wrong, please try again')
+            }
+        }
     }
 
-    const handleClose = () => {
-        deleteFromCart(cartItem.cartItemId)
+    const handleClose = async () => {
+        try {
+            await deleteFromCart(cartItem.cartItemId)
+        } catch (err) {
+            if (err.code === TIMED_OUT_CASE) {
+                showError(TIMED_OUT_ERR_MSG)
+            } else if (!err.response) {
+                showError(NETWORK_ERR_MSG)
+            } else {
+                showError('Something went wrong, please try again')
+            }
+        }
     }
 
     return (
         <Row className="cart-item">
             <Col lg={4} style={{ maxHeight: '200px', overflow: 'hidden' }}>
-                <Image src={cartItem.imageUrl || "https://plus.unsplash.com/premium_photo-1734543932103-37f616c1b0b1?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}></Image>
+                <Image src={cartItem.imageUrl || PLACE_HOLDER_IMG}></Image>
             </Col>
 
             <Col className="px-4">

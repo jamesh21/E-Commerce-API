@@ -1,0 +1,4 @@
+const DB_CONN_REFUSED = 'ECONNREFUSED'
+const DB_TIME_OUT = 'ETIMEDOUT'
+
+module.exports = { DB_TIME_OUT, DB_CONN_REFUSED }

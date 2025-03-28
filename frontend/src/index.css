@@ -68,3 +68,26 @@
 
     }
 }
+
+.validation-error-form {
+    border-color: red !important;
+    background-color: #ffe6e6 !important;
+
+}
+
+.validation-error-form:focus~label {
+    color: red !important;
+}
+
+.validation-error-form~label::after {
+    background-color: transparent !important;
+}
+
+.validation-error-msg {
+    color: red;
+}
+
+.validation-error-label {
+    color: red !important;
+    background-color: #ffe6e6 !important;
+}

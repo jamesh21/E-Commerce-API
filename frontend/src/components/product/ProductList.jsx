@@ -1,3 +1,9 @@
+import { useState } from "react";
+import { useCart } from '../../context/CartContext'
+import { useProduct } from '../../context/ProductContext'
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useError } from '../../context/ErrorContext'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -5,35 +11,50 @@ import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductCard from "./ProductCard";
-import { useState } from "react";
 import AddToCartButton from './AddToCartButton'
-import { useCart } from '../../context/CartContext'
-import { useProduct } from '../../context/ProductContext'
+import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function ProductList() {
-    const [showToast, setShowToast] = useState(false)
-    const toggleShowToast = () => setShowToast(!showToast)
     const { addToCart } = useCart()
     const { products } = useProduct()
+    const { user } = useAuth()
+    const { showError } = useError()
+    const navigate = useNavigate()
 
-    const handleAddToCart = (product) => {
-        addToCart(product)
-        setShowToast(true)
-        setTimeout(() => setShowToast(false), 3000);
+    const [showToast, setShowToast] = useState(false)
+    const toggleShowToast = () => setShowToast(!showToast)
 
+    const handleAddToCart = async (product) => {
+        if (!user) {
+            navigate('/login')
+            return
+        }
+        try {
+            await addToCart(product)
+            setShowToast(true)
+            setTimeout(() => setShowToast(false), 3000);
+        } catch (error) {
+            if (error.code === TIMED_OUT_CASE) { // timed out request
+                showError(TIMED_OUT_ERR_MSG)
+            }
+            else if (!error.response) { // network error
+                showError(NETWORK_ERR_MSG)
+            }
+            else {
+                showError('Adding product failed, please try again')
+            }
+        }
     }
 
     return (
         <Container>
             <ToastContainer position="top-center" className="p-3">
                 <Toast bg="success" show={showToast} onClose={toggleShowToast}>
-
                     <Toast.Body className="d-flex justify-content-between white-text">
                         <span>
                             <i className="bi bi-bag-check-fill mx-3"></i>
                             Product added to cart
                         </span>
-
                         <CloseButton variant="white" onClick={toggleShowToast}></CloseButton>
                     </Toast.Body>
                 </Toast>
@@ -43,10 +64,12 @@ function ProductList() {
                     <Col key={product.productId} lg={3} className="mb-4">
                         <ProductCard
                             product={product}
+                            textContent={(product) => product.stock <= 5 && product.stock > 0 && <span>Low stock {product.stock} left</span>}
                             CustomButton={
                                 <AddToCartButton
                                     product={product}
-                                    handleAddToCart={handleAddToCart}>
+                                    handleAddToCart={handleAddToCart}
+                                >
                                 </AddToCartButton>}>
                         </ProductCard>
                     </Col>

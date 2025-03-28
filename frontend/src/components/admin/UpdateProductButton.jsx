@@ -1,5 +1,5 @@
 import Button from 'react-bootstrap/Button';
-import ProductForm from './ProductForm';
+import UpdateProductForm from './UpdateProductForm';
 import Modal from 'react-bootstrap/Modal'
 import { useState } from 'react'
 
@@ -23,7 +23,7 @@ function UpdateProductButton({ product }) {
                     <Modal.Title>Update Product</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="p-2">
-                    <ProductForm closeModal={closeModal} product={product}></ProductForm>
+                    <UpdateProductForm closeModal={closeModal} product={product}></UpdateProductForm>
                 </Modal.Body>
             </Modal>
         </>

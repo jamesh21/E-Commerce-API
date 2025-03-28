@@ -1,10 +1,13 @@
-import Button from 'react-bootstrap/Button';
 import { useState } from "react";
 import { useProduct } from '../../context/ProductContext'
 import { useCart } from '../../context/CartContext'
+import { useError } from '../../context/ErrorContext';
+import Button from 'react-bootstrap/Button';
 import ConfirmModal from '../common/ConfirmModal';
-function DeleteProductButton({ product }) {
+import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
+function DeleteProductButton({ product }) {
+    const { showError } = useError()
     const { deleteProduct } = useProduct()
     const { removeDeletedProductFromCart } = useCart()
     const [showConfirmModal, setShowConfirmModal] = useState(false)
@@ -14,14 +17,24 @@ function DeleteProductButton({ product }) {
     }
 
     const confirmDeleteProduct = async () => {
-        await deleteProduct(product.productId)
-        removeDeletedProductFromCart(product.productId)
+        try {
+            await deleteProduct(product.productId)
+            removeDeletedProductFromCart(product.productId)
+        } catch (err) {
+            if (err.code === TIMED_OUT_CASE) {
+                showError(TIMED_OUT_ERR_MSG)
+            } else if (!err.response) {
+                showError(NETWORK_ERR_MSG)
+            } else {
+                showError('Deleting the product failed, please try again')
+            }
+        }
         setShowConfirmModal(false)
     }
 
     return (
         <>
-            <Button className="mt-auto mb-1 mx-2" variant="danger" onClick={handleClick}>
+            <Button className="mb-1 mx-2" variant="danger" onClick={handleClick}>
                 Delete Product
             </Button>
             <ConfirmModal

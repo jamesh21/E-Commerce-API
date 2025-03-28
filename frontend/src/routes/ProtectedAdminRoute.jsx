@@ -6,7 +6,7 @@ const ProtectedAdminRoute = ({ children }) => {
         return <p>Loading...</p>
     }
 
-    return user.isAdmin ? children : <Navigate to="/products" replace />
+    return user && user.isAdmin ? children : <Navigate to="/products" replace />
 }
 
 export default ProtectedAdminRoute

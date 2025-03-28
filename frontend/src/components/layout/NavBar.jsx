@@ -9,9 +9,10 @@ import { useCart } from '../../context/CartContext'
 function NavBar() {
     const navigate = useNavigate();
     const { user, logout } = useAuth()
-    const { cartItems } = useCart()
+    const { cartItems, resetCart } = useCart()
 
     const handleLogout = () => {
+        resetCart()
         logout(navigate)
     }
 

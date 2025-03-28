@@ -35,13 +35,13 @@ const getProducts = async (req, res) => {
  * @returns 
  */
 const addProduct = async (req, res) => {
-    const { productName, quantity, price, productSku, imageUrl } = req.body
+    const { productName, stock, price, productSku, imageUrl } = req.body
 
     // Checks if required fields are filled in
     if (productName === '' || price === '' || productSku === '') {
         throw new BadRequestError('product name, price or product sku was left blank')
     }
-    const newProduct = await addProductToDB(productName, quantity, price, productSku, imageUrl)
+    const newProduct = await addProductToDB(productName, stock, price, productSku, imageUrl)
     return res.status(StatusCodes.CREATED).json(newProduct)
 }
 
@@ -53,7 +53,6 @@ const addProduct = async (req, res) => {
  * @returns 
  */
 const updateProduct = async (req, res) => {
-    console.log(req.params)
     const { id } = req.params
 
     const updates = req.body

@@ -1,17 +1,8 @@
 const pool = require('../db'); // Import the database connection
-const { ConflictError, NotFoundError, BadRequestError } = require('../errors')
-
+const { ConflictError, NotFoundError, InsufficientStockError } = require('../errors')
 const { transformFields } = require('../utils/field-mapper')
 const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
 
-const getUserInfoFromDb = async (userId) => {
-    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
-    if (user.rowCount === 0) {
-        throw new NotFoundError('User was not found')
-    }
-
-    return transformFields(user.rows[0], DB_TO_API_MAPPING)
-}
 
 // User Table query start here
 const addUserToDB = async (email, hashedPassword, name) => {
@@ -32,6 +23,16 @@ const addUserToDB = async (email, hashedPassword, name) => {
         throw err
     }
 }
+
+const getUserInfoFromDb = async (userId) => {
+    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
+    if (user.rowCount === 0) {
+        throw new NotFoundError('User was not found')
+    }
+
+    return transformFields(user.rows[0], DB_TO_API_MAPPING)
+}
+
 
 const getUserFromDB = async (email) => {
     const user = await pool.query('SELECT * FROM users WHERE email_address = ($1)', [email])
@@ -100,10 +101,10 @@ const getProductsFromDB = async () => {
     return { data: formattedProducts, count: formattedProducts.length }
 }
 
-const addProductToDB = async (productName, quantity, price, productSku, imageUrl) => {
+const addProductToDB = async (productName, stock, price, productSku, imageUrl) => {
     try {
         const newProduct = await pool.query('INSERT INTO products (product_name, stock, price, product_sku, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [productName, quantity, price, productSku, imageUrl])
+            [productName, stock, price, productSku, imageUrl])
         if (newProduct.rowCount === 0) {
             throw new Error('Product could not be created, try again later')
         }
@@ -127,8 +128,7 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
     }
     values.push(sku)
     const query = `UPDATE products SET ${setStatements.join(',')} WHERE product_id = $${i} RETURNING *`
-    console.log('query', query)
-    console.log('values ', values)
+
     try {
         const updatedProduct = await pool.query(query, values)
         if (updatedProduct.rowCount === 0) {
@@ -227,23 +227,29 @@ const createOrder = async (cartId, userId) => {
         await client.query('BEGIN')
         // Retrieve all items from user's cart
         const { data: cartItems } = await getCartItemsFromDB(cartId)
-
+        const insufficientStockItems = []
         // Get total cost of items
         let total = 0
         for (let cartItem of cartItems) {
             // Need to check if product inventory is enough to fufill
             if (cartItem.quantity > cartItem.stock) {
-                throw new BadRequestError(`Not enough stock for product ${cartItem.productSku}`)
+                insufficientStockItems.push(cartItem.productName)
+
+                // throw new BadRequestError(`Not enough stock for product id ${cartItem.productId}`)
+            }
+            if (insufficientStockItems.length > 0) {
+                throw new InsufficientStockError(insufficientStockItems)
             }
             cartItem['total'] = cartItem.price * cartItem.quantity
             total += cartItem['total']
         }
+
         // Create an order, in DB
         const orderId = await createOrderInDB(userId, total)
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
-            await updateProductInDB(cartItem.productSku, { stock: cartItem.stock - cartItem.quantity })
+            await updateProductInDB(cartItem.productId, { stock: cartItem.stock - cartItem.quantity })
         }
         await client.query('COMMIT')
 
@@ -281,6 +287,7 @@ const updateOrderInDB = async (orderId, fieldsToUpdate) => {
         throw err
     }
 }
+
 module.exports = {
     getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
