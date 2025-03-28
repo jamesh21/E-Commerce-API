@@ -1,17 +1,19 @@
+import { useState } from "react";
+import { useProduct } from '../../context/ProductContext'
+import { useError } from '../../context/ErrorContext'
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { useState } from "react";
-import { useProduct } from '../../context/ProductContext'
 import AttentionModal from '../common/AttentionModal';
+import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function NewProductForm() {
     const { addProduct } = useProduct()
+    const { showError } = useError()
     const [showModal, setShowModal] = useState(false)
-    const [showErrorModal, setShowErrorModal] = useState(false)
-    const [errors, setErrors] = useState(null)
+    const [formErrors, setFormErrors] = useState(null)
     const [formData, setFormData] = useState({
         productName: "",
         stock: 0,
@@ -19,7 +21,6 @@ function NewProductForm() {
         productSku: "",
         imageUrl: ""
     })
-
 
     /**
      * This function checks if any formData fields are invalid.
@@ -39,7 +40,7 @@ function NewProductForm() {
         if (formData.stock < 0) {
             errors.stock = 'Please enter a valid quantity'
         }
-        setErrors(errors)
+        setFormErrors(errors)
         return Object.keys(errors).length === 0;
     }
 
@@ -77,11 +78,14 @@ function NewProductForm() {
 
         } catch (err) {
             if (err.status === 409) {
-                setErrors({ modal: 'Product sku is already in use' })
+                showError('Product sku is already in use')
+            } else if (err.code === TIMED_OUT_CASE) {
+                showError(TIMED_OUT_ERR_MSG)
+            } else if (!err.response) {
+                showError(NETWORK_ERR_MSG)
             } else {
-                setErrors({ modal: 'Product adding failed, please try again' })
+                showError('Failed to add new product, please try again')
             }
-            setShowErrorModal(true)
         }
     };
 
@@ -100,20 +104,14 @@ function NewProductForm() {
                 modalButtonText="Got it"
             >
             </AttentionModal>
-            <AttentionModal
-                showModal={showErrorModal}
-                closeModal={() => setShowErrorModal(false)}
-                titleIcon="bi bi-exclamation-circle"
-                modalBodyText={errors?.modal}
-                modalButtonText="Got it"
-            ></AttentionModal>
+
             <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel className={errors?.productName && "validation-error-label"} label="Product Name">
+                            <FloatingLabel className={formErrors?.productName && "validation-error-label"} label="Product Name">
                                 <Form.Control
-                                    className={errors?.productName && 'validation-error-form'}
+                                    className={formErrors?.productName && 'validation-error-form'}
                                     type="text"
                                     placeholder="Product Name"
                                     name="productName"
@@ -122,48 +120,46 @@ function NewProductForm() {
 
                                 />
                             </FloatingLabel>
-                            {errors?.productName && <p className="validation-error-msg ">{errors.productName}</p>}
+                            {formErrors?.productName && <p className="validation-error-msg ">{formErrors.productName}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel className={errors?.productSku && "validation-error-label"} label="Product Sku">
+                            <FloatingLabel className={formErrors?.productSku && "validation-error-label"} label="Product Sku">
                                 <Form.Control
-                                    className={errors?.productSku && 'validation-error-form'}
+                                    className={formErrors?.productSku && 'validation-error-form'}
                                     type="text"
                                     placeholder="Product Sku"
                                     name="productSku"
                                     value={formData.productSku}
                                     onChange={handleChange}
-
                                 />
                             </FloatingLabel>
-                            {errors?.productSku && <p className="validation-error-msg ">{errors.productSku}</p>}
+                            {formErrors?.productSku && <p className="validation-error-msg ">{formErrors.productSku}</p>}
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel className={errors?.price && "validation-error-label"} label="Price">
+                            <FloatingLabel className={formErrors?.price && "validation-error-label"} label="Price">
                                 <Form.Control
-                                    className={errors?.price && 'validation-error-form'}
+                                    className={formErrors?.price && 'validation-error-form'}
                                     type="number"
                                     placeholder="Price"
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
-
                                 />
                             </FloatingLabel>
-                            {errors?.price && <p className="validation-error-msg ">{errors.price}</p>}
+                            {formErrors?.price && <p className="validation-error-msg ">{formErrors.price}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group className="mb-3">
-                            <FloatingLabel className={errors?.stock && "validation-error-label"} label="Quantity">
+                            <FloatingLabel className={formErrors?.stock && "validation-error-label"} label="Quantity">
                                 <Form.Control
-                                    className={errors?.stock && 'validation-error-form'}
+                                    className={formErrors?.stock && 'validation-error-form'}
                                     type="number"
                                     placeholder="Quantity"
                                     name="stock"
@@ -172,7 +168,7 @@ function NewProductForm() {
                                     required
                                 />
                             </FloatingLabel>
-                            {errors?.stock && <p className="validation-error-msg ">{errors.stock}</p>}
+                            {formErrors?.stock && <p className="validation-error-msg ">{formErrors.stock}</p>}
                         </Form.Group>
                     </Col>
                 </Row>

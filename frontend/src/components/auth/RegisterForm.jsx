@@ -43,8 +43,7 @@ function RegisterForm() {
                 showError(TIMED_OUT_ERR_MSG)
             } else if (!error.response) {
                 showError(NETWORK_ERR_MSG)
-            }
-            else {
+            } else {
                 showError('Something went wrong, please try again')
             }
         }
