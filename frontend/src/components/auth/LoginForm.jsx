@@ -1,28 +1,30 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../context/AuthContext'
+import { useError } from '../../context/ErrorContext'
+import axiosInstance from '../../services/axios'
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
-import axiosInstance from '../../services/axios'
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from '../../context/AuthContext'
-import AttentionModal from '../common/AttentionModal';
+import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function LoginForm() {
     const navigate = useNavigate()
     const { login } = useAuth() //import login function from context
+    const { showError } = useError()
+
     const [loginData, setLoginData] = useState({
         email: "",
         password: ""
     })
-    const [errors, setErrors] = useState(null)
-    const [showModal, setShowModal] = useState(false)
+    const [formErrors, setFormErrors] = useState(null)
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        if (!isValid()) {
+        if (!isFormValid()) {
             return
         }
         try {
@@ -34,17 +36,21 @@ function LoginForm() {
 
         } catch (err) {
             if (err.status === 401) {
-                setErrors({ modal: 'The password you entered is incorrect. Please try again' })
+                showError('The password you entered is incorrect. Please try again')
             } else if (err.status === 404) {
-                setErrors({ modal: 'The email you entered does not exist' })
-            } else {
-                setErrors({ modal: 'Something went wrong, please try again' })
+                showError('The email you entered does not exist')
+            } else if (err.code === TIMED_OUT_CASE) {
+                showError(TIMED_OUT_ERR_MSG)
+            } else if (!err.response) {
+                showError(NETWORK_ERR_MSG)
             }
-            setShowModal(true)
+            else {
+                showError('Something went wrong, please try again')
+            }
         }
     }
 
-    const isValid = () => {
+    const isFormValid = () => {
         let errors = {}
         if (loginData.email.length === 0) {
             errors.email = 'Please enter your email'
@@ -54,7 +60,8 @@ function LoginForm() {
         if (loginData.password.length === 0) {
             errors.password = 'Please enter your password'
         }
-        setErrors(errors)
+        setFormErrors(errors)
+
         return Object.keys(errors).length === 0;
     }
 
@@ -72,43 +79,31 @@ function LoginForm() {
     return (
         <>
             <Container>
-                <AttentionModal
-                    showModal={showModal}
-                    closeModal={() => setShowModal(false)}
-                    modalBodyText={errors?.modal}
-                    modalButtonText="Got it"
-                >
-
-                </AttentionModal>
                 <Form className="form-width shadow-lg rounded p-5" onSubmit={handleLogin}>
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
-                                <FloatingLabel className={errors?.email && "validation-error-label"} label="Email address">
+                                <FloatingLabel className={formErrors?.email && "validation-error-label"} label="Email address">
                                     <Form.Control
-                                        className={errors?.email && 'validation-error-form'}
+                                        className={formErrors?.email && 'validation-error-form'}
                                         type="text"
                                         name="email"
                                         value={loginData.email}
                                         onChange={handleChange}
                                         placeholder='email address'
-
                                     >
                                     </Form.Control>
                                 </FloatingLabel>
-
-                                {errors?.email && <p className="validation-error-msg ">{errors.email}</p>}
+                                {formErrors?.email && <p className="validation-error-msg ">{formErrors.email}</p>}
                             </Form.Group>
-
                         </Col>
                     </Row>
-
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
-                                <FloatingLabel className={errors?.password && "validation-error-label"} label="Password">
+                                <FloatingLabel className={formErrors?.password && "validation-error-label"} label="Password">
                                     <Form.Control
-                                        className={errors?.password && 'validation-error-form'}
+                                        className={formErrors?.password && 'validation-error-form'}
                                         type="password"
                                         name="password"
                                         value={loginData.password}
@@ -117,7 +112,7 @@ function LoginForm() {
                                     >
                                     </Form.Control>
                                 </FloatingLabel>
-                                {errors?.password && <p className="validation-error-msg ">{errors.password}</p>}
+                                {formErrors?.password && <p className="validation-error-msg ">{formErrors.password}</p>}
                             </Form.Group>
                         </Col>
                     </Row>

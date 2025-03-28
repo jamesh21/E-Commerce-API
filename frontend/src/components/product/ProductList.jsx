@@ -27,6 +27,7 @@ function ProductList() {
     const handleAddToCart = async (product) => {
         if (!user) {
             navigate('/login')
+            return
         }
         try {
             await addToCart(product)

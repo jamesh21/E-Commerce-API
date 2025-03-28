@@ -9,7 +9,7 @@ function ErrorModal() {
             <Modal.Header closeButton >
                 <Modal.Title className="bi bi-exclamation-circle"></Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className='text-center'>
                 <h3>{error}</h3>
             </Modal.Body>
             <Modal.Footer className="text-center">
