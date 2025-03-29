@@ -218,7 +218,7 @@ const createOrderInDB = async (userId, totalPrice) => {
 }
 
 const addOrderLineItemToDB = async (item, orderId) => {
-    await pool.query('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)', [orderId, item.product_id, item.quantity, item.price])
+    await pool.query('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)', [orderId, item.productId, item.quantity, item.price])
 }
 
 const createOrder = async (cartId, userId) => {
@@ -249,7 +249,6 @@ const createOrder = async (cartId, userId) => {
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
-            await updateProductInDB(cartItem.productId, { stock: cartItem.stock - cartItem.quantity })
         }
         await client.query('COMMIT')
 
@@ -260,6 +259,19 @@ const createOrder = async (cartId, userId) => {
     } finally {
         client.release()
     }
+}
+
+const getProductsFromOrder = async (orderId) => {
+    const products = await pool.query('SELECT p.product_id, p.product_name, p.stock, oi.quantity FROM order_items oi JOIN products p ON p.product_id = oi.product_id WHERE oi.order_id=($1)', [orderId])
+    if (products.rowCount === 0) {
+        throw new Error('Order could not be created, try again later')
+    }
+    const formattedProducts = []
+    for (let product of products.rows) {
+        formattedProducts.push(transformFields(product, DB_TO_API_MAPPING))
+    }
+
+    return { data: formattedProducts, count: formattedProducts.length }
 }
 
 const updateOrderInDB = async (orderId, fieldsToUpdate) => {
@@ -292,5 +304,5 @@ module.exports = {
     getUserInfoFromDb, getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB,
     addUserToDB, getUserFromDB, getCartItemsFromDB, createOrderInDB, addCartToDB, getCartFromDB,
     addCartItemToDB, updateCartItemQuantityInDB, removeCartItemFromDB, clearCartItemForUserInDB,
-    addOrderLineItemToDB, createOrder, updateOrderInDB, getUsersFromDB, updateUserRoleInDB
+    addOrderLineItemToDB, createOrder, updateOrderInDB, getUsersFromDB, updateUserRoleInDB, getProductsFromOrder
 }
