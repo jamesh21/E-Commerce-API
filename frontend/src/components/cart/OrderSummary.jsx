@@ -18,8 +18,7 @@ function OrderSummary() {
         } catch (err) {
             if (err.code === TIMED_OUT_CASE) {
                 showError(TIMED_OUT_ERR_MSG)
-            }
-            else if (!err.response) {
+            } else if (!err.response) {
                 showError(NETWORK_ERR_MSG)
             } else if (err.response?.data?.code === 'INSUFFICIENT_STOCK') {
                 showError('Insufficient stock for some products in your cart')

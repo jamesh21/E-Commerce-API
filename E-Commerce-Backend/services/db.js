@@ -234,8 +234,6 @@ const createOrder = async (cartId, userId) => {
             // Need to check if product inventory is enough to fufill
             if (cartItem.quantity > cartItem.stock) {
                 insufficientStockItems.push(cartItem.productName)
-
-                // throw new BadRequestError(`Not enough stock for product id ${cartItem.productId}`)
             }
             if (insufficientStockItems.length > 0) {
                 throw new InsufficientStockError(insufficientStockItems)

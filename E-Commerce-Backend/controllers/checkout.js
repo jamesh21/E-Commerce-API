@@ -12,7 +12,7 @@ const checkout = async (req, res) => {
     const { stripeSessionId, url } = await makePaymentWithStripe(cartItems, orderId, cartId)
 
     // update order in db with stripe session id
-    const updatedOrder = await updateOrderInDB(orderId, { 'stripe_session_Id': stripeSessionId })
+    await updateOrderInDB(orderId, { 'stripe_session_Id': stripeSessionId })
 
     // may need to insert stripe payment into a new table called payments
     res.status(StatusCodes.OK).json({ url })
