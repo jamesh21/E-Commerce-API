@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useProduct } from '../../context/ProductContext'
 import { useError } from '../../context/ErrorContext'
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -104,99 +105,104 @@ function NewProductForm() {
                 modalButtonText="Got it"
             >
             </AttentionModal>
+            <Container className="d-flex justify-content-center mt-5 vh-100">
+                <Row className="w-100">
+                    <Col xs={12} sm={10} md={8} className="mx-auto">
+                        <Form className="form-width shadow-lg rounded p-5" onSubmit={handleSubmit}>
+                            <Row>
+                                <Col md={12} lg={6}>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.productName && "validation-error-label"} label="Product Name">
+                                            <Form.Control
+                                                className={formErrors?.productName && 'validation-error-form'}
+                                                type="text"
+                                                placeholder="Product Name"
+                                                name="productName"
+                                                value={formData.productName}
+                                                onChange={handleChange}
 
-            <Form className="shadow-lg rounded p-5" onSubmit={handleSubmit} style={{ width: '65%', margin: "0 auto" }}>
-                <Row>
-                    <Col md={12} lg={6}>
-                        <Form.Group className="mb-3">
-                            <FloatingLabel className={formErrors?.productName && "validation-error-label"} label="Product Name">
-                                <Form.Control
-                                    className={formErrors?.productName && 'validation-error-form'}
-                                    type="text"
-                                    placeholder="Product Name"
-                                    name="productName"
-                                    value={formData.productName}
-                                    onChange={handleChange}
+                                            />
+                                        </FloatingLabel>
+                                        {formErrors?.productName && <p className="red-text">{formErrors.productName}</p>}
+                                    </Form.Group>
+                                </Col>
+                                <Col md={12} lg={6}>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.productSku && "validation-error-label"} label="Product Sku">
+                                            <Form.Control
+                                                className={formErrors?.productSku && 'validation-error-form'}
+                                                type="text"
+                                                placeholder="Product Sku"
+                                                name="productSku"
+                                                value={formData.productSku}
+                                                onChange={handleChange}
+                                            />
+                                        </FloatingLabel>
+                                        {formErrors?.productSku && <p className="red-text">{formErrors.productSku}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={12} lg={6}>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.price && "validation-error-label"} label="Price">
+                                            <Form.Control
+                                                className={formErrors?.price && 'validation-error-form'}
+                                                type="number"
+                                                placeholder="Price"
+                                                name="price"
+                                                value={formData.price}
+                                                onChange={handleChange}
+                                            />
+                                        </FloatingLabel>
+                                        {formErrors?.price && <p className="red-text">{formErrors.price}</p>}
+                                    </Form.Group>
+                                </Col>
+                                <Col md={12} lg={6}>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.stock && "validation-error-label"} label="Quantity">
+                                            <Form.Control
+                                                className={formErrors?.stock && 'validation-error-form'}
+                                                type="number"
+                                                placeholder="Quantity"
+                                                name="stock"
+                                                value={formData.stock}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </FloatingLabel>
+                                        {formErrors?.stock && <p className="red-text">{formErrors.stock}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel label="Image URL">
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Image URL"
+                                                name="imageUrl"
+                                                value={formData.imageUrl}
+                                                onChange={handleChange}
+                                            />
+                                        </FloatingLabel>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col xs="auto" >
+                                    <Button variant="dark" type="submit">Add Product</Button>
+                                </Col>
 
-                                />
-                            </FloatingLabel>
-                            {formErrors?.productName && <p className="red-text">{formErrors.productName}</p>}
-                        </Form.Group>
-                    </Col>
-                    <Col md={12} lg={6}>
-                        <Form.Group className="mb-3">
-                            <FloatingLabel className={formErrors?.productSku && "validation-error-label"} label="Product Sku">
-                                <Form.Control
-                                    className={formErrors?.productSku && 'validation-error-form'}
-                                    type="text"
-                                    placeholder="Product Sku"
-                                    name="productSku"
-                                    value={formData.productSku}
-                                    onChange={handleChange}
-                                />
-                            </FloatingLabel>
-                            {formErrors?.productSku && <p className="red-text">{formErrors.productSku}</p>}
-                        </Form.Group>
+                                <Col xs="auto">
+                                    <Button variant="secondary" onClick={clearFields}>Clear Fields</Button>
+                                </Col>
+                            </Row>
+                        </Form>
                     </Col>
                 </Row>
-                <Row>
-                    <Col md={12} lg={6}>
-                        <Form.Group className="mb-3">
-                            <FloatingLabel className={formErrors?.price && "validation-error-label"} label="Price">
-                                <Form.Control
-                                    className={formErrors?.price && 'validation-error-form'}
-                                    type="number"
-                                    placeholder="Price"
-                                    name="price"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                />
-                            </FloatingLabel>
-                            {formErrors?.price && <p className="red-text">{formErrors.price}</p>}
-                        </Form.Group>
-                    </Col>
-                    <Col md={12} lg={6}>
-                        <Form.Group className="mb-3">
-                            <FloatingLabel className={formErrors?.stock && "validation-error-label"} label="Quantity">
-                                <Form.Control
-                                    className={formErrors?.stock && 'validation-error-form'}
-                                    type="number"
-                                    placeholder="Quantity"
-                                    name="stock"
-                                    value={formData.stock}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </FloatingLabel>
-                            {formErrors?.stock && <p className="red-text">{formErrors.stock}</p>}
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <FloatingLabel label="Image URL">
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Image URL"
-                                    name="imageUrl"
-                                    value={formData.imageUrl}
-                                    onChange={handleChange}
-                                />
-                            </FloatingLabel>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row className="d-flex justify-content-center">
-                    <Col xs="auto" >
-                        <Button variant="dark" type="submit">Add Product</Button>
-                    </Col>
-
-                    <Col xs="auto">
-                        <Button variant="secondary" onClick={clearFields}>Clear Fields</Button>
-                    </Col>
-                </Row>
-            </Form>
+            </Container>
         </>);
 }
 

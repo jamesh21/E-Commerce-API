@@ -26,7 +26,7 @@ function RoleDropdown({ user, updateRole }) {
 
     return (
         <>
-            <DropdownButton variant="secondary" title={!isAdmin ? 'User' : 'Admin'}>
+            <DropdownButton className="dropdown-btn" variant="secondary" title={!isAdmin ? 'User' : 'Admin'}>
                 <Dropdown.Item active={!isAdmin} onClick={() => handleRoleChange(false)}>User</Dropdown.Item>
                 <Dropdown.Item active={isAdmin} onClick={() => handleRoleChange(true)}>Admin</Dropdown.Item>
             </DropdownButton>

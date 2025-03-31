@@ -32,12 +32,10 @@
 }
 
 .product-card {
-
     img {
         height: 250px;
         object-fit: cover;
     }
-
 }
 
 .cart-item {
@@ -80,10 +78,6 @@
     background-color: transparent !important;
 }
 
-.validation-error-msg {
-    color: red;
-}
-
 .red-text {
     color: red;
 }
@@ -99,5 +93,11 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 1050;
-    /* Ensures it appears above other elements */
+}
+
+.dropdown-btn {
+    button {
+        min-width: 120px;
+    }
+
 }

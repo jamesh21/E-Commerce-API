@@ -11,7 +11,7 @@ function ManageProductPanel() {
         <>
             <Row>
                 {products.map((product) => (
-                    <Col key={product.productId} lg={3} className="mb-4">
+                    <Col key={product.productId} xl={3} lg={4} md={6} className="mb-4">
                         <ProductCard
                             product={product}
                             textContent={(product) => <span> Stock: {product.stock} left </span>}
