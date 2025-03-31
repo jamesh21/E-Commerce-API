@@ -48,7 +48,7 @@ function ProductList() {
 
     return (
         <Container>
-            <ToastContainer position="top-center" className="p-3">
+            <ToastContainer className="p-3 sticky-toast">
                 <Toast bg="success" show={showToast} onClose={toggleShowToast}>
                     <Toast.Body className="d-flex justify-content-between white-text">
                         <span>
@@ -61,10 +61,10 @@ function ProductList() {
             </ToastContainer>
             <Row>
                 {products.map((product) => (
-                    <Col key={product.productId} lg={3} className="mb-4">
+                    <Col key={product.productId} xl={3} lg={4} md={6} className="mb-4">
                         <ProductCard
                             product={product}
-                            textContent={(product) => product.stock <= 5 && product.stock > 0 && <span>Low stock {product.stock} left</span>}
+                            textContent={(product) => product.stock <= 5 && product.stock > 0 && <span className="red-text">Only {product.stock} left</span>}
                             CustomButton={
                                 <AddToCartButton
                                     product={product}

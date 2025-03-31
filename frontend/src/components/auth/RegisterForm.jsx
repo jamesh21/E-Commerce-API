@@ -86,7 +86,7 @@ function RegisterForm() {
                                     >
                                     </Form.Control>
                                 </FloatingLabel>
-                                {formErrors?.name && <p className="validation-error-msg ">{formErrors.name}</p>}
+                                {formErrors?.name && <p className="red-text">{formErrors.name}</p>}
                             </Form.Group>
                         </Col>
                     </Row>
@@ -104,7 +104,7 @@ function RegisterForm() {
                                     >
                                     </Form.Control>
                                 </FloatingLabel>
-                                {formErrors?.email && <p className="validation-error-msg ">{formErrors.email}</p>}
+                                {formErrors?.email && <p className="red-text">{formErrors.email}</p>}
                             </Form.Group>
                         </Col>
                     </Row>
@@ -123,7 +123,7 @@ function RegisterForm() {
                                     </Form.Control>
 
                                 </FloatingLabel>
-                                {formErrors?.password && <p className="validation-error-msg ">{formErrors.password}</p>}
+                                {formErrors?.password && <p className="red-text">{formErrors.password}</p>}
                             </Form.Group>
                         </Col>
                     </Row>
