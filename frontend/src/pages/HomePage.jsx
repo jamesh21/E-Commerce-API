@@ -3,6 +3,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import { useNavigate } from 'react-router-dom';
+import { SLIDER_IMG_1, SLIDER_IMG_2, SLIDER_IMG_3 } from '../constants/constant';
 function HomePage() {
     const navigate = useNavigate()
     const handleViewProductBtn = () => {
@@ -10,10 +11,10 @@ function HomePage() {
     }
     return (
         <Container fluid>
-            <div style={{ width: "80%", margin: "0 auto" }}>
+            <div>
                 <Carousel className="mt-4">
                     <Carousel.Item interval={5000}>
-                        <Image className="carousel-image d-block w-100" src="https://images.unsplash.com/photo-1520605728164-b6a5c6814203?q=80&w=2681&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"></Image>
+                        <Image className="carousel-image d-block w-100" src={SLIDER_IMG_1}></Image>
                         <div className="carousel-overlay"></div>
                         <Carousel.Caption>
                             <h3>First slide label</h3>
@@ -24,7 +25,7 @@ function HomePage() {
                         </Carousel.Caption>
                     </Carousel.Item>
                     <Carousel.Item interval={5000}>
-                        <Image className="carousel-image d-block w-100" src="https://plus.unsplash.com/premium_photo-1673014201324-54bab699c3b4?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"></Image>
+                        <Image className="carousel-image d-block w-100" src={SLIDER_IMG_2}></Image>
                         <div className="carousel-overlay"></div>
                         <Carousel.Caption>
                             <h3>Second slide label</h3>
@@ -35,7 +36,7 @@ function HomePage() {
                         </Carousel.Caption>
                     </Carousel.Item>
                     <Carousel.Item interval={5000}>
-                        <Image className="carousel-image d-block w-100" src="https://images.unsplash.com/photo-1501876725168-00c445821c9e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"></Image>
+                        <Image className="carousel-image d-block w-100" src={SLIDER_IMG_3}></Image>
                         <div className="carousel-overlay"></div>
                         <Carousel.Caption>
                             <h3>Third slide label</h3>

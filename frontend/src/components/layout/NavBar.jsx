@@ -19,7 +19,7 @@ function NavBar() {
     const totalCartQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
     return (
         <>
-            <Navbar bg="dark" data-bs-theme="dark" className="">
+            <Navbar bg="dark" data-bs-theme="dark" className="sticky-top">
                 <Container>
                     <Navbar.Brand as={NavLink} to="/"><i className="bi bi-box-seam"></i></Navbar.Brand>
                     <Nav className="me-auto">
