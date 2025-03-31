@@ -14,8 +14,7 @@
 
 
 .form-width {
-    width: 40%;
-    margin: 0 auto;
+    max-width: 800px;
 }
 
 .carousel-image {

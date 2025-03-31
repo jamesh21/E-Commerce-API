@@ -70,69 +70,74 @@ function RegisterForm() {
 
     return (
         <>
-            <Container>
-                <Form className="form-width shadow-lg rounded p-5" onSubmit={registerUser}>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <FloatingLabel className={formErrors?.name && "validation-error-label"} label="Full name">
-                                    <Form.Control
-                                        className={formErrors?.name && 'validation-error-form'}
-                                        type="text"
-                                        name="name"
-                                        value={registerData.name}
-                                        onChange={handleChanges}
-                                        placeholder='full name'
-                                    >
-                                    </Form.Control>
-                                </FloatingLabel>
-                                {formErrors?.name && <p className="red-text">{formErrors.name}</p>}
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <FloatingLabel className={formErrors?.email && "validation-error-label"} label="Email address">
-                                    <Form.Control
-                                        className={formErrors?.email && 'validation-error-form'}
-                                        type="text"
-                                        name="email"
-                                        value={registerData.email}
-                                        onChange={handleChanges}
-                                        placeholder='email address'
-                                    >
-                                    </Form.Control>
-                                </FloatingLabel>
-                                {formErrors?.email && <p className="red-text">{formErrors.email}</p>}
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <FloatingLabel className={formErrors?.password && "validation-error-label"} label="Password">
-                                    <Form.Control
-                                        className={formErrors?.password && 'validation-error-form'}
-                                        type="password"
-                                        name="password"
-                                        value={registerData.password}
-                                        onChange={handleChanges}
-                                        placeholder='password'
-                                    >
-                                    </Form.Control>
+            <Container className="d-flex justify-content-center mt-5 vh-100">
+                <Row className="w-100">
+                    <Col xs={12} sm={10} md={8} xl={5} className="mx-auto">
+                        <Form className="form-width shadow-lg rounded p-5" onSubmit={registerUser}>
+                            <h2 className="mb-5">Create new account</h2>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.name && "validation-error-label"} label="Full name">
+                                            <Form.Control
+                                                className={formErrors?.name && 'validation-error-form'}
+                                                type="text"
+                                                name="name"
+                                                value={registerData.name}
+                                                onChange={handleChanges}
+                                                placeholder='full name'
+                                            >
+                                            </Form.Control>
+                                        </FloatingLabel>
+                                        {formErrors?.name && <p className="red-text">{formErrors.name}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.email && "validation-error-label"} label="Email address">
+                                            <Form.Control
+                                                className={formErrors?.email && 'validation-error-form'}
+                                                type="text"
+                                                name="email"
+                                                value={registerData.email}
+                                                onChange={handleChanges}
+                                                placeholder='email address'
+                                            >
+                                            </Form.Control>
+                                        </FloatingLabel>
+                                        {formErrors?.email && <p className="red-text">{formErrors.email}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.password && "validation-error-label"} label="Password">
+                                            <Form.Control
+                                                className={formErrors?.password && 'validation-error-form'}
+                                                type="password"
+                                                name="password"
+                                                value={registerData.password}
+                                                onChange={handleChanges}
+                                                placeholder='password'
+                                            >
+                                            </Form.Control>
 
-                                </FloatingLabel>
-                                {formErrors?.password && <p className="red-text">{formErrors.password}</p>}
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row className="my-2 text-center">
-                        <Col>
-                            <Button className="large-width-button" size='md' variant="primary" type="submit">Register</Button>
-                        </Col>
-                    </Row>
-                </Form>
+                                        </FloatingLabel>
+                                        {formErrors?.password && <p className="red-text">{formErrors.password}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row className="my-2 text-center">
+                                <Col>
+                                    <Button className="large-width-button" size='md' variant="primary" type="submit">Register</Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </Col>
+                </Row>
             </Container>
         </>
     )

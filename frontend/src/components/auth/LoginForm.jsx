@@ -78,57 +78,63 @@ function LoginForm() {
 
     return (
         <>
-            <Container>
-                <Form className="form-width shadow-lg rounded p-5" onSubmit={handleLogin}>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <FloatingLabel className={formErrors?.email && "validation-error-label"} label="Email address">
-                                    <Form.Control
-                                        className={formErrors?.email && 'validation-error-form'}
-                                        type="text"
-                                        name="email"
-                                        value={loginData.email}
-                                        onChange={handleChange}
-                                        placeholder='email address'
-                                    >
-                                    </Form.Control>
-                                </FloatingLabel>
-                                {formErrors?.email && <p className="red-text">{formErrors.email}</p>}
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <FloatingLabel className={formErrors?.password && "validation-error-label"} label="Password">
-                                    <Form.Control
-                                        className={formErrors?.password && 'validation-error-form'}
-                                        type="password"
-                                        name="password"
-                                        value={loginData.password}
-                                        placeholder='password'
-                                        onChange={handleChange}
-                                    >
-                                    </Form.Control>
-                                </FloatingLabel>
-                                {formErrors?.password && <p className="red-text">{formErrors.password}</p>}
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <div className="text-center" >
-                        <Row className="my-2">
-                            <Col>
-                                <Button className="large-width-button" size="md" variant="primary" type="submit">Login</Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Button className="large-width-button" size="md" onClick={handleNewUser}>New User</Button>
-                            </Col>
-                        </Row>
-                    </div>
-                </Form>
+            <Container className="d-flex justify-content-center mt-5 vh-100">
+                <Row className="w-100">
+                    <Col xs={12} sm={10} md={8} xl={5} className="mx-auto">
+                        <Form className="form-width shadow-lg rounded p-5" onSubmit={handleLogin}>
+                            <h2 className="mb-5">Sign into your account</h2>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.email && "validation-error-label"} label="Email address">
+                                            <Form.Control
+                                                className={formErrors?.email && 'validation-error-form'}
+                                                type="text"
+                                                name="email"
+                                                value={loginData.email}
+                                                onChange={handleChange}
+                                                placeholder='email address'
+                                            >
+                                            </Form.Control>
+                                        </FloatingLabel>
+                                        {formErrors?.email && <p className="red-text">{formErrors.email}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Form.Group className="mb-3">
+                                        <FloatingLabel className={formErrors?.password && "validation-error-label"} label="Password">
+                                            <Form.Control
+                                                className={formErrors?.password && 'validation-error-form'}
+                                                type="password"
+                                                name="password"
+                                                value={loginData.password}
+                                                placeholder='password'
+                                                onChange={handleChange}
+                                            >
+                                            </Form.Control>
+                                        </FloatingLabel>
+                                        {formErrors?.password && <p className="red-text">{formErrors.password}</p>}
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <div className="text-center" >
+                                <Row className="my-2">
+                                    <Col>
+                                        <Button className="large-width-button" size="md" variant="primary" type="submit">Login</Button>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Button className="large-width-button" size="md" onClick={handleNewUser}>New User</Button>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </Form>
+                    </Col>
+                </Row>
+
             </Container >
 
         </>);
