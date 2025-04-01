@@ -14,11 +14,11 @@ function CartPage() {
             <Row className="g-5">
                 {cartItems.length === 0 ? <EmptyCart></EmptyCart> :
                     (<>
-                        <Col lg={9}>
+                        <Col lg={8}>
                             <h2 className="mb-4">Cart</h2>
                             <CartItemList></CartItemList>
                         </Col>
-                        <Col>
+                        <Col lg={4}>
                             <OrderSummary></OrderSummary>
                         </Col>
                     </>)

@@ -1,9 +1,11 @@
 import Button from 'react-bootstrap/Button';
+// import { useBreakpoint } from 'react-bootstrap'
 import displayCurrency from '../../utils/helper';
 import { useCart } from '../../context/CartContext'
 import { useError } from '../../context/ErrorContext'
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 function OrderSummary() {
+    // const isSmallScreen = useBreakpoint() === "xs" || useBreakpoint() === "sm" || useBreakpoint() === "md";
     const { cartItems, onCheckout } = useCart()
     const { showError } = useError()
     const calculateCartItemTotal = () => {
@@ -30,15 +32,15 @@ function OrderSummary() {
     }
 
     return (
-        <div style={{ minHeight: '300px' }} className="shadow rounded sticky-top d-flex flex-column">
-            <h3 className="py-4 px-3" >Order Summary</h3>
+        <div className="shadow rounded sticky-s-top d-flex flex-column sticky-xs-bottom order-summary">
+            <h3 className="d-none d-lg-block py-4 px-3" >Order Summary</h3>
 
-            <div className="px-5">
+            <div className="px-5 total-text">
                 {calculateCartItemTotal()}
                 <div className="mb-3">{totalCartQuantity} items</div>
             </div>
-            <div className="text-center h100 mt-auto mb-5">
-                <Button style={{ width: '90%' }} onClick={handleClick} size="lg" variant="dark">Check out</Button>
+            <div className="text-center h100 mb-5 checkout-btn">
+                <Button onClick={handleClick} size="lg" variant="dark">Check out</Button>
             </div>
 
         </div>

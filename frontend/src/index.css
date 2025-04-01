@@ -101,3 +101,54 @@
     }
 
 }
+
+@media (max-width: 992px) {
+    .sticky-xs-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        /* Optional */
+        z-index: 1000;
+        /* Ensure it stays above other content */
+    }
+}
+
+@media (min-width: 993px) {
+    .sticky-s-top {
+        position: sticky;
+        top: 60px;
+        z-index: 1000;
+    }
+}
+
+.order-summary {
+    min-height: 300px;
+
+    .checkout-btn {
+        margin-top: auto;
+
+        button {
+            width: 65%;
+        }
+    }
+}
+
+@media(max-width: 992px) {
+    .order-summary {
+        min-height: 150px;
+        height: 15%;
+
+        .total-text {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .checkout-btn {
+            margin-top: 1rem;
+        }
+    }
+}
