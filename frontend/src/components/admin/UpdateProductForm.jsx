@@ -123,7 +123,7 @@ function UpdateProductForm({ product, closeModal }) {
                                 >
                                 </Form.Control>
                             </FloatingLabel>
-                            {formErrors?.productName && <p className="validation-error-msg ">{formErrors.productName}</p>}
+                            {formErrors?.productName && <p className="red-text">{formErrors.productName}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
@@ -139,7 +139,7 @@ function UpdateProductForm({ product, closeModal }) {
                                 />
 
                             </FloatingLabel>
-                            {formErrors?.productSku && <p className="validation-error-msg ">{formErrors.productSku}</p>}
+                            {formErrors?.productSku && <p className="red-text">{formErrors.productSku}</p>}
                         </Form.Group>
                     </Col>
                 </Row>
@@ -156,7 +156,7 @@ function UpdateProductForm({ product, closeModal }) {
                                     onChange={handleChange}
                                 />
                             </FloatingLabel>
-                            {formErrors?.price && <p className="validation-error-msg ">{formErrors.price}</p>}
+                            {formErrors?.price && <p className="red-text">{formErrors.price}</p>}
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
@@ -171,7 +171,7 @@ function UpdateProductForm({ product, closeModal }) {
                                     onChange={handleChange}
                                 />
                             </FloatingLabel>
-                            {formErrors?.stock && <p className="validation-error-msg ">{formErrors.stock}</p>}
+                            {formErrors?.stock && <p className="red-text">{formErrors.stock}</p>}
                         </Form.Group>
                     </Col>
                 </Row>

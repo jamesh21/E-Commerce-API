@@ -44,10 +44,9 @@ function CartItem({ cartItem }) {
 
     return (
         <Row className="cart-item">
-            <Col lg={4} style={{ maxHeight: '200px', overflow: 'hidden' }}>
+            <Col lg={4} md={4} sm={4} className="mb-sm-0 mb-2" style={{ maxHeight: '200px', overflow: 'hidden' }}>
                 <Image src={cartItem.imageUrl || PLACE_HOLDER_IMG}></Image>
             </Col>
-
             <Col className="px-4">
                 <div className="my-3">{cartItem.productName}</div>
                 <DropdownButton onSelect={handleQuantityChange} variant="secondary" size="sm" id="dropdown-basic-button" title={`Qty ${cartItem.quantity}`}>
