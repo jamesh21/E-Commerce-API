@@ -1,6 +1,6 @@
 import Card from 'react-bootstrap/Card';
-
 import { COMING_SOON_IMAGE_URL } from '../../constants/constant'
+
 function ProductCard({ product, textContent, CustomButton, CustomButton2 }) {
 
     return (

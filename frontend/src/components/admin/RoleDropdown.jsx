@@ -8,6 +8,10 @@ function RoleDropdown({ user, updateRole }) {
     const [showModal, setShowModal] = useState(false);
     const [possiblAdminRole, setPossiblAdminRole] = useState(null)
 
+    /**
+     * Updates possibleAdminRole with new role
+     * @param {*} isRoleAdmin 
+     */
     const handleRoleChange = (isRoleAdmin) => {
         if (isRoleAdmin !== isAdmin) {
             setPossiblAdminRole(isRoleAdmin)
@@ -15,6 +19,9 @@ function RoleDropdown({ user, updateRole }) {
         }
     }
 
+    /**
+     * Handles the user role update flow of the app.
+     */
     const confirmRoleChange = async () => {
         setIsAdmin(possiblAdminRole)
         const isUpdated = await updateRole(possiblAdminRole, user.userId)

@@ -11,6 +11,7 @@ import ConfirmModal from '../common/ConfirmModal';
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function UpdateProductForm({ product, closeModal }) {
+    // contexts
     const { updateProduct } = useProduct()
     const { updateProductInCart } = useCart()
     const { showError } = useError()
@@ -25,7 +26,10 @@ function UpdateProductForm({ product, closeModal }) {
         imageUrl: product.imageUrl
     })
 
-
+    /**
+     * This function checks if any formData fields are invalid.
+     * @returns true if no errors were found in formData, else false
+     */
     const isFormValid = () => {
         let errors = {}
         if (formData.productName.length === 0) {
@@ -57,6 +61,7 @@ function UpdateProductForm({ product, closeModal }) {
             setShowConfirmModal(true)
         }
     }
+
 
     const confirmUpdateProduct = async () => {
         // check if there's anything new to update first

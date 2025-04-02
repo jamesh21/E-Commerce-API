@@ -16,7 +16,9 @@ function NavBar() {
         logout(navigate)
     }
 
+    // Used to calculate number of items in cart currently.
     const totalCartQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+
     return (
         <>
             <Navbar bg="dark" data-bs-theme="dark" className="sticky-top">
@@ -35,12 +37,11 @@ function NavBar() {
                                         Logout
                                     </Nav.Link>
                                 </>
-                            ) : // Need to change variable format 
+                            ) :
                             <Nav.Link as={NavLink} to="/login">Login</Nav.Link>}
 
                         <Nav.Link as={NavLink} className="position-relative" to="/cart">
                             <i className="bi bi-cart mx-3"><Badge pill bg="danger" className="cart-badge">{totalCartQuantity > 0 && totalCartQuantity}</Badge></i>
-
                         </Nav.Link>
                     </Nav>
                 </Container>

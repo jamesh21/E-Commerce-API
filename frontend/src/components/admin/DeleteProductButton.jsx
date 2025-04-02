@@ -7,15 +7,18 @@ import ConfirmModal from '../common/ConfirmModal';
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function DeleteProductButton({ product }) {
+    // contexts
     const { showError } = useError()
     const { deleteProduct } = useProduct()
     const { removeDeletedProductFromCart } = useCart()
+
     const [showConfirmModal, setShowConfirmModal] = useState(false)
 
     const handleClick = () => {
         setShowConfirmModal(true)
     }
 
+    // This function deletes the product from backend and also calls cart context to remove product from cart if present.
     const confirmDeleteProduct = async () => {
         try {
             await deleteProduct(product.productId)

@@ -1,19 +1,25 @@
 import Button from 'react-bootstrap/Button';
-// import { useBreakpoint } from 'react-bootstrap'
 import displayCurrency from '../../utils/helper';
 import { useCart } from '../../context/CartContext'
 import { useError } from '../../context/ErrorContext'
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
+
 function OrderSummary() {
-    // const isSmallScreen = useBreakpoint() === "xs" || useBreakpoint() === "sm" || useBreakpoint() === "md";
     const { cartItems, onCheckout } = useCart()
     const { showError } = useError()
+
+    // Used to calculate total cost of items.
     const calculateCartItemTotal = () => {
         const total = cartItems.reduce((accu, currentItem) => accu + (currentItem.quantity * currentItem.price), 0)
         return displayCurrency(total)
     }
+
+    // USed to display number of items in cart
     const totalCartQuantity = cartItems.reduce((accu, currItem) => accu + currItem.quantity, 0)
 
+    /**
+     * invokes checkout functionality
+     */
     const handleClick = async () => {
         try {
             await onCheckout()
@@ -34,7 +40,6 @@ function OrderSummary() {
     return (
         <div className="shadow rounded sticky-s-top d-flex flex-column sticky-xs-bottom order-summary">
             <h3 className="d-none d-lg-block py-4 px-3" >Order Summary</h3>
-
             <div className="px-5 total-text">
                 {calculateCartItemTotal()}
                 <div className="mb-3">{totalCartQuantity} items</div>
@@ -42,7 +47,6 @@ function OrderSummary() {
             <div className="text-center h100 mb-5 checkout-btn">
                 <Button onClick={handleClick} size="lg" variant="dark">Check out</Button>
             </div>
-
         </div>
     )
 }

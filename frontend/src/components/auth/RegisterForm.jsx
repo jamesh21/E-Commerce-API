@@ -27,8 +27,14 @@ function RegisterForm() {
         setRegisterData({ ...registerData, [e.target.name]: e.target.value })
     }
 
+    /**
+     * Handles the register user flow for the app
+     * @param {*} e 
+     * @returns 
+     */
     const registerUser = async (e) => {
         e.preventDefault()
+        // Checks if form is valid before moving onn
         if (!isFormValid()) {
             return
         }
@@ -36,6 +42,7 @@ function RegisterForm() {
             const response = await axiosInstance.post('/auth/register', registerData)
             login(response.data.user, response.data.token)
             navigate('/products')
+
         } catch (error) {
             if (error.status === 409) {
                 setFormErrors({ email: 'Email already in use' })
@@ -49,6 +56,10 @@ function RegisterForm() {
         }
     }
 
+    /**
+    * This function does an initial check to see if the form fields meet the basic requirements.
+    * @returns 
+    */
     const isFormValid = () => {
         let errors = {}
         if (registerData.email.length === 0) {
