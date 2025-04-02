@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes')
+
 class UnauthenticatedError extends Error {
     constructor(message) {
         super(message)

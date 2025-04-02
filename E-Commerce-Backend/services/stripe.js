@@ -1,5 +1,12 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
+/**
+ * This function contacts stripe api wiht our order details and will return a url to stripes payment page.
+ * @param {*} cartItems 
+ * @param {*} orderId 
+ * @param {*} cartId 
+ * @returns 
+ */
 const makePaymentWithStripe = async (cartItems, orderId, cartId) => {
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -12,8 +19,8 @@ const makePaymentWithStripe = async (cartItems, orderId, cartId) => {
             quantity: item.quantity,
         })),
         mode: "payment",
-        success_url: `${process.env.STRIPE_SUCCESS_URL}?orderId=${orderId}`,
-        cancel_url: `${process.env.STRIPE_CANCEL_URL}`,
+        success_url: `${process.env.STRIPE_SUCCESS_URL}?orderId=${orderId}`, // URL to reroute too after successful payment.
+        cancel_url: `${process.env.STRIPE_CANCEL_URL}`, // URL if payment is cancellded ex. hitting back button on stripe page.
         metadata: { orderId, cartId }, // Store order ID in metadata
     });
 

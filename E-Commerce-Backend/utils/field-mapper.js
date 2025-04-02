@@ -1,4 +1,4 @@
-
+// Helper function for mapping fields given fieldMappings.
 const transformFields = (data, fieldMappings) => {
     const transformedData = {}
     for (const [field, value] of Object.entries(data)) {

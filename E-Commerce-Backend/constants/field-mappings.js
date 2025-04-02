@@ -1,3 +1,4 @@
+// Mapping for db values to values used in backend code
 const DB_TO_API_MAPPING = {
     cart_item_id: "cartItemId",
     cart_id: "cartId",
@@ -12,6 +13,7 @@ const DB_TO_API_MAPPING = {
     password_hash: "password"
 }
 
+// Mapping for backend code to db values.
 const API_TO_DB_MAPPING = {
     productName: 'product_name',
     imageUrl: 'image_url',

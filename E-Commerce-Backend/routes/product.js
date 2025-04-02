@@ -10,6 +10,7 @@ router.route("/:sku").get(getProduct)
 router.route('/').get(getProducts)
 
 router.use(authMiddleware)
+
 // below routes need admin privledge
 router.use(adminMiddleware)
 router.route("/:id").put(updateProduct).delete(deleteProduct);

@@ -2,9 +2,16 @@ const pool = require('../db'); // Import the database connection
 const { ConflictError, NotFoundError, InsufficientStockError } = require('../errors')
 const { transformFields } = require('../utils/field-mapper')
 const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
-
+const { DB_DUP_ENTRY } = require('../constants/error-messages')
 
 // User Table query start here
+/**
+ * This function will create a new entry in users table.
+ * @param {*} email 
+ * @param {*} hashedPassword 
+ * @param {*} name 
+ * @returns 
+ */
 const addUserToDB = async (email, hashedPassword, name) => {
     try {
         const user = await pool.query('INSERT INTO users (email_address, password_hash, full_name, is_admin) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -17,13 +24,18 @@ const addUserToDB = async (email, hashedPassword, name) => {
         return transformFields(user.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
         // duplicate entry
-        if (err.code === '23505') {
+        if (err.code === DB_DUP_ENTRY) {
             throw new ConflictError('email already exists')
         }
         throw err
     }
 }
 
+/**
+ * Retrieves user info from users table.
+ * @param {*} userId 
+ * @returns 
+ */
 const getUserInfoFromDb = async (userId) => {
     const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
     if (user.rowCount === 0) {
@@ -34,6 +46,11 @@ const getUserInfoFromDb = async (userId) => {
 }
 
 
+/**
+ * Retrieves specific users from users table.
+ * @param {*} email 
+ * @returns 
+ */
 const getUserFromDB = async (email) => {
     const user = await pool.query('SELECT * FROM users WHERE email_address = ($1)', [email])
     if (user.rowCount === 0) {
@@ -42,9 +59,14 @@ const getUserFromDB = async (email) => {
     return transformFields(user.rows[0], DB_TO_API_MAPPING)
 }
 
+/**
+ * Retrieves all users from users table.
+ * @returns 
+ */
 const getUsersFromDB = async () => {
     const users = await pool.query('SELECT user_id, email_address, full_name, is_admin FROM users')
     const formattedUsers = []
+    // format all user info
     for (let user of users.rows) {
         formattedUsers.push(transformFields(user, DB_TO_API_MAPPING))
     }
@@ -52,6 +74,13 @@ const getUsersFromDB = async () => {
     return { data: formattedUsers, count: formattedUsers.length }
 }
 
+
+/**
+ * Updates specific user role in users table.
+ * @param {*} isNewRoleAdmin 
+ * @param {*} userId 
+ * @returns 
+ */
 const updateUserRoleInDB = async (isNewRoleAdmin, userId) => {
 
     const updatedUser = await pool.query('UPDATE users SET is_admin=($1) WHERE user_id = ($2) RETURNING *', [isNewRoleAdmin, userId])
@@ -60,7 +89,14 @@ const updateUserRoleInDB = async (isNewRoleAdmin, userId) => {
     }
     return transformFields(updatedUser.rows[0], DB_TO_API_MAPPING)
 }
+
+
 // Cart Table query start here
+/**
+ * Creates new cart entry for user in carts table.
+ * @param {*} userId 
+ * @returns 
+ */
 const addCartToDB = async (userId) => {
     const newCart = await pool.query('INSERT INTO carts (user_id) VALUES ($1) RETURNING *', [userId])
     if (newCart.rowCount === 0) {
@@ -69,6 +105,11 @@ const addCartToDB = async (userId) => {
     return transformFields(newCart.rows[0], DB_TO_API_MAPPING)
 }
 
+/**
+ * Retrieves specific cart for user in carts table.
+ * @param {*} userId 
+ * @returns 
+ */
 const getCartFromDB = async (userId) => {
     const cart = await pool.query('SELECT cart_id FROM carts WHERE user_id = ($1)', [userId])
     if (cart.rowCount > 0) {
@@ -76,7 +117,13 @@ const getCartFromDB = async (userId) => {
     }
 }
 
+
 // Product Table query start here
+/**
+ * Retrieves product from db given product sku.
+ * @param {*} sku 
+ * @returns 
+ */
 const getProductFromDB = async (sku) => {
     const product = await pool.query('SELECT product_sku, product_name, price, stock FROM products WHERE product_sku = ($1)',
         [sku])
@@ -91,6 +138,10 @@ const getProductFromDB = async (sku) => {
     return { data: formattedProducts, count: product.length }
 }
 
+/**
+ * Retreives all products from products table.
+ * @returns 
+ */
 const getProductsFromDB = async () => {
     const allProducts = await pool.query('SELECT * FROM products')
     const formattedProducts = []
@@ -101,6 +152,15 @@ const getProductsFromDB = async () => {
     return { data: formattedProducts, count: formattedProducts.length }
 }
 
+/**
+ * Adds new product to products table.
+ * @param {*} productName 
+ * @param {*} stock 
+ * @param {*} price 
+ * @param {*} productSku 
+ * @param {*} imageUrl 
+ * @returns 
+ */
 const addProductToDB = async (productName, stock, price, productSku, imageUrl) => {
     try {
         const newProduct = await pool.query('INSERT INTO products (product_name, stock, price, product_sku, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
@@ -110,13 +170,19 @@ const addProductToDB = async (productName, stock, price, productSku, imageUrl) =
         }
         return transformFields(newProduct.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
-        if (err.code === '23505') {
+        if (err.code === DB_DUP_ENTRY) {
             throw new ConflictError('Product Sku has to be unique')
         }
         throw err
     }
 }
 
+/**
+ * Update product in products table
+ * @param {*} sku 
+ * @param {*} fieldsToUpdate 
+ * @returns 
+ */
 const updateProductInDB = async (sku, fieldsToUpdate) => {
     const setStatements = [], values = []
     let i = 1
@@ -133,18 +199,21 @@ const updateProductInDB = async (sku, fieldsToUpdate) => {
         const updatedProduct = await pool.query(query, values)
         if (updatedProduct.rowCount === 0) {
             throw new Error(updatedProduct)
-            // throw new Error('Could not updated product, try again later')
         }
         return transformFields(updatedProduct.rows[0], DB_TO_API_MAPPING)
     } catch (err) {
         // duplicate entry
-        if (err.code === '23505') {
+        if (err.code === DB_DUP_ENTRY) {
             throw new ConflictError('Product Sku has to be unique')
         }
         throw err
     }
 }
 
+/**
+ * Delete product from products table.
+ * @param {*} productId 
+ */
 const deleteProductInDB = async (productId) => {
     const product = await pool.query('DELETE FROM products WHERE product_id = ($1)', [productId])
     if (product.rowCount === 0) {
@@ -153,7 +222,13 @@ const deleteProductInDB = async (productId) => {
 }
 
 // Cart Item Table query start here
+/**
+ * Retrieve all cart items for the given cart id
+ * @param {*} cartId 
+ * @returns 
+ */
 const getCartItemsFromDB = async (cartId) => {
+    // Retrieves cart items by joining cart items and product table.
     const cartItems = await pool.query('SELECT ci.cart_item_id, p.product_id, p.product_sku, p.product_name, p.price, p.stock, p.image_url, ci.quantity FROM cart_items ci JOIN products p ON ci.product_id=p.product_id WHERE ci.cart_id=($1)', [cartId])
     let totalItems = 0
     for (let items of cartItems.rows) {
@@ -166,7 +241,13 @@ const getCartItemsFromDB = async (cartId) => {
     return { data: formattedCartItems, count: totalItems }
 }
 
-
+/**
+ * Add cart item to users cart.
+ * @param {*} cartId 
+ * @param {*} productId 
+ * @param {*} quantity 
+ * @returns 
+ */
 const addCartItemToDB = async (cartId, productId, quantity) => {
     try {
         // attemps to add item to cart, if already present increment quantity instead.
@@ -184,6 +265,13 @@ const addCartItemToDB = async (cartId, productId, quantity) => {
     }
 }
 
+/**
+ * Updates quantity of cart item
+ * @param {*} quantity 
+ * @param {*} cartItemId 
+ * @param {*} cartId 
+ * @returns 
+ */
 const updateCartItemQuantityInDB = async (quantity, cartItemId, cartId) => {
     const cartItem = await pool.query('UPDATE cart_items SET quantity = ($1) WHERE cart_item_id = ($2) AND cart_id = ($3) RETURNING *', [quantity, cartItemId, cartId])
     if (cartItem.rowCount === 0) {
@@ -192,6 +280,12 @@ const updateCartItemQuantityInDB = async (quantity, cartItemId, cartId) => {
     return transformFields(cartItem.rows[0], DB_TO_API_MAPPING)
 }
 
+/**
+ * Removes cart item for user
+ * @param {*} cartItemId 
+ * @param {*} cartId 
+ * @returns 
+ */
 const removeCartItemFromDB = async (cartItemId, cartId) => {
     const cartItem = await pool.query('DELETE FROM cart_items WHERE cart_item_id = ($1) AND cart_id = ($2)', [cartItemId, cartId])
     if (cartItem.rowCount === 0) {
@@ -200,6 +294,11 @@ const removeCartItemFromDB = async (cartItemId, cartId) => {
     return { msg: `Deleted cart item ${cartItemId} successfully` }
 }
 
+/**
+ * Removes all cart items for user
+ * @param {*} cartId 
+ * @returns 
+ */
 const clearCartItemForUserInDB = async (cartId) => {
     const deletedCart = await pool.query('DELETE FROM cart_items WHERE cart_id = ($1)', [cartId])
     if (deletedCart.rowCount === 0) {
@@ -209,6 +308,12 @@ const clearCartItemForUserInDB = async (cartId) => {
 }
 
 // Order Table query start here
+/**
+ * Creates order entry in orders table.
+ * @param {*} userId 
+ * @param {*} totalPrice 
+ * @returns 
+ */
 const createOrderInDB = async (userId, totalPrice) => {
     const order = await pool.query('INSERT INTO orders (user_id, total_price) VALUES ($1, $2) RETURNING *', [userId, totalPrice])
     if (order.rowCount === 0) {
@@ -217,10 +322,21 @@ const createOrderInDB = async (userId, totalPrice) => {
     return order.rows[0].order_id
 }
 
+/**
+ * Creates entry in order items table.
+ * @param {*} item 
+ * @param {*} orderId 
+ */
 const addOrderLineItemToDB = async (item, orderId) => {
     await pool.query('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)', [orderId, item.productId, item.quantity, item.price])
 }
 
+/**
+ * This function is responsible for the order creation flow.
+ * @param {*} cartId 
+ * @param {*} userId 
+ * @returns 
+ */
 const createOrder = async (cartId, userId) => {
     const client = await pool.connect();
     try {
@@ -228,6 +344,7 @@ const createOrder = async (cartId, userId) => {
         // Retrieve all items from user's cart
         const { data: cartItems } = await getCartItemsFromDB(cartId)
         const insufficientStockItems = []
+
         // Get total cost of items
         let total = 0
         for (let cartItem of cartItems) {
@@ -235,15 +352,19 @@ const createOrder = async (cartId, userId) => {
             if (cartItem.quantity > cartItem.stock) {
                 insufficientStockItems.push(cartItem.productName)
             }
-            if (insufficientStockItems.length > 0) {
-                throw new InsufficientStockError(insufficientStockItems)
-            }
+
             cartItem['total'] = cartItem.price * cartItem.quantity
             total += cartItem['total']
         }
 
+        // If any item doesn't have enough stock, throw error and pass in all items that can't be fullfilled.
+        if (insufficientStockItems.length > 0) {
+            throw new InsufficientStockError(insufficientStockItems)
+        }
+
         // Create an order, in DB
         const orderId = await createOrderInDB(userId, total)
+
         // Add order line items and reduce inventory in product table
         for (let cartItem of cartItems) {
             await addOrderLineItemToDB(cartItem, orderId)
@@ -251,6 +372,7 @@ const createOrder = async (cartId, userId) => {
         await client.query('COMMIT')
 
         return { orderId, cartItems }
+
     } catch (err) {
         await client.query('ROLLBACK')
         throw err
@@ -259,6 +381,11 @@ const createOrder = async (cartId, userId) => {
     }
 }
 
+/**
+ * Retrieves all products in order.
+ * @param {*} orderId 
+ * @returns 
+ */
 const getProductsFromOrder = async (orderId) => {
     const products = await pool.query('SELECT p.product_id, p.product_name, p.stock, oi.quantity FROM order_items oi JOIN products p ON p.product_id = oi.product_id WHERE oi.order_id=($1)', [orderId])
     if (products.rowCount === 0) {
@@ -272,6 +399,12 @@ const getProductsFromOrder = async (orderId) => {
     return { data: formattedProducts, count: formattedProducts.length }
 }
 
+/**
+ * Update fields in order table.
+ * @param {*} orderId 
+ * @param {*} fieldsToUpdate 
+ * @returns 
+ */
 const updateOrderInDB = async (orderId, fieldsToUpdate) => {
     const setStatements = [], values = []
     let i = 1
@@ -291,7 +424,7 @@ const updateOrderInDB = async (orderId, fieldsToUpdate) => {
         return transformFields(updatedOrder.rows[0], API_TO_DB_MAPPING)
     } catch (err) {
         // duplicate entry
-        if (err.code === '23505') {
+        if (err.code === DB_DUP_ENTRY) {
             throw new ConflictError('Product Sku has to be unique')
         }
         throw err
