@@ -36,8 +36,8 @@ const addUserToDB = async (email, hashedPassword, name) => {
  * @param {*} userId 
  * @returns 
  */
-const getUserInfoFromDb = async (userId) => {
-    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE user_id = ($1)', [userId])
+const getUserInfoFromDb = async (email) => {
+    const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE email_address = ($1)', [email])
     if (user.rowCount === 0) {
         throw new NotFoundError('User was not found')
     }
@@ -47,7 +47,7 @@ const getUserInfoFromDb = async (userId) => {
 
 
 /**
- * Retrieves specific users from users table.
+ * Retrieves specific users from users table, This will also return hashed password.
  * @param {*} email 
  * @returns 
  */

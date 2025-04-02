@@ -8,9 +8,9 @@ const { StatusCodes } = require('http-status-codes')
  * @returns 
  */
 const getUserInfo = async (req, res) => {
-    const { userId } = req.user
-    console.log(req.user)
-    const result = await getUserInfoFromDb(userId)
+    const { email } = req.user
+
+    const result = await getUserInfoFromDb(email)
     return res.status(StatusCodes.OK).json(result)
 }
 
