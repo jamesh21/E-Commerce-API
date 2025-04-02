@@ -5,6 +5,9 @@ const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
     const [products, setProducts] = useState([])
 
+    /**
+     * Fetches product list from backend
+     */
     useEffect(() => {
         const fetchedProducts = async () => {
             try {
@@ -18,6 +21,10 @@ export const ProductProvider = ({ children }) => {
         fetchedProducts()
     }, [])
 
+    /**
+     * Adds new product backend and set new product in state
+     * @param {*} productData 
+     */
     const addProduct = async (productData) => {
         try {
             const response = await axiosInstance.post('/product', productData)
@@ -30,6 +37,11 @@ export const ProductProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Updates product info
+     * @param {*} productId 
+     * @param {*} updates 
+     */
     const updateProduct = async (productId, updates) => {
         try {
             const response = await axiosInstance.put(`/product/${productId}`, updates)
@@ -44,6 +56,10 @@ export const ProductProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Deletes product from backend and removes it from product list.
+     * @param {*} productId 
+     */
     const deleteProduct = async (productId) => {
         try {
             await axiosInstance.delete(`/product/${productId}`)

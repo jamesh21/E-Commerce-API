@@ -2,6 +2,7 @@ import CartItem from './CartItem'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useCart } from '../../context/CartContext'
+
 function CartItemList() {
     const { cartItems } = useCart()
     return (

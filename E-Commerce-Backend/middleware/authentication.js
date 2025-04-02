@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { UnauthenticatedError } = require('../errors')
 const { getUserInfoFromDb } = require('../services/db')
+
 /**
  * Middleware for checking if bearer token is valid for accessing resources.
  * @param {*} req 
@@ -20,6 +21,7 @@ const auth = async (req, res, next) => {
         // We want to check with our backened to see what the user's role is
         const result = await getUserInfoFromDb(payload.id)
 
+        // Set user info in req header
         req.user = { userId: payload.id, name: payload.name, cartId: payload.cartId, isAdmin: result.isAdmin };
     } catch (err) {
         throw new UnauthenticatedError("Authentication invalid");

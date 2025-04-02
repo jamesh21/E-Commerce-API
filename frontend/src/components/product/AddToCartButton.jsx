@@ -5,6 +5,9 @@ import { useState } from "react";
 function AddToCartButton({ product, handleAddToCart }) {
     const [loading, setLoading] = useState(false)
 
+    /**
+     * This function will set loading animation for added product and invoke the add to cart process.
+     */
     const handleClick = async () => {
         setLoading(true)
         await handleAddToCart(product)

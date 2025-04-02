@@ -1,5 +1,4 @@
 
-
 function EmptyCart() {
     return (<><h1>Your Cart is Empty</h1></>)
 }

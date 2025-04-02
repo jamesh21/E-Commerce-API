@@ -22,8 +22,14 @@ function LoginForm() {
     })
     const [formErrors, setFormErrors] = useState(null)
 
+    /**
+     * Handles the login flow for the applicationn. 
+     * @param {*} e 
+     * @returns 
+     */
     const handleLogin = async (e) => {
         e.preventDefault()
+        // Checks if form is valid before proceeding
         if (!isFormValid()) {
             return
         }
@@ -50,6 +56,10 @@ function LoginForm() {
         }
     }
 
+    /**
+     * This function does an initial check to see if the form fields meet the basic requirements.
+     * @returns 
+     */
     const isFormValid = () => {
         let errors = {}
         if (loginData.email.length === 0) {
@@ -65,12 +75,17 @@ function LoginForm() {
         return Object.keys(errors).length === 0;
     }
 
+    /**
+     * Updates login form fields
+     * @param {*} e 
+     */
     const handleChange = (e) => {
         setLoginData({
             ...loginData,
             [e.target.name]: e.target.value
         })
     }
+
 
     const handleNewUser = () => {
         navigate('/register')
@@ -134,9 +149,7 @@ function LoginForm() {
                         </Form>
                     </Col>
                 </Row>
-
             </Container >
-
         </>);
 }
 

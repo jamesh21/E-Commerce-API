@@ -11,8 +11,10 @@ import AttentionModal from '../common/AttentionModal';
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function NewProductForm() {
+    // Contexts
     const { addProduct } = useProduct()
     const { showError } = useError()
+
     const [showModal, setShowModal] = useState(false)
     const [formErrors, setFormErrors] = useState(null)
     const [formData, setFormData] = useState({

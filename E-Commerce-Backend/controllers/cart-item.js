@@ -11,7 +11,7 @@ const getCartItems = async (req, res) => {
     const { cartId } = req.user
     const cartItems = await getCartItemsFromDB(cartId)
 
-    res.status(StatusCodes.OK).json(cartItems)
+    return res.status(StatusCodes.OK).json(cartItems)
 }
 
 /**
@@ -45,7 +45,7 @@ const updateCartItemQuantity = async (req, res) => {
     }
     const cartItem = await updateCartItemQuantityInDB(quantity, cartItemId, cartId)
 
-    res.status(StatusCodes.OK).json(cartItem)
+    return res.status(StatusCodes.OK).json(cartItem)
 }
 
 /**
@@ -58,7 +58,7 @@ const removeCartItem = async (req, res) => {
     const { cartItemId } = req.params
     const result = await removeCartItemFromDB(cartItemId, cartId)
 
-    res.status(StatusCodes.OK).json(result)
+    return res.status(StatusCodes.OK).json(result)
 }
 
 /**
@@ -70,7 +70,7 @@ const clearCart = async (req, res) => {
     const { cartId } = req.user
     const result = await clearCartItemForUserInDB(cartId)
 
-    res.status(StatusCodes.OK).json(result)
+    return res.status(StatusCodes.OK).json(result)
 }
 
 

@@ -1,6 +1,6 @@
 CREATE DATABASE ecommerce;
 
-User Table
+--User Table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     email_address VARCHAR(320) UNIQUE NOT NULL,
@@ -37,9 +37,10 @@ CREATE TABLE cart_items (
     UNIQUE(cart_id, product_id) -- Prevents duplicate items in a cart
 );
 
-
+-- Setting enum for order status.
 CREATE TYPE status_enum as ENUM('pending', 'paid', 'shipped', 'cancelled');
 
+-- Order Table
 CREATE TABLE orders (
     order_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id),
@@ -50,6 +51,7 @@ CREATE TABLE orders (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Order items table.
 create TABLE order_items (
     order_item_id SERIAL PRIMARY KEY,
     order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
@@ -67,7 +69,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
+-- Trigger for updating time stamp for cart items.
 CREATE TRIGGER trigger_update_cart_on_item_change
 AFTER INSERT OR UPDATE OR DELETE ON cart_items
 FOR EACH ROW

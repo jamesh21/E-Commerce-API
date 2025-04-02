@@ -26,7 +26,6 @@ function App() {
                         <ProtectedAdminRoute>
                             <ManagePage />
                         </ProtectedAdminRoute>
-
                     }
                 />
                 <Route path="/cart" element=

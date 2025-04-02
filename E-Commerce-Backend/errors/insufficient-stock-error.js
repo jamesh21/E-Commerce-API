@@ -1,4 +1,5 @@
 const BadRequestError = require('./bad-request')
+
 class InsufficientStockError extends BadRequestError {
     constructor(items) {
         super("Not enough stock available for some items.", "INSUFFICIENT_STOCK");

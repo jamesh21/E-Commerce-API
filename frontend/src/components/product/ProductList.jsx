@@ -15,6 +15,7 @@ import AddToCartButton from './AddToCartButton'
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function ProductList() {
+    // Contexts
     const { addToCart } = useCart()
     const { products } = useProduct()
     const { user } = useAuth()
@@ -24,8 +25,13 @@ function ProductList() {
     const [showToast, setShowToast] = useState(false)
     const toggleShowToast = () => setShowToast(!showToast)
 
+    /**
+     * This function calls the backend to add product to user's cart
+     * @param {*} product 
+     * @returns 
+     */
     const handleAddToCart = async (product) => {
-        if (!user) {
+        if (!user) { // navigates to login page if user is logged in
             navigate('/login')
             return
         }

@@ -4,9 +4,9 @@ import Col from 'react-bootstrap/Col';
 import ProductCard from "../product/ProductCard";
 import UpdateProductButton from './UpdateProductButton';
 import DeleteProductButton from './DeleteProductButton';
+
 function ManageProductPanel() {
     const { products } = useProduct()
-
     return (
         <>
             <Row>

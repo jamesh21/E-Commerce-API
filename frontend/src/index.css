@@ -109,9 +109,7 @@
         left: 0;
         width: 100%;
         background-color: white;
-        /* Optional */
         z-index: 1000;
-        /* Ensure it stays above other content */
     }
 }
 

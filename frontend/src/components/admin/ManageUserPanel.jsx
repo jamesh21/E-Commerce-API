@@ -9,6 +9,9 @@ function ManageUserPanel() {
     const [users, setUsers] = useState([])
     const { showError } = useError()
 
+    /**
+     * Retrieves all users of the application
+     */
     useEffect(() => {
         const getUsers = async () => {
             try {
@@ -21,6 +24,12 @@ function ManageUserPanel() {
         getUsers()
     }, [])
 
+    /**
+     * Updates role of the passed in user.
+     * @param {*} isNewRoleAdmin 
+     * @param {*} userId 
+     * @returns 
+     */
     const updateRole = async (isNewRoleAdmin, userId) => {
         try {
             await axiosInstance.put('/user/role', { isAdmin: isNewRoleAdmin, userId })

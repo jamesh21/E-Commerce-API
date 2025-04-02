@@ -2,6 +2,8 @@
 import { createContext, useState, useContext, useEffect, useRef } from 'react';
 import axiosInstance from '../services/axios'
 import { useAuth } from './AuthContext'
+import displayCurrency from '../utils/helper';
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -9,25 +11,33 @@ export const CartProvider = ({ children }) => {
     const { user } = useAuth()
     const previousCartItems = useRef(cartItems)
 
-
+    /**
+     * Attempts to retrieve cart items for user
+     */
     useEffect(() => {
         const getCartItems = async () => {
+            // User is not logged in, therefore no cart is available.
             if (!user) {
                 return
             }
             try {
                 const response = await axiosInstance.get('/cart/item')
                 const responseData = response.data
-
                 setCartItems(responseData.data)
 
             } catch (err) {
                 console.error('Error ', err)
+                throw err
             }
         }
         getCartItems()
     }, [user])
 
+    /**
+     * This function updates the passed in cart item quantity in the backend and also local state.
+     * @param {*} cartItemId 
+     * @param {*} newQuantity 
+     */
     const updateCartItemQuantity = async (cartItemId, newQuantity) => {
         try {
             // store previous cart items in case we need to revert due to errors
@@ -46,6 +56,11 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    /**
+     * THis function will update the corresponding cart item info given product id and product data
+     * @param {*} productId 
+     * @param {*} productData 
+     */
     const updateProductInCart = async (productId, productData) => {
         setCartItems((prevItems) =>
             prevItems.map((item) => item.productId === productId ?
@@ -56,6 +71,10 @@ export const CartProvider = ({ children }) => {
                 : item))
     }
 
+    /**
+     * This function will delete cart item from users cart.
+     * @param {*} cartItemId 
+     */
     const deleteFromCart = async (cartItemId) => {
         try {
             previousCartItems.current = cartItems
@@ -74,16 +93,25 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    /**
+     * This function is called to remove a deleted product from the user's cart
+     * @param {*} productId 
+     * @returns 
+     */
     const removeDeletedProductFromCart = (productId) => setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId))
 
+    /**
+     * This function will handle adding products to the user's cart.
+     * @param {*} product 
+     */
     const addToCart = async (product) => {
 
         try {
             previousCartItems.current = cartItems
-            // insert new 
+            // add product to cart in backend            
             const response = await axiosInstance.post('/cart/item', { productId: product.productId, quantity: 1 })
             const addedProduct = response.data
-
+            // Build cart item using returned product data
             const cartItemProduct = { ...product, cartId: addedProduct.cartId, cartItemId: addedProduct.cartItemId, quantity: addedProduct.quantity }
 
             setCartItems((prevCart) => {
@@ -104,7 +132,9 @@ export const CartProvider = ({ children }) => {
         }
     }
 
-
+    /**
+     * This function will call the backend and generate a stripe url for checkout.
+     */
     const onCheckout = async () => {
         try {
             const response = await axiosInstance.post('/checkout')
@@ -117,12 +147,24 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Remove all cart items
+     */
     const resetCart = () => {
         setCartItems([])
     }
 
+    // Used to display number of items in cart
+    const totalCartQuantity = cartItems.reduce((currQuant, currentItem) => currQuant + currentItem.quantity, 0)
+
+    // Used to calculate total cost of items.
+    const calculateCartItemTotal = () => {
+        const total = cartItems.reduce((currTotal, currentItem) => currTotal + (currentItem.quantity * currentItem.price), 0)
+        return displayCurrency(total)
+    }
+
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart, resetCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart, resetCart, totalCartQuantity, calculateCartItemTotal }}>
             {children}
         </CartContext.Provider>
     )
