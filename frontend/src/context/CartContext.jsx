@@ -2,6 +2,8 @@
 import { createContext, useState, useContext, useEffect, useRef } from 'react';
 import axiosInstance from '../services/axios'
 import { useAuth } from './AuthContext'
+import displayCurrency from '../utils/helper';
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -152,8 +154,17 @@ export const CartProvider = ({ children }) => {
         setCartItems([])
     }
 
+    // Used to display number of items in cart
+    const totalCartQuantity = cartItems.reduce((currQuant, currentItem) => currQuant + currentItem.quantity, 0)
+
+    // Used to calculate total cost of items.
+    const calculateCartItemTotal = () => {
+        const total = cartItems.reduce((currTotal, currentItem) => currTotal + (currentItem.quantity * currentItem.price), 0)
+        return displayCurrency(total)
+    }
+
     return (
-        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart, resetCart }}>
+        <CartContext.Provider value={{ cartItems, updateCartItemQuantity, deleteFromCart, onCheckout, addToCart, removeDeletedProductFromCart, updateProductInCart, resetCart, totalCartQuantity, calculateCartItemTotal }}>
             {children}
         </CartContext.Provider>
     )

@@ -9,15 +9,13 @@ import { useCart } from '../../context/CartContext'
 function NavBar() {
     const navigate = useNavigate();
     const { user, logout } = useAuth()
-    const { cartItems, resetCart } = useCart()
+    const { resetCart, totalCartQuantity } = useCart()
 
     const handleLogout = () => {
         resetCart()
         logout(navigate)
     }
 
-    // Used to calculate number of items in cart currently.
-    const totalCartQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
     return (
         <>

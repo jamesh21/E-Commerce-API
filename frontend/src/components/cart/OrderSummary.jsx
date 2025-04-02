@@ -1,21 +1,11 @@
 import Button from 'react-bootstrap/Button';
-import displayCurrency from '../../utils/helper';
 import { useCart } from '../../context/CartContext'
 import { useError } from '../../context/ErrorContext'
 import { TIMED_OUT_ERR_MSG, NETWORK_ERR_MSG, TIMED_OUT_CASE } from '../../constants/constant'
 
 function OrderSummary() {
-    const { cartItems, onCheckout } = useCart()
+    const { calculateCartItemTotal, onCheckout, totalCartQuantity } = useCart()
     const { showError } = useError()
-
-    // Used to calculate total cost of items.
-    const calculateCartItemTotal = () => {
-        const total = cartItems.reduce((accu, currentItem) => accu + (currentItem.quantity * currentItem.price), 0)
-        return displayCurrency(total)
-    }
-
-    // USed to display number of items in cart
-    const totalCartQuantity = cartItems.reduce((accu, currItem) => accu + currItem.quantity, 0)
 
     /**
      * invokes checkout functionality
