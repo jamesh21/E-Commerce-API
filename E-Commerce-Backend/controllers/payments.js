@@ -1,5 +1,5 @@
-const { updateOrderInDB, clearCartItemForUserInDB, updateProductInDB, getProductsFromOrder } = require('../services/db')
-
+const { updateOrderInDB, clearCartItemForUserInDB, getProductsFromOrder } = require('../services/db')
+const productService = require('../services/product-service')
 /**
  * Stripe webhook is called after a successful payment has been made.
  * @param {*} req 
@@ -17,7 +17,7 @@ const stripeWebhook = async (req, res) => {
 
         // loop through products and update product count in db
         for (let product of products) {
-            await updateProductInDB(product.productId, { stock: product.stock - product.quantity })
+            await productService.updateProduct(product.productId, { stock: product.stock - product.quantity })
         }
 
         // Update order table with status paid and stripe payment intent id
