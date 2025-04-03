@@ -1,10 +1,9 @@
 const userModel = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
-const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnauthenticatedError } = require('../errors')
 const cartService = require('./cart-service')
-const { DB_DUP_ENTRY } = require('../constants/error-messages')
+
 
 class UserService {
 

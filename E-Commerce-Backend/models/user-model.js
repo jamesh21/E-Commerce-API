@@ -1,7 +1,7 @@
 const pool = require('../db'); // Import the database connection
 const { ConflictError, NotFoundError } = require('../errors')
 const { transformFields } = require('../utils/field-mapper')
-const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
+const { DB_TO_API_MAPPING } = require('../constants/field-mappings')
 const { DB_DUP_ENTRY } = require('../constants/error-messages')
 
 class UserModel {
@@ -33,10 +33,10 @@ class UserModel {
     }
 
     /**
- * Retrieves user info from users table.
- * @param {*} userId 
- * @returns 
- */
+    * Retrieves user info from users table.
+    * @param {*} userId 
+    * @returns 
+    */
     getUserInfoFromDb = async (email) => {
         const user = await pool.query('SELECT email_address, full_name, is_admin from users WHERE email_address = ($1)', [email])
         if (user.rowCount === 0) {
