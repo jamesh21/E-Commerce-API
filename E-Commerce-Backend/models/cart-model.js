@@ -69,7 +69,7 @@ class CartModel {
             return transformFields(cartItem.rows[0], DB_TO_API_MAPPING)
         } catch (err) {
             if (err.code === '23503') {
-                throw new NotFoundError('product does not exist')
+                throw new NotFoundError(`product does not exist - product id ${productId}`)
             }
             throw err
         }

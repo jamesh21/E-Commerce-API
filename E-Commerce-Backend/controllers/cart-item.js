@@ -23,7 +23,7 @@ const addCartItem = async (req, res) => {
     const { productId, quantity } = req.body
     const { cartId } = req.user
 
-    const cartItem = await cartService.addCartItem(cartId, productId, quantity)
+    const cartItem = await cartService.addCartItem(productId, quantity, cartId)
 
     return res.status(StatusCodes.CREATED).json(cartItem)
 }
