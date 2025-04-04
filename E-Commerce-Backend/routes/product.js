@@ -6,7 +6,7 @@ const {
     getProduct, addProduct, updateProduct, deleteProduct, getProducts }
     = require("../controllers/product");
 
-router.route("/:sku").get(getProduct)
+router.route("/:id").get(getProduct)
 router.route('/').get(getProducts)
 
 router.use(authMiddleware)

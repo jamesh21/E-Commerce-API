@@ -4,8 +4,8 @@ const { API_TO_DB_MAPPING } = require('../constants/field-mappings')
 const { transformFields } = require('../utils/field-mapper')
 
 class ProductService {
-    getProduct = (sku) => {
-        return productModel.getProductFromDB(sku)
+    getProduct = (id) => {
+        return productModel.getProductFromDB(id)
     }
 
     getProducts = () => {

@@ -1,5 +1,5 @@
 const pool = require('../db'); // Import the database connection
-const { ConflictError, InsufficientStockError } = require('../errors')
+const { ConflictError, InsufficientStockError, BadRequestError } = require('../errors')
 const { transformFields } = require('../utils/field-mapper')
 const { DB_TO_API_MAPPING, API_TO_DB_MAPPING } = require('../constants/field-mappings')
 const { DB_DUP_ENTRY } = require('../constants/error-messages')
@@ -42,6 +42,10 @@ class OrderModel {
             await client.query('BEGIN')
             // Retrieve all items from user's cart
             const { data: cartItems } = await cartModel.getCartItemsFromDB(cartId)
+
+            if (cartItems.length === 0) {
+                throw new BadRequestError('There are no items in your cart to create an order.')
+            }
             const insufficientStockItems = []
 
             // Get total cost of items

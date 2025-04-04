@@ -11,11 +11,11 @@ class ProductModel {
      * @param {*} sku 
      * @returns 
      */
-    getProductFromDB = async (sku) => {
-        const product = await pool.query('SELECT product_sku, product_name, price, stock FROM products WHERE product_sku = ($1)',
-            [sku])
+    getProductFromDB = async (id) => {
+        const product = await pool.query('SELECT product_sku, product_name, price, stock FROM products WHERE product_id = ($1)',
+            [id])
         if (product.rowCount === 0) {
-            throw new NotFoundError('Product sku was not found')
+            throw new NotFoundError('Product id was not found')
         }
         const formattedProducts = []
         for (let item of product.rows) {

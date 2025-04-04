@@ -7,8 +7,8 @@ const productService = require('../services/product-service')
  * @param {*} res 
  */
 const getProduct = async (req, res) => {
-    const { sku } = req.params
-    const product = await productService.getProduct(sku)
+    const { id } = req.params
+    const product = await productService.getProduct(id)
 
     return res.status(StatusCodes.OK).json(product)
 }
