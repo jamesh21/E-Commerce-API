@@ -9,10 +9,9 @@ const app = express()
 // routers
 const productRouter = require('./routes/product')
 const authRouter = require('./routes/auth')
-const cartItemRouter = require('./routes/cart-item')
+const cartRouter = require('./routes/cart')
 const checkoutRouter = require('./routes/checkout')
 const userRouter = require('./routes/user')
-const paymentsRouter = require('./routes/payments')
 
 // middleware
 const authMiddleware = require('./middleware/authentication')
@@ -24,10 +23,9 @@ app.use(express.json());
 // routing
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/product', productRouter)
-app.use('/api/v1/payments', paymentsRouter)
 app.use('/api/v1/user', authMiddleware, userRouter)
-app.use('/api/v1/cart/item', authMiddleware, cartItemRouter)
-app.use('/api/v1/checkout', authMiddleware, checkoutRouter)
+app.use('/api/v1/cart/item', authMiddleware, cartRouter)
+app.use('/api/v1/checkout', checkoutRouter)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

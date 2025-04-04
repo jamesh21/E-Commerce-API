@@ -1,8 +1,5 @@
-const { getProductFromDB, getProductsFromDB, addProductToDB, updateProductInDB, deleteProductInDB } = require('../services/db')
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError } = require('../errors')
-const { API_TO_DB_MAPPING } = require('../constants/field-mappings')
-const { transformFields } = require('../utils/field-mapper')
+const productService = require('../services/product-service')
 
 /**
  * Get Route for retrieving a single product from the sku provided in param.
@@ -11,9 +8,9 @@ const { transformFields } = require('../utils/field-mapper')
  */
 const getProduct = async (req, res) => {
     const { sku } = req.params
-    const result = await getProductFromDB(sku)
+    const product = await productService.getProduct(sku)
 
-    return res.status(StatusCodes.OK).json(result)
+    return res.status(StatusCodes.OK).json(product)
 }
 
 /**
@@ -22,8 +19,8 @@ const getProduct = async (req, res) => {
  * @param {*} res 
  */
 const getProducts = async (req, res) => {
-    const result = await getProductsFromDB()
-    return res.status(StatusCodes.OK).json(result)
+    const products = await productService.getProducts()
+    return res.status(StatusCodes.OK).json(products)
 }
 
 /**
@@ -34,13 +31,9 @@ const getProducts = async (req, res) => {
  */
 const addProduct = async (req, res) => {
     const { productName, stock, price, productSku, imageUrl } = req.body
+    const addedProduct = await productService.addProduct(productName, stock, price, productSku, imageUrl)
 
-    // Checks if required fields are filled in
-    if (productName === '' || price === '' || productSku === '') {
-        throw new BadRequestError('product name, price or product sku was left blank')
-    }
-    const newProduct = await addProductToDB(productName, stock, price, productSku, imageUrl)
-    return res.status(StatusCodes.CREATED).json(newProduct)
+    return res.status(StatusCodes.CREATED).json(addedProduct)
 }
 
 /**
@@ -52,17 +45,10 @@ const addProduct = async (req, res) => {
  */
 const updateProduct = async (req, res) => {
     const { id } = req.params
-
     const updates = req.body
-    if (Object.keys(updates).length === 0) {
-        throw new BadRequestError('No update parameters were passed into request body')
-    }
-    // format values to db criteria
-    const formattedUpdates = transformFields(updates, API_TO_DB_MAPPING)
-    const updatedProduct = await updateProductInDB(id, formattedUpdates)
+    const updatedProduct = await productService.updateProduct(id, updates)
 
     return res.status(200).json(updatedProduct)
-
 }
 
 /**
@@ -70,7 +56,8 @@ const updateProduct = async (req, res) => {
  */
 const deleteProduct = async (req, res) => {
     const { id } = req.params
-    await deleteProductInDB(id)
+
+    await productService.deleteProduct(id)
 
     return res.status(StatusCodes.NO_CONTENT).send()
 }

@@ -1,21 +1,23 @@
 const { StatusCodes } = require('http-status-codes')
-const { makePaymentWithStripe } = require('../services/stripe')
-const { createOrder, updateOrderInDB } = require('../services/db')
+const orderService = require('../services/order-service')
+
 
 const checkout = async (req, res) => {
     const { cartId, userId } = req.user
 
-    // create order in db
-    const { orderId, cartItems } = await createOrder(cartId, userId)
-
-    // create stripe session
-    const { stripeSessionId, url } = await makePaymentWithStripe(cartItems, orderId, cartId)
-
-    // update order in db with stripe session id
-    await updateOrderInDB(orderId, { 'stripe_session_Id': stripeSessionId })
+    const url = await orderService.checkout(cartId, userId)
 
     // may need to insert stripe payment into a new table called payments
     res.status(StatusCodes.OK).json({ url })
 }
 
-module.exports = { checkout }
+const stripeCheckoutWebhook = async (req, res) => {
+
+    const event = req.body;
+
+    await orderService.stripeCheckoutWebhook(event)
+
+    return res.status(200).json({ received: true });
+}
+
+module.exports = { checkout, stripeCheckoutWebhook }

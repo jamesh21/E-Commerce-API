@@ -1,40 +1,42 @@
-const { getUserInfoFromDb, getUsersFromDB, updateUserRoleInDB } = require('../services/db')
 const { StatusCodes } = require('http-status-codes')
+const userService = require('../services/user-service')
 
 /**
- * Retrieves user info from db
+ * Retrieves user info
  * @param {*} req 
  * @param {*} res 
  * @returns 
  */
 const getUserInfo = async (req, res) => {
-    const { userId } = req.user
-    console.log(req.user)
-    const result = await getUserInfoFromDb(userId)
-    return res.status(StatusCodes.OK).json(result)
+    const { email } = req.user
+
+    const userInfo = await userService.getUserInfo(email)
+
+    return res.status(StatusCodes.OK).json(userInfo)
 }
 
 /**
- *  Retrieves all users from db
+ *  Retrieves all users
  * @param {*} req 
  * @param {*} res 
  * @returns 
  */
 const getUsers = async (req, res) => {
-    const result = await getUsersFromDB()
-    return res.status(StatusCodes.OK).json(result)
+    const users = await userService.getUsers()
+
+    return res.status(StatusCodes.OK).json(users)
 }
 
 /**
- * Updates user role in db.
+ * Updates user role.
  * @param {*} req 
  * @param {*} res 
  * @returns 
  */
 const updateUserRole = async (req, res) => {
     const { isAdmin, userId } = req.body
-    const result = await updateUserRoleInDB(isAdmin, userId)
-    return res.status(StatusCodes.OK).json(result)
+    const updatedUser = await userService.updateUserRole(isAdmin, userId)
+    return res.status(StatusCodes.OK).json(updatedUser)
 }
 
 module.exports = { getUserInfo, getUsers, updateUserRole }
