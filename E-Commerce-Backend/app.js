@@ -9,7 +9,7 @@ const app = express()
 // routers
 const productRouter = require('./routes/product')
 const authRouter = require('./routes/auth')
-const cartItemRouter = require('./routes/cart-item')
+const cartRouter = require('./routes/cart')
 const checkoutRouter = require('./routes/checkout')
 const userRouter = require('./routes/user')
 
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/product', productRouter)
 app.use('/api/v1/user', authMiddleware, userRouter)
-app.use('/api/v1/cart/item', authMiddleware, cartItemRouter)
+app.use('/api/v1/cart/item', authMiddleware, cartRouter)
 app.use('/api/v1/checkout', checkoutRouter)
 
 app.use(notFoundHandler)
