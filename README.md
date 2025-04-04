@@ -1,7 +1,7 @@
 # eCommerce Website
 
 ## Overview
-This is a full-stack eCommerce website built using **Node.js, Express, React, and PostgreSQL**. The application allows users to browse products, add items to the cart, and complete purchases using Stripe for payments. The admin panel provides functionality to manage products, users, and orders.
+This is a full-stack eCommerce website built using **Node.js, Express, React, and PostgreSQL**. The application allows users to browse products, add items to the cart, and complete purchases using Stripe for payments. The admin panel provides functionality to manage products, and users.
 
 ## Features
 ### User Features
