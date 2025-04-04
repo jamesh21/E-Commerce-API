@@ -78,7 +78,7 @@ Ensure you have the following installed:
     psql -h your-local-postgres-db-host -U your-local-postgres-db-username -d your-local-postgres-db-name
     ```
 
-6. Run DB Script
+6. Run DB Script (An inital user must be created in the db with admin priviledge, since you will need to be an admin to update roles)
     - Navigate to E-Commerce-Backend
     - Run db.sql to generate postgres tables
 
@@ -119,7 +119,7 @@ Ensure you have the following installed:
 - 'PATCH api/v1/cart/:id` – Update quantity of cart item
 - `DELETE /api/v1/cart/` – Remove all items from cart
 
-### Orders (must be logged in)
+### Orders (must be logged in and include bearer token)
 - `POST /api/v1/orders` – Place an order
 
 
@@ -134,12 +134,12 @@ Ensure you have the following installed:
 This project is licensed under the MIT License. Feel free to contribute or use it as a reference for your own eCommerce projects!
 
 ## Contributors
-- **James Ho* – Developer
+- *James Ho* – Developer
 
 
 ## Contact
 For any inquiries or contributions, feel free to reach out:
-- GitHub: [your-github-profile](https://github.com/jamesh21)
+- GitHub: [jamesh21](https://github.com/jamesh21)
 
 ## Credit
 This project idea is from [roadmap.sh](https://roadmap.sh/projects/ecommerce-api)
